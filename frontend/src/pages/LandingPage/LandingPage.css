@@ -149,6 +149,10 @@
         padding: 10px 10px;
     }
 
+    .landing-page-logo {
+        font-size: 2rem;
+    }
+
     .landing-page-grid-menu-items {
         display: none;
     }
@@ -190,5 +194,25 @@
 
     .landing-page-submit {
         width: 35%;
+    }
+
+}
+
+@media screen and (max-width: 640px) {
+    .landing-page-input {
+        width: 65%;
+        font-size: 0.875rem;
+    }
+
+    .landing-page-submit {
+        width: 35%;
+    }
+
+    .landing-page-content {
+        padding: 20px 0;
+    }
+
+    .landing-page-form {
+        padding: 20px 0;
     }
 }
