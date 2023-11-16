@@ -163,7 +163,23 @@
     user-select: none;
 }
 
-@media screen and (max-width: 1023.98px) {
+.home-page-content {
+    animation: transformInHomePageContent 1.25s;
+}
+
+@keyframes transformInHomePageContent {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media screen and (max-width: 1024px) {
     .home-page-item {
         width: calc(33.333% - 10px);
     }
