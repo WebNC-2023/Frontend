@@ -50,7 +50,7 @@ export default function SignIn() {
   // useEffect
   React.useEffect(() => {
     if (userInfo) {
-      navigate("/landing-page");
+      navigate("/home-page");
     }
     if (isSuccess) {
       toast.success(`Welcome back ${userInfo?.lastName}`);

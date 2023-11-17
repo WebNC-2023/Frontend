@@ -31,10 +31,16 @@ export default function Register() {
     (state) => state.userRegister
   );
 
+  const { userInfo } = useSelector((state) => state.userLogin);
+
   const [show, setShow] = React.useState(false);
 
   // useEffect
   React.useEffect(() => {
+    if (userInfo) {
+      navigate("/home-page");
+    }
+
     if (isSuccess) {
       toast.success(`Register successfully ! Login now !`);
 
@@ -49,7 +55,7 @@ export default function Register() {
       toast.error(isError);
       dispatch({ type: "USER_REGISTER_RESET" });
     }
-  }, [dispatch, isError, isSuccess, navigate]);
+  }, [dispatch, isError, isSuccess, navigate, userInfo]);
 
   // handle submit
   const formik = useFormik({
