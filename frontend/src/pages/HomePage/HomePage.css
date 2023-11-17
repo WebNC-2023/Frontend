@@ -167,6 +167,31 @@
     animation: transformInHomePageContent 1.25s;
 }
 
+.editProfile-container {
+    padding: 20px;
+}
+
+.editProfile-form {
+    padding: 20px;
+    min-height: 70vh;
+}
+
+.editProfile-title {
+    margin: 16px 0;
+    user-select: none;
+}
+
+.have-an-account {
+    user-select: none;
+}
+
+.login-now {
+    user-select: none;
+    color: #1976d2;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 @keyframes transformInHomePageContent {
     from {
         opacity: 0;

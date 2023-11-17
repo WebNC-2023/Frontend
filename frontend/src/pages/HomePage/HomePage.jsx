@@ -1,10 +1,14 @@
 import "./HomePage.css";
 import { useState } from "react";
-import { Grid, Box, Avatar, Menu, MenuItem, ListItemIcon, IconButton, Tooltip } from "@mui/material";
+import { Grid, Box, Avatar, Menu, MenuItem, ListItemIcon, IconButton, Tooltip, Paper, TextField, Button, FormLabel } from "@mui/material";
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
 import SchoolIcon from '@mui/icons-material/School';
+import PasswordIcon from '@mui/icons-material/Password';
+import AppRegistrationOutlinedIcon from '@mui/icons-material/AppRegistrationOutlined';
+import SendIcon from '@mui/icons-material/Send';
+import axios from "axios";
 let courses_list = [
     {
         course_img: "https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/https://s3.amazonaws.com/coursera_assets/ddp/branding/illinois/iMBA+square.jpg?auto=format%2Ccompress%2C%20enhance&dpr=2&w=265&h=204&fit=crop&q=50",
@@ -82,6 +86,17 @@ let courses_list = [
 const HomePage = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [showScreen, setShowScreen] = useState("courses");
+    const [firstNameErrorState, setFirstNameErrorState] = useState(false);
+    const [firstNameErrorMsg, setFirstNameErrorMsg] = useState("");
+    const [lastNameErrorState, setLastNameErrorState] = useState(false);
+    const [lastNameErrorMsg, setLastNameErrorMsg] = useState("");
+    const [avatarUrlErrorState, setAvatarUrlErrorState] = useState(false);
+    const [avatarUrlErrorMsg, setAvatarUrlErrorMsg] = useState("");
+    const [avatarUrl, setAvatarUrl] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [avatarFile, setAvatarFile] = useState();
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -89,10 +104,72 @@ const HomePage = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const handleClickEditProfileBtn = () => {
+        setAnchorEl(null);
+        setShowScreen("edit profile");
+    }
     const handleClickLogOut = () => {
         navigate("/landing-page");
         setAnchorEl(null);
     };
+    const handleClickSaveChange = () => {
+        if (firstName === "") {
+            setFirstNameErrorState(true);
+            setFirstNameErrorMsg("Required");
+        }
+        if (lastName === "") {
+            setLastNameErrorState(true);
+            setLastNameErrorMsg("Required");
+        }
+        if (avatarUrl === "") {
+            setAvatarUrlErrorState(true);
+            setAvatarUrlErrorMsg("Required");
+        }
+        if (firstName !== "" && lastName !== "" && avatarFile && !firstNameErrorState && !lastNameErrorState && !avatarUrlErrorState) {
+            async function sendEditProfile() {
+                const res = await axios({
+                    method: "PATCH",
+                    url: "https://webnc-2023.vercel.app/users/update-profile",
+                    withCredentials: true,
+                    data: {
+                        firstName: "Leanne",
+                        lastName: "Graham",
+                        id: 4,
+                        avatar: "hihihi"
+                    }
+                });
+                return res;
+            }
+            sendEditProfile().then(res => console.log(res.data))
+                .catch(err => console.log(err))
+                .finally(() => {
+                    setFirstName("");
+                    setLastName("");
+                    setAvatarUrl("");
+                })
+        }
+    }
+    const handleClickCancelEdit = () => {
+        setShowScreen("courses");
+    }
+    const handleClickClickLogin = () => {
+        async function sendLogin() {
+            const res = await axios({
+                url: "https://webnc-2023.vercel.app/auth/sign-in",
+                method: "POST",
+                data: {
+                    email: "LeanneGraham@gmail.com",
+                    password: "password"
+                },
+                withCredentials: true
+            });
+            return res;
+        }
+        sendLogin().then(res => {
+            console.log(res.data);
+        })
+        .catch(err => console.log(err)) 
+    }
     return (
         <div className="home-page-container">
             <Grid container justifyContent="space-between" alignItems="center" style={{ height: "65px", padding: "0 20px", width: "100%", borderBottom: "1px solid #e0e0e0", backgroundColor: "white" }}>
@@ -150,11 +227,17 @@ const HomePage = () => {
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                        <MenuItem onClick={handleClose}>
+                        <MenuItem onClick={handleClickEditProfileBtn}>
                             <ListItemIcon>
                                 <Settings fontSize="small" />
                             </ListItemIcon>
                             Edit profile
+                        </MenuItem>
+                        <MenuItem onClick={handleClose}>
+                            <ListItemIcon>
+                                <PasswordIcon fontSize="small" />
+                            </ListItemIcon>
+                            Change password
                         </MenuItem>
                         <MenuItem onClick={handleClickLogOut}>
                             <ListItemIcon>
@@ -165,31 +248,92 @@ const HomePage = () => {
                     </Menu>
                 </Grid>
             </Grid>
-            <div className="courses-container">
-                <div className="courses">
-                    {courses_list.map((course, id) => {
-                        return (
-                            <div className="course-item">
-                                <div className="course-item-image">
-                                    <img src={course.course_img} alt="course-img" />
-                                </div>
-                                <div className="course-university">
-                                    <img src={course.university_img} alt="university-img" width="25px" height="25px" />
-                                    <span>{course.university_name}</span>
-                                </div>
-                                <p className="course-name">
-                                    {course.course_name}
-                                </p>
-                                <div className="course-earn-degree">
-                                    <SchoolIcon />
-                                    <span>Earn a degree</span>
-                                </div>
-                                <p className="course-degree">Degree</p>
-                            </div>
-                        )
-                    })}
-                </div>
-            </div>
+            {showScreen === "courses" ?
+                (
+                    <div className="courses-container">
+                        <div className="courses">
+                            {courses_list.map((course, id) => {
+                                return (
+                                    <div key={id} className="course-item">
+                                        <div className="course-item-image">
+                                            <img src={course.course_img} alt="course-img" />
+                                        </div>
+                                        <div className="course-university">
+                                            <img src={course.university_img} alt="university-img" width="25px" height="25px" />
+                                            <span>{course.university_name}</span>
+                                        </div>
+                                        <p className="course-name">
+                                            {course.course_name}
+                                        </p>
+                                        <div className="course-earn-degree">
+                                            <SchoolIcon />
+                                            <span>Earn a degree</span>
+                                        </div>
+                                        <p className="course-degree">Degree</p>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                ) :
+                showScreen === "edit profile" ?
+                    (
+                        <Grid container justifyContent={"center"} className="">
+                            <Grid item xs={12} sm={8} md={4} className="editProfile-container" style={{ marginTop: "20px" }}>
+                                <Paper elevation={10} className="editProfile-form">
+                                    <Grid container direction={"column"} alignItems={"center"}>
+                                        <Avatar style={{ backgroundColor: "#1bbd7e" }}><AppRegistrationOutlinedIcon /></Avatar>
+                                        <h2 className="editProfile-title">Edit profile</h2>
+                                    </Grid>
+                                    <TextField error={firstNameErrorState} helperText={firstNameErrorMsg} style={{ marginTop: "16px" }} label="First name" variant="standard" fullWidth placeholder="Enter first name" spellCheck="false" autoComplete="none" required value={firstName} onChange={e => {
+                                        setFirstName(e.target.value);
+                                        if (e.target.value === "") {
+                                            setFirstNameErrorMsg("Require");
+                                            setFirstNameErrorState(true);
+                                        }
+                                        else {
+                                            setFirstNameErrorMsg("");
+                                            setFirstNameErrorState(false);
+                                        }
+                                    }} />
+                                    <TextField error={lastNameErrorState} helperText={lastNameErrorMsg} style={{ margin: "16px 0" }} label="Last name" variant="standard" fullWidth placeholder="Enter last name" spellCheck="false" autoComplete="none" required value={lastName} onChange={e => {
+                                        setLastName(e.target.value);
+                                        if (e.target.value === "") {
+                                            setLastNameErrorMsg("Require");
+                                            setLastNameErrorState(true);
+                                        }
+                                        else {
+                                            setLastNameErrorMsg("");
+                                            setLastNameErrorState(false);
+                                        }
+                                    }} />
+                                    <FormLabel style={{ userSelect: "none" }}>Avatar</FormLabel>
+                                    <TextField error={avatarUrlErrorState} helperText={avatarUrlErrorMsg} inputProps={{ accept: 'image/*' }} type="file" style={{ marginBottom: "16px" }} fullWidth variant="standard" value={avatarUrl} required onChange={e => {
+                                        if (e.target.value) {
+                                            setAvatarFile(e.target.files[0]);
+                                            setAvatarUrlErrorMsg("");
+                                            setAvatarUrlErrorState(false);
+                                            setAvatarUrl(e.target.value);
+                                        }
+                                        else {
+                                            setAvatarUrl("");
+                                            setAvatarFile();
+                                            setAvatarUrlErrorMsg("Require");
+                                            setAvatarUrlErrorState(true);
+                                        };
+
+                                    }} />
+                                    <Button style={{ margin: "16px 0" }} type="submit" endIcon={<SendIcon />} variant="contained" fullWidth onClick={handleClickSaveChange}>Save Changes</Button>
+                                    <Button color="success" variant="contained" fullWidth onClick={handleClickCancelEdit}>Cancel</Button>
+                                    <Button color="success" variant="contained" fullWidth onClick={handleClickClickLogin}>Login</Button>
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    ) :
+                    (
+                        <>change password</>
+                    )
+            }
         </div>
     );
 }
