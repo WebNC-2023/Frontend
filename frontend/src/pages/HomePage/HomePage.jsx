@@ -1,6 +1,6 @@
 import "./HomePage.css";
 import { useState } from "react";
-import { Grid, Box, Avatar, Menu, MenuItem, ListItemIcon, IconButton, Tooltip, Paper, TextField, Button, FormLabel } from "@mui/material";
+import { Grid, Box, Avatar, Menu, MenuItem, ListItemIcon, IconButton, Tooltip, Paper, TextField, Button, FormLabel, Typography, Alert } from "@mui/material";
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,8 @@ import SchoolIcon from '@mui/icons-material/School';
 import PasswordIcon from '@mui/icons-material/Password';
 import AppRegistrationOutlinedIcon from '@mui/icons-material/AppRegistrationOutlined';
 import SendIcon from '@mui/icons-material/Send';
+import CloseIcon from '@mui/icons-material/Close';
+import AlarmIcon from '@mui/icons-material/Alarm';
 import axios from "axios";
 let courses_list = [
     {
@@ -97,6 +99,8 @@ const HomePage = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [avatarFile, setAvatarFile] = useState();
+    const [editProfileSuccess, setEditProfileSuccess] = useState(false);
+    const [showLoadingEditBtn, setShowLoadingEditBtn] = useState(false);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -125,60 +129,50 @@ const HomePage = () => {
             setAvatarUrlErrorState(true);
             setAvatarUrlErrorMsg("Required");
         }
-        if (firstName !== "" && lastName !== "" && avatarFile && !firstNameErrorState && !lastNameErrorState && !avatarUrlErrorState) {
+        if (firstName !== "" && lastName !== "" && avatarFile && avatarUrl !== "" && !firstNameErrorState && !lastNameErrorState && !avatarUrlErrorState) {
             async function sendEditProfile() {
+                setShowLoadingEditBtn(true);
                 const res = await axios({
                     method: "PATCH",
                     url: "https://webnc-2023.vercel.app/users/update-profile",
                     withCredentials: true,
                     data: {
-                        firstName: "Leanne",
-                        lastName: "Graham",
-                        id: 4,
-                        avatar: "hihihi"
+                        firstName: firstName,
+                        lastName: lastName,
+                        id: JSON.parse(localStorage.getItem("userInfo"))["id"],
+                        avatar: avatarFile
                     }
                 });
                 return res;
             }
-            sendEditProfile().then(res => console.log(res.data))
+            sendEditProfile().then(res => {
+                setShowLoadingEditBtn(false);
+                const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+                userInfo.firstName = res.data.data.firstName;
+                userInfo.lastName = res.data.data.lastName;
+                userInfo.avatar = res.data.data.avatar;
+                userInfo.refreshToken = res.data.data.refreshToken
+                localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                setFirstName("");
+                setLastName("");
+                setAvatarUrl("");
+                setEditProfileSuccess(true);
+            })
                 .catch(err => console.log(err))
-                .finally(() => {
-                    setFirstName("");
-                    setLastName("");
-                    setAvatarUrl("");
-                })
         }
     }
     const handleClickCancelEdit = () => {
         setShowScreen("courses");
-    }
-    const handleClickClickLogin = () => {
-        async function sendLogin() {
-            const res = await axios({
-                url: "https://webnc-2023.vercel.app/auth/sign-in",
-                method: "POST",
-                data: {
-                    email: "LeanneGraham@gmail.com",
-                    password: "password"
-                },
-                withCredentials: true
-            });
-            return res;
-        }
-        sendLogin().then(res => {
-            console.log(res.data);
-        })
-        .catch(err => console.log(err)) 
     }
     return (
         <div className="home-page-container">
             <Grid container justifyContent="space-between" alignItems="center" style={{ height: "65px", padding: "0 20px", width: "100%", borderBottom: "1px solid #e0e0e0", backgroundColor: "white" }}>
                 <Grid item>
                     <span className="home-page-logo">Learners</span>
-                    <span className="home-page-header-classroom">Courses</span>
                 </Grid>
                 <Grid item>
                     <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                        <Typography style={{ userSelect: "none", fontSize: "0.75rem", position: "absolute", top: "0", right: "20px" }}>Hi, {JSON.parse(localStorage.getItem("userInfo"))["firstName"]} {JSON.parse(localStorage.getItem("userInfo"))["lastName"]}</Typography>
                         <Tooltip title="Account settings">
                             <IconButton
                                 onClick={handleClick}
@@ -280,6 +274,7 @@ const HomePage = () => {
                     (
                         <Grid container justifyContent={"center"} className="">
                             <Grid item xs={12} sm={8} md={4} className="editProfile-container" style={{ marginTop: "20px" }}>
+                                {editProfileSuccess && <><Alert severity="success" className="change-edit-success">Change Successful</Alert><CloseIcon className="close-change-edit-success" onClick={() => setEditProfileSuccess(false)} /></>}
                                 <Paper elevation={10} className="editProfile-form">
                                     <Grid container direction={"column"} alignItems={"center"}>
                                         <Avatar style={{ backgroundColor: "#1bbd7e" }}><AppRegistrationOutlinedIcon /></Avatar>
@@ -323,9 +318,8 @@ const HomePage = () => {
                                         };
 
                                     }} />
-                                    <Button style={{ margin: "16px 0" }} type="submit" endIcon={<SendIcon />} variant="contained" fullWidth onClick={handleClickSaveChange}>Save Changes</Button>
-                                    <Button color="success" variant="contained" fullWidth onClick={handleClickCancelEdit}>Cancel</Button>
-                                    <Button color="success" variant="contained" fullWidth onClick={handleClickClickLogin}>Login</Button>
+                                    {!showLoadingEditBtn ? (<><Button style={{ margin: "16px 0" }} type="submit" endIcon={<SendIcon />} variant="contained" fullWidth onClick={handleClickSaveChange}>Save Changes</Button><Button color="success" variant="contained" fullWidth onClick={handleClickCancelEdit}>Cancel</Button></>)
+                                        : (<><Button style={{ margin: "16px 0" }} type="submit" endIcon={<AlarmIcon />} variant="outlined" disabled fullWidth>Loading...</Button><Button color="success" variant="outlined" disabled fullWidth onClick={handleClickCancelEdit}>Cancel</Button></>)}
                                 </Paper>
                             </Grid>
                         </Grid>
