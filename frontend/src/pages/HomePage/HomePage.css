@@ -91,8 +91,8 @@
 }
 
 .user-status,
-.user-address,
-.user-phone,
+.user-last-name,
+.user-first-name,
 .user-email {
     display: flex;
     flex-direction: column;
@@ -102,15 +102,15 @@
 }
 
 .user-status-title,
-.user-address-title,
-.user-phone-title,
+.user-last-name-title,
+.user-first-name-title,
 .user-email-title {
     color: #868e96;
     font-size: 0.75rem;
     user-select: none;
 }
 
-.user-phone-content,
+.user-first-name-content,
 .user-email-content {
     user-select: none;
     font-size: 0.875rem;
@@ -125,7 +125,7 @@
     word-break: break-word;
 }
 
-.user-address-content {
+.user-last-name-content {
     user-select: none;
     font-size: 0.875rem;
     /* 14px */
