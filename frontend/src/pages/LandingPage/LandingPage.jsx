@@ -12,7 +12,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import SchoolIcon from "@mui/icons-material/School";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useNavigate } from "react-router-dom";
 const LandingPage = () => {
+  const navigate = useNavigate();
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
   const handleClickMenuIcon = () => {
@@ -66,13 +68,13 @@ const LandingPage = () => {
               color: "#fdfdfc",
               backgroundColor: "#5375e1",
             }}
-            variant="contained"
+            variant="contained" onClick={() => navigate("/login")}
           >
             Sign In
           </Button>
           <Button
             style={{ color: "#fdfdfc", backgroundColor: "#5375e1" }}
-            variant="contained"
+            variant="contained" onClick={() => navigate("/register")}
           >
             Sign Up
           </Button>
@@ -166,8 +168,8 @@ const LandingPage = () => {
               >
                 FAQ
               </li>
-              <li className="landing-page-small-menu-item">Log In</li>
-              <li className="landing-page-small-menu-item">Sign Up</li>
+              <li className="landing-page-small-menu-item" onClick={() => navigate("/login")}>Log In</li>
+              <li className="landing-page-small-menu-item" onClick={() => navigate("/register")}>Sign Up</li>
             </ul>
           </div>
         )}

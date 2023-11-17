@@ -21,12 +21,14 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const defaultTheme = createTheme();
 
 export default function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loadingRegisterPage, setLoadingRegisterPage] = React.useState(true);
   const { isLoading, isError, isSuccess } = useSelector(
     (state) => state.userRegister
   );
@@ -37,9 +39,24 @@ export default function Register() {
 
   // useEffect
   React.useEffect(() => {
-    if (userInfo) {
-      navigate("/home-page");
+    async function checkLoggedIn() {
+      setLoadingRegisterPage(true);
+      const res = await axios({
+        url: "https://webnc-2023.vercel.app/auth/me",
+        method: "GET",
+        withCredentials: true
+      });
+      return res;
     }
+    checkLoggedIn().then(res => {
+      navigate("/home-page");
+    })
+      .catch(err => {
+        if (err.response.data.message === "Unauthorized") {
+          localStorage.removeItem("userInfo");
+          setLoadingRegisterPage(false);
+        }
+      })
 
     if (isSuccess) {
       toast.success(`Register successfully ! Login now !`);
@@ -70,7 +87,7 @@ export default function Register() {
       dispatch(registerAction(data));
     },
   });
-
+  if (loadingRegisterPage) return <></>;
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
