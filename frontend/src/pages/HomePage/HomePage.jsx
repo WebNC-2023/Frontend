@@ -1,5 +1,5 @@
 import "./HomePage.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid, Box, Avatar, Menu, MenuItem, ListItemIcon, IconButton, Tooltip, Paper, TextField, Button, FormLabel, Typography, Alert } from "@mui/material";
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
@@ -101,6 +101,35 @@ const HomePage = () => {
     const [avatarFile, setAvatarFile] = useState();
     const [editProfileSuccess, setEditProfileSuccess] = useState(false);
     const [showLoadingEditBtn, setShowLoadingEditBtn] = useState(false);
+    const [loadingHomePage, setLoadingHomPage] = useState(true);
+    useEffect(() => {
+        async function checkLoggedIn() {
+            setLoadingHomPage(true);
+            const res = await axios({
+                url: "https://webnc-2023.vercel.app/auth/me",
+                method: "GET",
+                withCredentials: true
+            });
+            return res;
+        }
+        checkLoggedIn().then(res => {
+            localStorage.setItem('userInfo', JSON.stringify({
+                firstName: res.data.data.firstName,
+                lastName: res.data.data.lastName,
+                id: res.data.data.id,
+                email: res.data.data.email,
+                refreshToken: res.data.data.refreshToken,
+                avatar: res.data.data.avatar
+            }));
+            setLoadingHomPage(false);
+        })
+            .catch(err => {
+                if (err.response.data.message === "Unauthorized") {
+                    localStorage.removeItem("userInfo");
+                    navigate("/landing-page");
+                }
+            })
+    }, [navigate]);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -113,8 +142,22 @@ const HomePage = () => {
         setShowScreen("edit profile");
     }
     const handleClickLogOut = () => {
-        navigate("/landing-page");
-        setAnchorEl(null);
+        async function userLogout() {
+            const res = await axios({
+                url: "https://webnc-2023.vercel.app/auth/sign-out",
+                method: "POST",
+                withCredentials: true,
+            });
+            return res;
+        }
+        userLogout().then(res => {
+            localStorage.removeItem("userInfo");
+            if (res.data.message === "Sign out successfully") {
+                navigate("/landing-page");
+            }
+        })
+            .catch(error => console.log(error))
+        //setAnchorEl(null);
     };
     const handleClickSaveChange = () => {
         if (firstName === "") {
@@ -164,7 +207,8 @@ const HomePage = () => {
     const handleClickCancelEdit = () => {
         setShowScreen("courses");
     }
-    return (
+    if (loadingHomePage) return <></>
+    else return (
         <div className="home-page-container">
             <Grid container justifyContent="space-between" alignItems="center" style={{ height: "65px", padding: "0 20px", width: "100%", borderBottom: "1px solid #e0e0e0", backgroundColor: "white" }}>
                 <Grid item>
@@ -172,7 +216,7 @@ const HomePage = () => {
                 </Grid>
                 <Grid item>
                     <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                        <Typography style={{ userSelect: "none", fontSize: "0.75rem", position: "absolute", top: "0", right: "20px" }}>Hi, {JSON.parse(localStorage.getItem("userInfo"))["firstName"]} {JSON.parse(localStorage.getItem("userInfo"))["lastName"]}</Typography>
+                        <Typography style={{ userSelect: "none", fontSize: "0.75rem", position: "absolute", top: "0", right: "20px" }}>Hi, {JSON.parse(localStorage.getItem("userInfo"))?.firstName || ""} {JSON.parse(localStorage.getItem("userInfo"))?.lastName || ""}</Typography>
                         <Tooltip title="Account settings">
                             <IconButton
                                 onClick={handleClick}

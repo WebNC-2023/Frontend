@@ -21,6 +21,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { loginAction } from "../../redux/Actions/userActions";
 
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -31,6 +32,7 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const [show, setShow] = React.useState(false);
+  const [loadingLoginPage, setLoadingLoginPage] = React.useState(true);
 
   const { isLoading, isError, isSuccess, userInfo } = useSelector(
     (state) => state.userLogin
@@ -49,9 +51,24 @@ export default function SignIn() {
 
   // useEffect
   React.useEffect(() => {
-    if (userInfo) {
-      navigate("/home-page");
+    async function checkLoggedIn() {
+      setLoadingLoginPage(true);
+      const res = await axios({
+        url: "https://webnc-2023.vercel.app/auth/me",
+        method: "GET",
+        withCredentials: true
+      });
+      return res;
     }
+    checkLoggedIn().then(res => {
+      navigate("/home-page");
+    })
+      .catch(err => {
+        if (err.response.data.message === "Unauthorized") {
+          localStorage.removeItem("userInfo");
+          setLoadingLoginPage(false);
+        }
+      })
     if (isSuccess) {
       toast.success(`Welcome back ${userInfo?.lastName}`);
     }
@@ -60,7 +77,7 @@ export default function SignIn() {
       dispatch({ type: "USER_LOGIN_RESET" });
     }
   }, [userInfo, isSuccess, isError, navigate, dispatch]);
-
+  if (loadingLoginPage) return <></>;
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
