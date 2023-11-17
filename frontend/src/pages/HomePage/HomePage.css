@@ -192,6 +192,39 @@
     cursor: pointer;
 }
 
+.change-edit-success {
+    position: fixed;
+    top: 65px;
+    right: 20px;
+    animation: transformInEditSuccess 1s ease forwards;
+}
+
+.close-change-edit-success {
+    position: fixed;
+    top: 75px;
+    right: 0px;
+    animation: transformInEditSuccess 1s ease forwards;
+    cursor: pointer;
+}
+
+@keyframes transformInEditSuccess {
+    0% {
+        transform: translateX(100%);
+    }
+
+    40% {
+        transform: translateX(-10%);
+    }
+
+    80% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-10px);
+    }
+}
+
+
 @keyframes transformInHomePageContent {
     from {
         opacity: 0;
