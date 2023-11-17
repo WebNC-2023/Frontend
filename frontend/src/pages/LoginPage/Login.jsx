@@ -69,9 +69,9 @@ export default function SignIn() {
           setLoadingLoginPage(false);
         }
       })
-    if (isSuccess) {
-      toast.success(`Welcome back ${userInfo?.lastName}`);
-    }
+    // if (isSuccess) {
+    //   toast.success(`Welcome back ${userInfo?.lastName}`);
+    // }
     if (isError) {
       toast.error(isError);
       dispatch({ type: "USER_LOGIN_RESET" });
