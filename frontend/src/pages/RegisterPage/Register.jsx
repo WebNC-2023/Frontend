@@ -13,14 +13,45 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { toast } from "react-hot-toast";
 import { RegisterValidation } from "../../components/Validation/userValidation";
 import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { registerAction } from "../../redux/Actions/userActions";
+
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { IconButton, InputAdornment } from "@mui/material";
+
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
 export default function Register() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isLoading, isError, isSuccess } = useSelector(
+    (state) => state.userRegister
+  );
 
+  const [show, setShow] = React.useState(false);
+
+  // useEffect
+  React.useEffect(() => {
+    if (isSuccess) {
+      toast.success(`Register successfully ! Login now !`);
+
+      const redirectTimeout = setTimeout(() => {
+        dispatch({ type: "USER_REGISTER_RESET" });
+        navigate("/login");
+      }, 3000);
+
+      return () => clearTimeout(redirectTimeout);
+    }
+    if (isError) {
+      toast.error(isError);
+      dispatch({ type: "USER_REGISTER_RESET" });
+    }
+  }, [dispatch, isError, isSuccess, navigate]);
+
+  // handle submit
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -33,15 +64,6 @@ export default function Register() {
       dispatch(registerAction(data));
     },
   });
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   console.log({
-  //     email: data.get("email"),
-  //     password: data.get("password"),
-  //   });
-  // };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -126,7 +148,7 @@ export default function Register() {
                   fullWidth
                   name="password"
                   label="Password"
-                  type="password"
+                  type={show ? "text" : "password"}
                   id="password"
                   autoComplete="new-password"
                   value={formik.values.password}
@@ -135,6 +157,20 @@ export default function Register() {
                     formik.touched.password && Boolean(formik.errors.password)
                   }
                   helperText={formik.touched.password && formik.errors.password}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => {
+                            setShow(!show);
+                          }}
+                        >
+                          {show ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
             </Grid>
@@ -142,6 +178,7 @@ export default function Register() {
               type="submit"
               fullWidth
               variant="contained"
+              disabled={isLoading}
               sx={{
                 mt: 3,
                 mb: 2,
@@ -151,7 +188,7 @@ export default function Register() {
                 },
               }}
             >
-              Sign Up
+              {isLoading ? "Loading..." : "Sign up"}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>

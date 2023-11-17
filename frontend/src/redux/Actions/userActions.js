@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 
 // login action
 export const loginAction = (datas) => async (dispatch) => {
-  console.log(datas);
   try {
     dispatch({ type: userConstants.USER_LOGIN_REQUEST });
     const res = await userApi.loginService(datas);

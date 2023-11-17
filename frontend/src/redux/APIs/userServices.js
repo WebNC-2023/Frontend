@@ -6,9 +6,7 @@ import Axios from "./Axios";
 
 export const registerService = async (user) => {
   const { data } = await Axios.post("/auth/sign-up", user);
-  if (data) {
-    localStorage.setItem("userInfo", JSON.stringify(data.data));
-  }
+
   return data.data;
 };
 
