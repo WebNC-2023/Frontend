@@ -100,6 +100,7 @@ const Courses = () => {
     return (
         <>  <p className="best-seller-course-title">Best seller courses</p>
             <div className="best-seller-course">
+                <div className="best-seller-courses-container">
                 <button className="custom_next">
                     <i className="fa-solid fa-chevron-right"><NavigateNextIcon/></i>
                 </button>
@@ -122,13 +123,13 @@ const Courses = () => {
                     pagination={{ clickable: true }}
                     breakpoints={
                         {
-                            639.98: {
+                            640.02: {
                                 slidesPerView: 2,
                             },
-                            767.98: {
+                            768.02: {
                                 slidesPerView: 3,
                             },
-                            1024: {
+                            1024.02: {
                                 slidesPerView: 4,
                             },
 
@@ -159,6 +160,7 @@ const Courses = () => {
                         )
                     })}
                 </Swiper>
+                </div>
             </div>
             <div className="courses-container">
                 <p className="courses-list-title">Get a head start on a degree today</p>
