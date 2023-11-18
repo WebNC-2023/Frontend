@@ -1,4 +1,7 @@
 import SchoolIcon from '@mui/icons-material/School';
+import ReactPaginate from "react-paginate";
+import { useState, useEffect } from 'react';
+import "./Courses.css";
 let courses_list = [
     {
         course_img: "https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/https://s3.amazonaws.com/coursera_assets/ddp/branding/illinois/iMBA+square.jpg?auto=format%2Ccompress%2C%20enhance&dpr=2&w=265&h=204&fit=crop&q=50",
@@ -74,32 +77,61 @@ let courses_list = [
     },
 ];
 const Courses = () => {
+    const itemsPerPage = 8;
+    const [pageCount, setPageCount] = useState(0);
+    const [itemOffset, setItemOffset] = useState(0);
+    const [currentItems, setCurrentItems] = useState([]);
+    const handlePageClick = (event) => {
+        const newOffset = (event.selected * itemsPerPage) % courses_list.length;
+        setItemOffset(newOffset);
+    };
+    useEffect(() => {
+        const endOffset = itemOffset + itemsPerPage;
+        setCurrentItems(courses_list.slice(itemOffset, endOffset));
+        setPageCount(Math.ceil(courses_list.length / itemsPerPage));
+    }, [itemOffset]);
     return (
-        <div className="courses-container">
-            <div className="courses">
-                {courses_list.map((course, id) => {
-                    return (
-                        <div key={id} className="course-item">
-                            <div className="course-item-image">
-                                <img src={course.course_img} alt="course-img" />
+        <>
+            <div className="courses-container">
+                <div className="courses">
+                    {currentItems.map((course, id) => {
+                        return (
+                            <div key={id} className="course-item">
+                                <div className="course-item-image">
+                                    <img src={course.course_img} alt="course-img" />
+                                </div>
+                                <div className="course-university">
+                                    <img src={course.university_img} alt="university-img" width="25px" height="25px" />
+                                    <span>{course.university_name}</span>
+                                </div>
+                                <p className="course-name">
+                                    {course.course_name}
+                                </p>
+                                <div className="course-earn-degree">
+                                    <SchoolIcon />
+                                    <span>Earn a degree</span>
+                                </div>
+                                <p className="course-degree">Degree</p>
                             </div>
-                            <div className="course-university">
-                                <img src={course.university_img} alt="university-img" width="25px" height="25px" />
-                                <span>{course.university_name}</span>
-                            </div>
-                            <p className="course-name">
-                                {course.course_name}
-                            </p>
-                            <div className="course-earn-degree">
-                                <SchoolIcon />
-                                <span>Earn a degree</span>
-                            </div>
-                            <p className="course-degree">Degree</p>
-                        </div>
-                    )
-                })}
+                        )
+                    })}
+                </div>
             </div>
-        </div>
+            <ReactPaginate
+                breakLabel="..."
+                nextLabel=">"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={3}
+                pageCount={pageCount}
+                previousLabel="<"
+                renderOnZeroPageCount={null}
+                containerClassName="pagination"
+                pageLinkClassName="page-num"
+                previousLinkClassName="page-num"
+                nextLinkClassName="page-num"
+                activeLinkClassName="active"
+            />
+        </>
     );
 }
 

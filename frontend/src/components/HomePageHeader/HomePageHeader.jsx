@@ -37,7 +37,7 @@ const HomePageHeader = () => {
         userLogout().then(res => {
             localStorage.removeItem("userInfo");
             if (res.data.message === "Sign out successfully") {
-                navigate("/landing-page");
+                navigate("/");
             }
         })
             .catch(error => console.log(error))

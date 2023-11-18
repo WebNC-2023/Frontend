@@ -1,7 +1,7 @@
 import * as userConstants from "../Constants/userConstants";
 import { ErrorsAction } from "../Protection";
 import * as userApi from "../APIs/userServices";
-import toast from "react-hot-toast";
+//import toast from "react-hot-toast";
 
 // login action
 export const loginAction = (datas) => async (dispatch) => {
