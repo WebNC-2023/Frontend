@@ -97,6 +97,8 @@
     margin-left: auto;
     margin-right: auto;
     animation: transitionInBestCourse 1s;
+    overflow: hidden;
+    padding: 0 10px;
 }
 
 .best-seller-course-title {
@@ -112,6 +114,10 @@
     color: #5175e0;
     padding: 0 10px;
     animation: transitionInBestCourse 1s;
+}
+.best-seller-courses-container {
+    display: flex;
+    margin-left: -10px;
 }
 
 @keyframes transitionInBestCourse {
