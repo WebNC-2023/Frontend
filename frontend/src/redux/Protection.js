@@ -6,7 +6,7 @@ export const ErrorsAction = (error, dispatch, action) => {
       ? error.response.data.message
       : error.message;
   console.log(message);
-  if (message === "Not authorized, no token") {
+  if (message === "Unauthorized") {
   }
   return dispatch({ type: action, payload: message });
 };
