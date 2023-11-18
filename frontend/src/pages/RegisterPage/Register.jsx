@@ -87,7 +87,7 @@ export default function Register() {
       dispatch(registerAction(data));
     },
   });
-  if (loadingRegisterPage) return <></>;
+  if (loadingRegisterPage) return <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>;
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
