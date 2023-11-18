@@ -132,6 +132,7 @@
     row-gap: 20px;
 }
 
+.course-item-swiper,
 .course-item {
     margin-left: 10px;
     width: calc(25% - 10px);
@@ -145,6 +146,10 @@
     border-radius: 10px;
 }
 
+.course-item-swiper {
+    width: 99%;
+}
+.course-item-swiper:hover,
 .course-item:hover {
     box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3);
 }
