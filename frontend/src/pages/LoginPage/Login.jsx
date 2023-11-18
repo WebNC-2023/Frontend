@@ -77,7 +77,7 @@ export default function SignIn() {
       dispatch({ type: "USER_LOGIN_RESET" });
     }
   }, [userInfo, isSuccess, isError, navigate, dispatch]);
-  if (loadingLoginPage) return <></>;
+  if (loadingLoginPage) return <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>;
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">

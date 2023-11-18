@@ -14,8 +14,8 @@ export const RegisterValidation = yup.object().shape({
   password: yup
     .string()
     .required("Please Enter Your Password")
-    .min(6, "Password More Than 8 Characters")
-    .max(20, "Password Less Than 20 Characters"),
+    .min(8, "Password must be at least 8 characters")
+    .max(20, "Password must be at most 20 characters"),
 });
 
 // login validation
@@ -24,6 +24,6 @@ export const LoginValidation = yup.object().shape({
   password: yup
     .string()
     .required("Please Enter Your Password")
-    .min(6, "Password More Than 8 Characters")
-    .max(20, "Password Less Than 20 Characters"),
+    .min(8, "Password must be at least 8 characters")
+    .max(20, "Password must be at most 20 characters"),
 });
