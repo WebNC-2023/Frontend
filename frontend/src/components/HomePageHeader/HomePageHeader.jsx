@@ -77,7 +77,8 @@ const HomePageHeader = () => {
           <Typography
             style={{
               userSelect: "none",
-              fontSize: "0.7rem",
+              fontSize: "0.875rem",
+              lineHeight: "1.25rem",
               position: "absolute",
               top: "0",
               right: "10px",
@@ -93,10 +94,11 @@ const HomePageHeader = () => {
               aria-controls={open ? "account-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
+              style={{ marginTop: "5px" }}
             >
               <Avatar
-                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                sx={{ width: 32, height: 32, backgroundColor: "#00897b" }}
+                src=""
+                sx={{ width: 32, height: 32, backgroundColor: "#5175e0" }}
               ></Avatar>
             </IconButton>
           </Tooltip>

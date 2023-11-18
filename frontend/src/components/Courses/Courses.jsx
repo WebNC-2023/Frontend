@@ -1,7 +1,14 @@
+import { Navigation, Pagination, Autoplay, A11y } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import SchoolIcon from '@mui/icons-material/School';
-import ReactPaginate from "react-paginate";
+import ReactPaginate from 'react-paginate';
 import { useState, useEffect } from 'react';
 import "./Courses.css";
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 let courses_list = [
     {
         course_img: "https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/https://s3.amazonaws.com/coursera_assets/ddp/branding/illinois/iMBA+square.jpg?auto=format%2Ccompress%2C%20enhance&dpr=2&w=265&h=204&fit=crop&q=50",
@@ -91,8 +98,70 @@ const Courses = () => {
         setPageCount(Math.ceil(courses_list.length / itemsPerPage));
     }, [itemOffset]);
     return (
-        <>
+        <>  <p className="best-seller-course-title">Best seller courses</p>
+            <div className="best-seller-course">
+                <button className="custom_next">
+                    <i className="fa-solid fa-chevron-right"><NavigateNextIcon/></i>
+                </button>
+                <button className="custom_prev">
+                    <i className="fa-solid fa-chevron-left"><NavigateBeforeIcon/></i>
+                </button>
+                <Swiper
+                    modules={[Autoplay, Navigation, Pagination, A11y]}
+                    autoplay={{
+                        delay: 3000,
+                        disableOnInteraction: false
+                    }}
+                    slidesPerGroup={1}
+                    spaceBetween={20}
+                    slidesPerView={1}
+                    navigation={{
+                        nextEl: ".custom_next",
+                        prevEl: ".custom_prev"
+                    }}
+                    pagination={{ clickable: true }}
+                    breakpoints={
+                        {
+                            639.98: {
+                                slidesPerView: 2,
+                            },
+                            767.98: {
+                                slidesPerView: 3,
+                            },
+                            1024: {
+                                slidesPerView: 4,
+                            },
+
+                        }
+                    }
+                >
+                    {courses_list.map((course, id) => {
+                        return (
+                            <SwiperSlide key={id}>
+                                <div className="course-item-swiper">
+                                    <div className="course-item-image">
+                                        <img src={course.course_img} alt="course-img" />
+                                    </div>
+                                    <div className="course-university">
+                                        <img src={course.university_img} alt="university-img" width="25px" height="25px" />
+                                        <span>{course.university_name}</span>
+                                    </div>
+                                    <p className="course-name">
+                                        {course.course_name}
+                                    </p>
+                                    <div className="course-earn-degree">
+                                        <SchoolIcon />
+                                        <span>Earn a degree</span>
+                                    </div>
+                                    <p className="course-degree">Degree</p>
+                                </div>
+                            </SwiperSlide>
+                        )
+                    })}
+                </Swiper>
+            </div>
             <div className="courses-container">
+                <p className="courses-list-title">Get a head start on a degree today</p>
                 <div className="courses">
                     {currentItems.map((course, id) => {
                         return (
