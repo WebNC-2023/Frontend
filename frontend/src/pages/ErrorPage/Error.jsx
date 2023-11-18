@@ -23,7 +23,7 @@ export default function Error() {
             <Typography variant="h6">
               We couldn't find the page you're looking for.
             </Typography>
-            <Link to="/home-page">
+            <Link to="/">
               <Button
                 variant="contained"
                 sx={{
