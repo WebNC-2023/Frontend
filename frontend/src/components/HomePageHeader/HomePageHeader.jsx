@@ -18,7 +18,8 @@ import { DataContext } from "../../contexts/DataContext";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 const HomePageHeader = () => {
-  const { setShowScreen, avatarURL, setAvatarURL } = useContext(DataContext);
+  const avatarImg = useSelector((state) => state.fullNameUser.avatar);
+  const { setShowScreen} = useContext(DataContext);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const dispatch = useDispatch();
   let usernameStyles = {
@@ -59,9 +60,9 @@ const HomePageHeader = () => {
         localStorage.removeItem("userInfo");
         if (res.data.message === "Sign out successfully") {
           dispatch(update({
-            fullName: " "
+            fullName: " ",
+            avatar: ""
           }));
-          setAvatarURL("");
           navigate("/");
         }
       })
@@ -100,7 +101,7 @@ const HomePageHeader = () => {
               style={{ marginTop: "5px" }}
             >
               <Avatar
-                src={avatarURL}
+                src={avatarImg}
                 sx={{ width: 32, height: 32, backgroundColor: "#5175e0" }}
               ></Avatar>
             </IconButton>

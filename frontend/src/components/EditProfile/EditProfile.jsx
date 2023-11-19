@@ -7,7 +7,7 @@ import { useState, useContext } from "react";
 import { DataContext } from "../../contexts/DataContext";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { update } from "../../redux/Reducers/fullNameUserSlice";
+import { update, updateStart } from "../../redux/Reducers/fullNameUserSlice";
 const EditProfile = () => {
     const [editProfileSuccess, setEditProfileSuccess] = useState(false);
     const [editProfileError, setEditProfileError] = useState(false);
@@ -22,7 +22,7 @@ const EditProfile = () => {
     const [avatarFile, setAvatarFile] = useState();
     const [avatarUrl, setAvatarUrl] = useState("");
     const [showLoadingEditBtn, setShowLoadingEditBtn] = useState(false);
-    const { setShowScreen, setAvatarURL } = useContext(DataContext);
+    const { setShowScreen } = useContext(DataContext);
     const dispatch = useDispatch();
     const handleClickSaveChangeEditProfile = () => {
         if (firstName === "" && lastName === "" && avatarUrl === "") {
@@ -42,6 +42,7 @@ const EditProfile = () => {
             if (avatarUrl !== "") dataEdit.avatar = avatarFile;
             async function sendEditProfile() {
                 setShowLoadingEditBtn(true);
+                dispatch(updateStart());
                 const res = await axios({
                     method: "PATCH",
                     url: "https://webnc-2023.vercel.app/users/update-profile",
@@ -69,9 +70,9 @@ const EditProfile = () => {
                 setAvatarUrl("");
                 setAvatarFile();
                 dispatch(update({
-                    fullName: `${res.data.data.firstName} ${res.data.data.lastName}`
+                    fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
+                    avatar: `https://webnc-2023.vercel.app/files/${res.data.data.avatar}?${Date.now()}`
                 }));
-                setAvatarURL(`https://webnc-2023.vercel.app/files/${res.data.data.avatar}?${Date.now()}`)
                 setEditProfileSuccess(true);
             })
                 .catch(err => {

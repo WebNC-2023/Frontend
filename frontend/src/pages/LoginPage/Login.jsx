@@ -11,7 +11,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import toast from "react-hot-toast";
-
 import { LoginValidation } from "../../components/Validation/userValidation";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +18,6 @@ import { IconButton, InputAdornment } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { loginAction } from "../../redux/Actions/userActions";
-import { DataContext } from "../../contexts/DataContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
@@ -34,7 +32,6 @@ export default function SignIn() {
 
   const [show, setShow] = React.useState(false);
   const [loadingLoginPage, setLoadingLoginPage] = React.useState(true);
-  const { setAvatarURL } = React.useContext(DataContext);
   const { isLoading, isError, isSuccess, userInfo } = useSelector(
     (state) => state.userLogin
   );
@@ -65,13 +62,13 @@ export default function SignIn() {
       navigate("/home-page");
     })
       .catch(err => {
+        setLoadingLoginPage(false);
         if (err.response.data.message === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(update({
-            fullName: " "
+            fullName: " ",
+            avatar: ""
           }))
-          setAvatarURL("");
-          setLoadingLoginPage(false);
         }
       })
     // if (isSuccess) {
@@ -81,7 +78,7 @@ export default function SignIn() {
       toast.error(isError);
       dispatch({ type: "USER_LOGIN_RESET" });
     }
-  }, [userInfo, isSuccess, isError, navigate, dispatch, setAvatarURL]);
+  }, [userInfo, isSuccess, isError, navigate, dispatch]);
   if (loadingLoginPage) return <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>;
   return (
     <ThemeProvider theme={defaultTheme}>
