@@ -10,7 +10,7 @@ import ChangePassword from "../../components/ChangePassword/ChangePassword";
 const HomePage = () => {
   const navigate = useNavigate();
   const [loadingHomePage, setLoadingHomPage] = useState(true);
-  const { showScreen, setShowScreen, setFullName } = useContext(DataContext);
+  const { showScreen, setShowScreen, setFullName, setAvatarURL } = useContext(DataContext);
   useEffect(() => {
     async function checkLoggedIn() {
       setLoadingHomPage(true);
@@ -35,15 +35,18 @@ const HomePage = () => {
           })
         );
         setFullName(`${res.data.data.firstName} ${res.data.data.lastName}`);
+        setAvatarURL(`https://webnc-2023.vercel.app/files/${res.data.data.avatar}`);
         setLoadingHomPage(false);
       })
       .catch((err) => {
         if (err.response.data.message === "Unauthorized") {
           localStorage.removeItem("userInfo");
+          setFullName(" ");
+          setAvatarURL("");
           navigate("/");
         }
       });
-  }, [navigate, setFullName]);
+  }, [navigate, setFullName, setAvatarURL]);
   useEffect(() => {
     setShowScreen("courses");
   }, [setShowScreen]);
@@ -63,7 +66,7 @@ const HomePage = () => {
         {showScreen === "courses" ? (
           <Courses />
         ) : showScreen === "edit profile" ? (
-          <EditProfile />
+          <EditProfile setAvatarURL={setAvatarURL} />
         ) : (
           <ChangePassword />
         )}

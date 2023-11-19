@@ -14,6 +14,8 @@ function App() {
     JSON.parse(localStorage.getItem("userInfo"))?.firstName || "";
   let lastUserName =
     JSON.parse(localStorage.getItem("userInfo"))?.lastName || "";
+  let userAvatar = JSON.parse(localStorage.getItem("userInfo"))?.avatar || "";
+  const [avatarURL, setAvatarURL] = useState(userAvatar);
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
   const [showScreen, setShowScreen] = useState("courses");
@@ -29,6 +31,8 @@ function App() {
         setShowScreen,
         fullName,
         setFullName,
+        avatarURL,
+        setAvatarURL
       }}
     >
       <Router>

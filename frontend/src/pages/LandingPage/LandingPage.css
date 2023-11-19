@@ -318,6 +318,13 @@
     animation: transitionInHomeLeft 1s;
 }
 
+.loggedIn-user-landing-page {
+    user-select: none;
+    text-decoration: underline;
+    color: #5175e0;
+    font-size: 0.875rem;
+}
+
 @keyframes transitionInCourse {
     from {
         display: none;
@@ -426,7 +433,7 @@
     }
 
     .landing-page-logo {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
 
     .landing-page-grid-menu-items {

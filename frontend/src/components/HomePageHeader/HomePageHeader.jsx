@@ -6,8 +6,7 @@ import {
   MenuItem,
   ListItemIcon,
   IconButton,
-  Tooltip,
-  Typography,
+  Tooltip
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
 import { useState, useContext } from "react";
@@ -17,7 +16,14 @@ import PasswordIcon from "@mui/icons-material/Password";
 import axios from "axios";
 import { DataContext } from "../../contexts/DataContext";
 const HomePageHeader = () => {
-  const { setShowScreen, fullName } = useContext(DataContext);
+  const { setShowScreen, fullName, setFullName, avatarURL, setAvatarURL } = useContext(DataContext);
+  let usernameStyles = {
+    userSelect: "none",
+    fontSize: "1rem",
+    position: "absolute",
+    top: "0",
+    right: "25px"
+  }
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -48,6 +54,8 @@ const HomePageHeader = () => {
       .then((res) => {
         localStorage.removeItem("userInfo");
         if (res.data.message === "Sign out successfully") {
+          setFullName(" ");
+          setAvatarURL("");
           navigate("/");
         }
       })
@@ -65,6 +73,7 @@ const HomePageHeader = () => {
         width: "100%",
         borderBottom: "1px solid #e0e0e0",
         backgroundColor: "white",
+        position: "relative"
       }}
     >
       <Grid item>
@@ -74,18 +83,6 @@ const HomePageHeader = () => {
         <Box
           sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
         >
-          <Typography
-            style={{
-              userSelect: "none",
-              fontSize: "0.875rem",
-              lineHeight: "1.25rem",
-              position: "absolute",
-              top: "0",
-              right: "10px",
-            }}
-          >
-            Hi, {fullName}
-          </Typography>
           <Tooltip title="My account">
             <IconButton
               onClick={handleClick}
@@ -97,7 +94,7 @@ const HomePageHeader = () => {
               style={{ marginTop: "5px" }}
             >
               <Avatar
-                src=""
+                src={avatarURL}
                 sx={{ width: 32, height: 32, backgroundColor: "#5175e0" }}
               ></Avatar>
             </IconButton>
@@ -158,6 +155,7 @@ const HomePageHeader = () => {
           </MenuItem>
         </Menu>
       </Grid>
+      <p  style={usernameStyles}> Hi, {fullName}</p>
     </Grid>
   );
 };
