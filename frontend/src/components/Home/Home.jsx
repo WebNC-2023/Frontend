@@ -41,7 +41,7 @@ const Home = () => {
                 <div className="landing-page-image">
                     <img
                         onClick={(e) => e.preventDefault()}
-                        src="https://test-do-an-1.vercel.app/LOGO1.PNG"
+                        src="http://localhost:3000/LOGO1.PNG"
                         alt="Learners-img"
                     />
                 </div>

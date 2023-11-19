@@ -8,6 +8,7 @@ import { DataContext } from "../../contexts/DataContext";
 import axios from "axios";
 const EditProfile = () => {
     const [editProfileSuccess, setEditProfileSuccess] = useState(false);
+    const [editProfileError, setEditProfileError] = useState(false);
     const [firstNameErrorState, setFirstNameErrorState] = useState(false);
     const [firstNameErrorMsg, setFirstNameErrorMsg] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -64,7 +65,10 @@ const EditProfile = () => {
                 setFullName(`${res.data.data.firstName} ${res.data.data.lastName}`);
                 setEditProfileSuccess(true);
             })
-                .catch(err => console.log(err))
+            .catch(err => {
+                setShowLoadingEditBtn(false);
+                setEditProfileError(true);
+            })
         }
     }
     const handleClickCancelEdit = () => {
@@ -74,6 +78,7 @@ const EditProfile = () => {
         <Grid container justifyContent={"center"} className="">
             <Grid item xs={12} sm={8} md={4} className="editProfile-container" style={{ marginTop: "20px" }}>
                 {editProfileSuccess && <><Alert severity="success" className="change-edit-success">Change Successful</Alert><CloseIcon className="close-change-edit-success" onClick={() => setEditProfileSuccess(false)} /></>}
+                {editProfileError && <><Alert severity="error" className="change-edit-error">Change Fail</Alert><CloseIcon className="close-change-edit-error" onClick={() => setEditProfileError(false)} /></>}
                 <Paper elevation={10} className="editProfile-form">
                     <Grid container direction={"column"} alignItems={"center"}>
                         <Avatar style={{ backgroundColor: "#1bbd7e" }}><AppRegistrationOutlinedIcon /></Avatar>
