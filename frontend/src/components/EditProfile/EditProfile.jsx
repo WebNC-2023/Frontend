@@ -77,8 +77,8 @@ const EditProfile = () => {
     return (
         <Grid container justifyContent={"center"} className="">
             <Grid item xs={12} sm={8} md={4} className="editProfile-container" style={{ marginTop: "20px" }}>
-                {editProfileSuccess && <><Alert severity="success" className="change-edit-success">Change Successful</Alert><CloseIcon className="close-change-edit-success" onClick={() => setEditProfileSuccess(false)} /></>}
-                {editProfileError && <><Alert severity="error" className="change-edit-error">Change Fail</Alert><CloseIcon className="close-change-edit-error" onClick={() => setEditProfileError(false)} /></>}
+                {editProfileSuccess && <><Alert severity="success" className="change-edit-success">Change profile Successful</Alert><CloseIcon className="close-change-edit-success" onClick={() => setEditProfileSuccess(false)} /></>}
+                {editProfileError && <><Alert severity="error" className="change-edit-error">Change profile Fail</Alert><CloseIcon className="close-change-edit-error" onClick={() => setEditProfileError(false)} /></>}
                 <Paper elevation={10} className="editProfile-form">
                     <Grid container direction={"column"} alignItems={"center"}>
                         <Avatar style={{ backgroundColor: "#1bbd7e" }}><AppRegistrationOutlinedIcon /></Avatar>
@@ -123,7 +123,7 @@ const EditProfile = () => {
 
                     }} />
                     {!showLoadingEditBtn ? (<><Button style={{ margin: "16px 0" }} type="submit" endIcon={<SendIcon />} variant="contained" fullWidth onClick={handleClickSaveChangeEditProfile}>Save Changes</Button><Button color="success" variant="contained" fullWidth onClick={handleClickCancelEdit}>Cancel</Button></>)
-                        : (<><Button style={{ margin: "16px 0" }} type="submit" endIcon={<AlarmIcon />} variant="outlined" disabled fullWidth>Loading...</Button><Button color="success" variant="outlined" disabled fullWidth onClick={handleClickCancelEdit}>Cancel</Button></>)}
+                        : (<><Button style={{ margin: "16px 0" }} type="submit" endIcon={<AlarmIcon />} variant="outlined" disabled fullWidth>In processing...</Button><Button color="success" variant="outlined" disabled fullWidth onClick={handleClickCancelEdit}>Cancel</Button></>)}
                 </Paper>
             </Grid>
         </Grid>
