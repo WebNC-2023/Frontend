@@ -15,8 +15,12 @@ import { useNavigate } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
 import axios from "axios";
 import { DataContext } from "../../contexts/DataContext";
+import { useDispatch, useSelector } from "react-redux";
+import { update } from "../../redux/Reducers/fullNameUserSlice";
 const HomePageHeader = () => {
-  const { setShowScreen, fullName, setFullName, avatarURL, setAvatarURL } = useContext(DataContext);
+  const { setShowScreen, avatarURL, setAvatarURL } = useContext(DataContext);
+  const fullName = useSelector((state) => state.fullNameUser.fullName);
+  const dispatch = useDispatch();
   let usernameStyles = {
     userSelect: "none",
     fontSize: "1rem",
@@ -54,7 +58,9 @@ const HomePageHeader = () => {
       .then((res) => {
         localStorage.removeItem("userInfo");
         if (res.data.message === "Sign out successfully") {
-          setFullName(" ");
+          dispatch(update({
+            fullName: " "
+          }));
           setAvatarURL("");
           navigate("/");
         }
@@ -155,7 +161,7 @@ const HomePageHeader = () => {
           </MenuItem>
         </Menu>
       </Grid>
-      <p  style={usernameStyles}> Hi, {fullName}</p>
+      <p style={usernameStyles}> Hi, {fullName}</p>
     </Grid>
   );
 };
