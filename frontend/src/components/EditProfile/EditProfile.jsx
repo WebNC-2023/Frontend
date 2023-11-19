@@ -20,55 +20,59 @@ const EditProfile = () => {
     const [avatarFile, setAvatarFile] = useState();
     const [avatarUrl, setAvatarUrl] = useState("");
     const [showLoadingEditBtn, setShowLoadingEditBtn] = useState(false);
-    const {setShowScreen, setFullName} = useContext(DataContext);
+    const { setShowScreen, setFullName, setAvatarURL } = useContext(DataContext);
     const handleClickSaveChangeEditProfile = () => {
-        if (firstName === "") {
+        if (firstName === "" && lastName === "" && avatarUrl === "") {
             setFirstNameErrorState(true);
-            setFirstNameErrorMsg("Required");
-        }
-        if (lastName === "") {
+            setFirstNameErrorMsg("Requires at least one field to have data.");
             setLastNameErrorState(true);
-            setLastNameErrorMsg("Required");
-        }
-        if (avatarUrl === "") {
+            setLastNameErrorMsg("Requires at least one field to have data.");
             setAvatarUrlErrorState(true);
-            setAvatarUrlErrorMsg("Required");
+            setAvatarUrlErrorMsg("Requires at least one field to have data.");
         }
-        if (firstName !== "" && lastName !== "" && avatarFile && avatarUrl !== "" && !firstNameErrorState && !lastNameErrorState && !avatarUrlErrorState) {
+        else {
+            let dataEdit = {
+                id: JSON.parse(localStorage.getItem("userInfo"))["id"]
+            }
+            if (firstName !== "") dataEdit.firstName = firstName;
+            if (lastName !== "") dataEdit.lastName = lastName;
+            if (avatarUrl !== "") dataEdit.avatar = avatarFile;
             async function sendEditProfile() {
                 setShowLoadingEditBtn(true);
                 const res = await axios({
                     method: "PATCH",
                     url: "https://webnc-2023.vercel.app/users/update-profile",
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    },
                     withCredentials: true,
                     data: {
-                        firstName: firstName,
-                        lastName: lastName,
-                        id: JSON.parse(localStorage.getItem("userInfo"))["id"],
-                        avatar: avatarFile
+                        ...dataEdit
                     }
                 });
                 return res;
             }
             sendEditProfile().then(res => {
                 setShowLoadingEditBtn(false);
+                console.log(res.data.data);
                 const userInfo = JSON.parse(localStorage.getItem('userInfo'));
                 userInfo.firstName = res.data.data.firstName;
                 userInfo.lastName = res.data.data.lastName;
                 userInfo.avatar = res.data.data.avatar;
-                userInfo.refreshToken = res.data.data.refreshToken
+                userInfo.refreshToken = res.data.data.refreshToken;
                 localStorage.setItem('userInfo', JSON.stringify(userInfo));
                 setFirstName("");
                 setLastName("");
                 setAvatarUrl("");
                 setAvatarFile();
                 setFullName(`${res.data.data.firstName} ${res.data.data.lastName}`);
+                setAvatarURL(`https://webnc-2023.vercel.app/files/${res.data.data.avatar}?${Date.now()}`)
                 setEditProfileSuccess(true);
             })
-            .catch(err => {
-                setShowLoadingEditBtn(false);
-                setEditProfileError(true);
-            })
+                .catch(err => {
+                    setShowLoadingEditBtn(false);
+                    setEditProfileError(true);
+                })
         }
     }
     const handleClickCancelEdit = () => {
@@ -87,38 +91,92 @@ const EditProfile = () => {
                     <TextField error={firstNameErrorState} helperText={firstNameErrorMsg} style={{ marginTop: "16px" }} label="First name" variant="standard" fullWidth placeholder="Enter first name" spellCheck="false" autoComplete="none" required value={firstName} onChange={e => {
                         setFirstName(e.target.value);
                         if (e.target.value === "") {
-                            setFirstNameErrorMsg("Required");
-                            setFirstNameErrorState(true);
+                            if (lastName === "" && avatarUrl === "") {
+                                setFirstNameErrorState(true);
+                                setFirstNameErrorMsg("Requires at least one field to have data.");
+                                setLastNameErrorState(true);
+                                setLastNameErrorMsg("Requires at least one field to have data.");
+                                setAvatarUrlErrorState(true);
+                                setAvatarUrlErrorMsg("Requires at least one field to have data.");
+                            }
+                            else {
+                                setFirstNameErrorState(false);
+                                setFirstNameErrorMsg("");
+                                setLastNameErrorState(false);
+                                setLastNameErrorMsg("");
+                                setAvatarUrlErrorState(false);
+                                setAvatarUrlErrorMsg("");
+                            }
                         }
                         else {
-                            setFirstNameErrorMsg("");
                             setFirstNameErrorState(false);
+                            setFirstNameErrorMsg("");
+                            setLastNameErrorState(false);
+                            setLastNameErrorMsg("");
+                            setAvatarUrlErrorState(false);
+                            setAvatarUrlErrorMsg("");
                         }
                     }} />
                     <TextField error={lastNameErrorState} helperText={lastNameErrorMsg} style={{ margin: "16px 0" }} label="Last name" variant="standard" fullWidth placeholder="Enter last name" spellCheck="false" autoComplete="none" required value={lastName} onChange={e => {
                         setLastName(e.target.value);
                         if (e.target.value === "") {
-                            setLastNameErrorMsg("Required");
-                            setLastNameErrorState(true);
+                            if (firstName === "" && avatarUrl === "") {
+                                setFirstNameErrorState(true);
+                                setFirstNameErrorMsg("Requires at least one field to have data.");
+                                setLastNameErrorState(true);
+                                setLastNameErrorMsg("Requires at least one field to have data.");
+                                setAvatarUrlErrorState(true);
+                                setAvatarUrlErrorMsg("Requires at least one field to have data.");
+                            }
+                            else {
+                                setFirstNameErrorState(false);
+                                setFirstNameErrorMsg("");
+                                setLastNameErrorState(false);
+                                setLastNameErrorMsg("");
+                                setAvatarUrlErrorState(false);
+                                setAvatarUrlErrorMsg("");
+                            }
                         }
                         else {
-                            setLastNameErrorMsg("");
+                            setFirstNameErrorState(false);
+                            setFirstNameErrorMsg("");
                             setLastNameErrorState(false);
+                            setLastNameErrorMsg("");
+                            setAvatarUrlErrorState(false);
+                            setAvatarUrlErrorMsg("");
                         }
                     }} />
                     <FormLabel style={{ userSelect: "none" }}>Avatar</FormLabel>
                     <TextField error={avatarUrlErrorState} helperText={avatarUrlErrorMsg} inputProps={{ accept: 'image/*' }} type="file" style={{ marginBottom: "16px" }} fullWidth variant="standard" value={avatarUrl} required onChange={e => {
                         if (e.target.value) {
                             setAvatarFile(e.target.files[0]);
-                            setAvatarUrlErrorMsg("");
-                            setAvatarUrlErrorState(false);
                             setAvatarUrl(e.target.value);
+                            setFirstNameErrorState(false);
+                            setFirstNameErrorMsg("");
+                            setLastNameErrorState(false);
+                            setLastNameErrorMsg("");
+                            setAvatarUrlErrorState(false);
+                            setAvatarUrlErrorMsg("");
                         }
                         else {
-                            setAvatarUrl("");
                             setAvatarFile();
-                            setAvatarUrlErrorMsg("Required");
-                            setAvatarUrlErrorState(true);
+                            setAvatarUrl("");
+                            if (firstName === "" && lastName === "") {
+                                setFirstNameErrorState(true);
+                                setFirstNameErrorMsg("Requires at least one field to have data.");
+                                setLastNameErrorState(true);
+                                setLastNameErrorMsg("Requires at least one field to have data.");
+                                setAvatarUrlErrorState(true);
+                                setAvatarUrlErrorMsg("Requires at least one field to have data.");
+                            }
+                            else {
+                                setFirstNameErrorState(false);
+                                setFirstNameErrorMsg("");
+                                setLastNameErrorState(false);
+                                setLastNameErrorMsg("");
+                                setAvatarUrlErrorState(false);
+                                setAvatarUrlErrorMsg("");
+                            }
                         };
 
                     }} />
