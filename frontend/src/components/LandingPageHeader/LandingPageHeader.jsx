@@ -8,13 +8,15 @@ import { useSelector } from "react-redux";
 const LandingPageHeader = () => {
     const navigate = useNavigate();
     // const { fullName } = useContext(DataContext);
-    let fullName = useSelector((state) => state.fullNameUser.fullName);
+    const fullName = useSelector((state) => state.fullNameUser.fullName);
+    const pending = useSelector((state) => state.fullNameUser.pending);
     const { setShowSmallMenu, setShowContent, showSmallMenu } = useContext(DataContext);
     const handleClickMenuIcon = () => {
         setShowSmallMenu((prev) => {
             return !prev;
         });
     };
+    if (pending) return <></>
     return (<Grid
         container
         direction="row"

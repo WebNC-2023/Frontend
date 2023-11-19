@@ -12,7 +12,7 @@ import { update } from "../../redux/Reducers/fullNameUserSlice";
 const HomePage = () => {
   const navigate = useNavigate();
   const [loadingHomePage, setLoadingHomPage] = useState(true);
-  const { showScreen, setShowScreen, setAvatarURL } = useContext(DataContext);
+  const { showScreen, setShowScreen } = useContext(DataContext);
   const dispatch = useDispatch();
   useEffect(() => {
     async function checkLoggedIn() {
@@ -38,22 +38,22 @@ const HomePage = () => {
           })
         );
         dispatch(update({
-          fullName: `${res.data.data.firstName} ${res.data.data.lastName}`
+          fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
+          avatar: `https://webnc-2023.vercel.app/files/${res.data.data.avatar}`
         }));
-        setAvatarURL(`https://webnc-2023.vercel.app/files/${res.data.data.avatar}`);
         setLoadingHomPage(false);
       })
       .catch((err) => {
         if (err.response.data.message === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(update({
-            fullName: " "
+            fullName: " ",
+            avatar: ""
           }));
-          setAvatarURL("");
           navigate("/");
         }
       });
-  }, [navigate, setAvatarURL, dispatch]);
+  }, [navigate, dispatch]);
   useEffect(() => {
     setShowScreen("courses");
   }, [setShowScreen]);
@@ -73,7 +73,7 @@ const HomePage = () => {
         {showScreen === "courses" ? (
           <Courses />
         ) : showScreen === "edit profile" ? (
-          <EditProfile setAvatarURL={setAvatarURL} />
+          <EditProfile />
         ) : (
           <ChangePassword />
         )}

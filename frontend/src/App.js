@@ -10,8 +10,6 @@ import ToastContainer from "./components/Notifications/ToastContainer";
 import React from "react";
 import { DataContext } from "./contexts/DataContext";
 function App() {
-  let userAvatar = JSON.parse(localStorage.getItem("userInfo"))?.avatar || "";
-  const [avatarURL, setAvatarURL] = useState(userAvatar);
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
   const [showScreen, setShowScreen] = useState("courses");
@@ -24,8 +22,6 @@ function App() {
         setShowContent,
         showScreen,
         setShowScreen,
-        avatarURL,
-        setAvatarURL
       }}
     >
       <Router>
