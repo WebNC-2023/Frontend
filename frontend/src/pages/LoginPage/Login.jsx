@@ -19,9 +19,10 @@ import { IconButton, InputAdornment } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { loginAction } from "../../redux/Actions/userActions";
-
+import { DataContext } from "../../contexts/DataContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { update } from "../../redux/Reducers/fullNameUserSlice";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -33,7 +34,7 @@ export default function SignIn() {
 
   const [show, setShow] = React.useState(false);
   const [loadingLoginPage, setLoadingLoginPage] = React.useState(true);
-
+  const { setAvatarURL } = React.useContext(DataContext);
   const { isLoading, isError, isSuccess, userInfo } = useSelector(
     (state) => state.userLogin
   );
@@ -66,6 +67,10 @@ export default function SignIn() {
       .catch(err => {
         if (err.response.data.message === "Unauthorized") {
           localStorage.removeItem("userInfo");
+          dispatch(update({
+            fullName: " "
+          }))
+          setAvatarURL("");
           setLoadingLoginPage(false);
         }
       })
@@ -76,7 +81,7 @@ export default function SignIn() {
       toast.error(isError);
       dispatch({ type: "USER_LOGIN_RESET" });
     }
-  }, [userInfo, isSuccess, isError, navigate, dispatch]);
+  }, [userInfo, isSuccess, isError, navigate, dispatch, setAvatarURL]);
   if (loadingLoginPage) return <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>;
   return (
     <ThemeProvider theme={defaultTheme}>

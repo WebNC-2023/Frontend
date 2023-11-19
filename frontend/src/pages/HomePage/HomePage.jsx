@@ -7,10 +7,13 @@ import { DataContext } from "../../contexts/DataContext";
 import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
 import EditProfile from "../../components/EditProfile/EditProfile";
 import ChangePassword from "../../components/ChangePassword/ChangePassword";
+import { useDispatch } from "react-redux";
+import { update } from "../../redux/Reducers/fullNameUserSlice";
 const HomePage = () => {
   const navigate = useNavigate();
   const [loadingHomePage, setLoadingHomPage] = useState(true);
-  const { showScreen, setShowScreen, setFullName, setAvatarURL } = useContext(DataContext);
+  const { showScreen, setShowScreen, setAvatarURL } = useContext(DataContext);
+  const dispatch = useDispatch();
   useEffect(() => {
     async function checkLoggedIn() {
       setLoadingHomPage(true);
@@ -34,19 +37,23 @@ const HomePage = () => {
             avatar: res.data.data.avatar,
           })
         );
-        setFullName(`${res.data.data.firstName} ${res.data.data.lastName}`);
+        dispatch(update({
+          fullName: `${res.data.data.firstName} ${res.data.data.lastName}`
+        }));
         setAvatarURL(`https://webnc-2023.vercel.app/files/${res.data.data.avatar}`);
         setLoadingHomPage(false);
       })
       .catch((err) => {
         if (err.response.data.message === "Unauthorized") {
           localStorage.removeItem("userInfo");
-          setFullName(" ");
+          dispatch(update({
+            fullName: " "
+          }));
           setAvatarURL("");
           navigate("/");
         }
       });
-  }, [navigate, setFullName, setAvatarURL]);
+  }, [navigate, setAvatarURL, dispatch]);
   useEffect(() => {
     setShowScreen("courses");
   }, [setShowScreen]);

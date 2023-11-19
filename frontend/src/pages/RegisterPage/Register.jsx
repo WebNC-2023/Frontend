@@ -19,9 +19,10 @@ import { registerAction } from "../../redux/Actions/userActions";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from "@mui/material";
-
+import { DataContext } from "../../contexts/DataContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { update } from "../../redux/Reducers/fullNameUserSlice";
 
 const defaultTheme = createTheme();
 
@@ -29,6 +30,7 @@ export default function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loadingRegisterPage, setLoadingRegisterPage] = React.useState(true);
+  const {setAvatarURL} = React.useContext(DataContext);
   const { isLoading, isError, isSuccess } = useSelector(
     (state) => state.userRegister
   );
@@ -55,6 +57,10 @@ export default function Register() {
         if (err.response.data.message === "Unauthorized") {
           localStorage.removeItem("userInfo");
           setLoadingRegisterPage(false);
+          dispatch(update({
+            fullName: " "
+          }));
+          setAvatarURL("");
         }
       })
 
@@ -72,7 +78,7 @@ export default function Register() {
       toast.error(isError);
       dispatch({ type: "USER_REGISTER_RESET" });
     }
-  }, [dispatch, isError, isSuccess, navigate, userInfo]);
+  }, [dispatch, isError, isSuccess, navigate, userInfo, setAvatarURL]);
 
   // handle submit
   const formik = useFormik({

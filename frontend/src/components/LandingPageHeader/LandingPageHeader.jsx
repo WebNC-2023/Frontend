@@ -4,9 +4,11 @@ import { Grid, Button, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from '@mui/icons-material/Home';
+import { useSelector } from "react-redux";
 const LandingPageHeader = () => {
     const navigate = useNavigate();
-    const { fullName } = useContext(DataContext);
+    // const { fullName } = useContext(DataContext);
+    let fullName = useSelector((state) => state.fullNameUser.fullName);
     const { setShowSmallMenu, setShowContent, showSmallMenu } = useContext(DataContext);
     const handleClickMenuIcon = () => {
         setShowSmallMenu((prev) => {
