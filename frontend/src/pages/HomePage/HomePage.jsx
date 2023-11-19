@@ -17,17 +17,13 @@ const HomePage = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [currentPasswordErrorState, setCurrentPasswordErrorState] =
-    useState(false);
+  const [currentPasswordErrorState, setCurrentPasswordErrorState] = useState(false);
   const [currentPasswordErrorMsg, setCurrentPasswordErrorMsg] = useState("");
   const [newPasswordErrorState, setNewPasswordErrorState] = useState(false);
   const [newPasswordErrorMsg, setNewPasswordErrorMsg] = useState("");
-  const [confirmNewPasswordErrorState, setConfirmNewPasswordErrorState] =
-    useState(false);
-  const [confirmNewPasswordErrorMsg, setConfirmNewPasswordErrorMsg] =
-    useState("");
-  const [showLoadingChangePasswordBtn, setShowLoadingChangePasswordBtn] =
-    useState(false);
+  const [confirmNewPasswordErrorState, setConfirmNewPasswordErrorState] = useState(false);
+  const [confirmNewPasswordErrorMsg, setConfirmNewPasswordErrorMsg] = useState("");
+  const [showLoadingChangePasswordBtn, setShowLoadingChangePasswordBtn] = useState(false);
   const { showScreen, setShowScreen, setFullName } = useContext(DataContext);
   const [changePasswordSuccess, setChangePasswordSuccess] = useState(false);
   useEffect(() => {
