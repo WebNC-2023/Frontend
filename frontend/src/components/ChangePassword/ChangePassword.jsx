@@ -19,6 +19,7 @@ const ChangePassword = () => {
     const [showLoadingChangePasswordBtn, setShowLoadingChangePasswordBtn] = useState(false);
     const [changePasswordSuccess, setChangePasswordSuccess] = useState(false);
     const [changePasswordError, setChangePasswordError] = useState(false);
+    const [changePasswordErrorMsg, setChangePasswordErrorMsg] = useState("");
     const { setShowScreen } = useContext(DataContext);
     const handleClickSaveChangePassword = () => {
         if (currentPassword === "") {
@@ -42,6 +43,8 @@ const ChangePassword = () => {
             !confirmNewPasswordErrorState
         ) {
             async function sendChangePassword() {
+                setChangePasswordSuccess(false);
+                setChangePasswordError(false);
                 setShowLoadingChangePasswordBtn(true);
                 const res = await axios({
                     url: "https://webnc-2023.vercel.app/users/change-password",
@@ -68,10 +71,11 @@ const ChangePassword = () => {
                 setConfirmNewPassword("");
                 setChangePasswordSuccess(true);
             })
-            .catch(err => {
-                setShowLoadingChangePasswordBtn(false);
-                setChangePasswordError(true);
-            })
+                .catch(err => {
+                    setChangePasswordErrorMsg(err.response.data.message);
+                    setShowLoadingChangePasswordBtn(false);
+                    setChangePasswordError(true);
+                })
         }
     };
     const handleClickCancelEdit = () => {
@@ -101,7 +105,7 @@ const ChangePassword = () => {
                 {changePasswordError && (
                     <>
                         <Alert severity="error" className="change-edit-error">
-                            Change password fail
+                            {changePasswordErrorMsg}
                         </Alert>
                         <CloseIcon
                             className="close-change-edit-error"
@@ -135,8 +139,15 @@ const ChangePassword = () => {
                                 setCurrentPasswordErrorMsg("Required");
                                 setCurrentPasswordErrorState(true);
                             } else {
-                                setCurrentPasswordErrorMsg("");
-                                setCurrentPasswordErrorState(false);
+                                const regexPassword = /^.{8,20}$/;
+                                if (regexPassword.test(e.target.value)) {
+                                    setCurrentPasswordErrorMsg("");
+                                    setCurrentPasswordErrorState(false);
+                                }
+                                else {
+                                    setCurrentPasswordErrorMsg("Password must have a minimum of 8 characters and a maximum of 20 characters");
+                                    setCurrentPasswordErrorState(true);
+                                }
                             }
                         }}
                     />
