@@ -10,14 +10,9 @@ import ToastContainer from "./components/Notifications/ToastContainer";
 import React from "react";
 import { DataContext } from "./contexts/DataContext";
 function App() {
-  let firstUserName =
-    JSON.parse(localStorage.getItem("userInfo"))?.firstName || "";
-  let lastUserName =
-    JSON.parse(localStorage.getItem("userInfo"))?.lastName || "";
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
   const [showScreen, setShowScreen] = useState("courses");
-  const [fullName, setFullName] = useState(`${firstUserName} ${lastUserName}`);
   return (
     <DataContext.Provider
       value={{
@@ -27,8 +22,6 @@ function App() {
         setShowContent,
         showScreen,
         setShowScreen,
-        fullName,
-        setFullName,
       }}
     >
       <Router>

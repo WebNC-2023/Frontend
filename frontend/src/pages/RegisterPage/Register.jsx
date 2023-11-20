@@ -19,9 +19,9 @@ import { registerAction } from "../../redux/Actions/userActions";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from "@mui/material";
-
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { update } from "../../redux/Reducers/fullNameUserSlice";
 
 const defaultTheme = createTheme();
 
@@ -52,9 +52,14 @@ export default function Register() {
       navigate("/home-page");
     })
       .catch(err => {
+        setLoadingRegisterPage(false);
         if (err.response.data.message === "Unauthorized") {
           localStorage.removeItem("userInfo");
           setLoadingRegisterPage(false);
+          dispatch(update({
+            fullName: " ",
+            avatar: ""
+          }));
         }
       })
 

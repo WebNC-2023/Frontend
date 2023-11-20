@@ -11,7 +11,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import toast from "react-hot-toast";
-
 import { LoginValidation } from "../../components/Validation/userValidation";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,9 +18,9 @@ import { IconButton, InputAdornment } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { loginAction } from "../../redux/Actions/userActions";
-
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { update } from "../../redux/Reducers/fullNameUserSlice";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -33,7 +32,6 @@ export default function SignIn() {
 
   const [show, setShow] = React.useState(false);
   const [loadingLoginPage, setLoadingLoginPage] = React.useState(true);
-
   const { isLoading, isError, isSuccess, userInfo } = useSelector(
     (state) => state.userLogin
   );
@@ -64,9 +62,13 @@ export default function SignIn() {
       navigate("/home-page");
     })
       .catch(err => {
+        setLoadingLoginPage(false);
         if (err.response.data.message === "Unauthorized") {
           localStorage.removeItem("userInfo");
-          setLoadingLoginPage(false);
+          dispatch(update({
+            fullName: " ",
+            avatar: ""
+          }))
         }
       })
     // if (isSuccess) {

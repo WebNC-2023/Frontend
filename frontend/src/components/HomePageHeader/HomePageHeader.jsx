@@ -6,8 +6,7 @@ import {
   MenuItem,
   ListItemIcon,
   IconButton,
-  Tooltip,
-  Typography,
+  Tooltip
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
 import { useState, useContext } from "react";
@@ -16,8 +15,20 @@ import { useNavigate } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
 import axios from "axios";
 import { DataContext } from "../../contexts/DataContext";
+import { useDispatch, useSelector } from "react-redux";
+import { update } from "../../redux/Reducers/fullNameUserSlice";
 const HomePageHeader = () => {
-  const { setShowScreen, fullName } = useContext(DataContext);
+  const avatarImg = useSelector((state) => state.fullNameUser.avatar);
+  const { setShowScreen} = useContext(DataContext);
+  const fullName = useSelector((state) => state.fullNameUser.fullName);
+  const dispatch = useDispatch();
+  let usernameStyles = {
+    userSelect: "none",
+    fontSize: "1rem",
+    position: "absolute",
+    top: "20px",
+    right: "60px"
+  }
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -48,6 +59,10 @@ const HomePageHeader = () => {
       .then((res) => {
         localStorage.removeItem("userInfo");
         if (res.data.message === "Sign out successfully") {
+          dispatch(update({
+            fullName: " ",
+            avatar: ""
+          }));
           navigate("/");
         }
       })
@@ -65,6 +80,7 @@ const HomePageHeader = () => {
         width: "100%",
         borderBottom: "1px solid #e0e0e0",
         backgroundColor: "white",
+        position: "relative"
       }}
     >
       <Grid item>
@@ -74,17 +90,6 @@ const HomePageHeader = () => {
         <Box
           sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
         >
-          <Typography
-            style={{
-              userSelect: "none",
-              fontSize: "0.7rem",
-              position: "absolute",
-              top: "0",
-              right: "10px",
-            }}
-          >
-            Hi, {fullName}
-          </Typography>
           <Tooltip title="My account">
             <IconButton
               onClick={handleClick}
@@ -93,10 +98,11 @@ const HomePageHeader = () => {
               aria-controls={open ? "account-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
+              style={{ marginTop: "5px" }}
             >
               <Avatar
-                src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                sx={{ width: 32, height: 32, backgroundColor: "#00897b" }}
+                src={avatarImg}
+                sx={{ width: 32, height: 32, backgroundColor: "#5175e0" }}
               ></Avatar>
             </IconButton>
           </Tooltip>
@@ -156,6 +162,7 @@ const HomePageHeader = () => {
           </MenuItem>
         </Menu>
       </Grid>
+      <p style={usernameStyles}> Hi, {fullName}</p>
     </Grid>
   );
 };
