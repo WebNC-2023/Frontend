@@ -6,12 +6,12 @@ import {
   MenuItem,
   ListItemIcon,
   IconButton,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
 import { useState, useContext } from "react";
 import Logout from "@mui/icons-material/Logout";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
 import axios from "axios";
 import { DataContext } from "../../contexts/DataContext";
@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 const HomePageHeader = () => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
-  const { setShowScreen} = useContext(DataContext);
+  const { setShowScreen } = useContext(DataContext);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const dispatch = useDispatch();
   let usernameStyles = {
@@ -27,8 +27,8 @@ const HomePageHeader = () => {
     fontSize: "1rem",
     position: "absolute",
     top: "20px",
-    right: "60px"
-  }
+    right: "80px",
+  };
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -59,10 +59,12 @@ const HomePageHeader = () => {
       .then((res) => {
         localStorage.removeItem("userInfo");
         if (res.data.message === "Sign out successfully") {
-          dispatch(update({
-            fullName: " ",
-            avatar: ""
-          }));
+          dispatch(
+            update({
+              fullName: " ",
+              avatar: "",
+            })
+          );
           navigate("/");
         }
       })
@@ -80,11 +82,13 @@ const HomePageHeader = () => {
         width: "100%",
         borderBottom: "1px solid #e0e0e0",
         backgroundColor: "white",
-        position: "relative"
+        position: "relative",
       }}
     >
       <Grid item>
-        <span className="home-page-logo">Learners</span>
+        <Link to="/" className="home-page-logo">
+          Learners
+        </Link>
       </Grid>
       <Grid item>
         <Box
