@@ -1,3 +1,4 @@
+import "./HomePageHeader.css";
 import {
   Grid,
   Box,
@@ -17,18 +18,12 @@ import axios from "axios";
 import { DataContext } from "../../contexts/DataContext";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
+import InfoIcon from '@mui/icons-material/Info';
 const HomePageHeader = () => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
   const { setShowScreen } = useContext(DataContext);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const dispatch = useDispatch();
-  let usernameStyles = {
-    userSelect: "none",
-    fontSize: "1rem",
-    position: "absolute",
-    top: "20px",
-    right: "80px",
-  };
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -146,6 +141,12 @@ const HomePageHeader = () => {
           transformOrigin={{ horizontal: "right", vertical: "top" }}
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
+          <MenuItem className="userInfo-mobile-screen">
+            <ListItemIcon>
+              <InfoIcon fontSize="small" />
+            </ListItemIcon>
+            Hi, {fullName}
+          </MenuItem>
           <MenuItem onClick={handleClickEditProfileBtn}>
             <ListItemIcon>
               <Settings fontSize="small" />
@@ -166,7 +167,7 @@ const HomePageHeader = () => {
           </MenuItem>
         </Menu>
       </Grid>
-      <p style={usernameStyles}> Hi, {fullName}</p>
+      <p className="userInfo-default-screen"> Hi, {fullName}</p>
     </Grid>
   );
 };
