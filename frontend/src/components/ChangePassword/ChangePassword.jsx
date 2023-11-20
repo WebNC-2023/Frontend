@@ -1,10 +1,12 @@
-import { Grid, Avatar, Paper, TextField, Button, Alert } from "@mui/material";
+import { Grid, Avatar, Paper, TextField, Button, Alert, InputAdornment, IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import EnhancedEncryptionIcon from "@mui/icons-material/EnhancedEncryption";
 import { useState, useContext } from "react";
 import { DataContext } from "../../contexts/DataContext";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState("");
@@ -21,6 +23,9 @@ const ChangePassword = () => {
     const [changePasswordError, setChangePasswordError] = useState(false);
     const [changePasswordErrorMsg, setChangePasswordErrorMsg] = useState("");
     const { setShowScreen } = useContext(DataContext);
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
     const handleClickSaveChangePassword = () => {
         if (currentPassword === "") {
             setCurrentPasswordErrorState(true);
@@ -133,6 +138,20 @@ const ChangePassword = () => {
                         autoComplete="none"
                         required
                         value={currentPassword}
+                        InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={() => {
+                                    setShowCurrentPassword(!showCurrentPassword);
+                                  }}
+                                >
+                                  {showCurrentPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
                         onChange={(e) => {
                             setCurrentPassword(e.target.value);
                             if (e.target.value === "") {
@@ -164,6 +183,20 @@ const ChangePassword = () => {
                         autoComplete="none"
                         required
                         value={newPassword}
+                        InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={() => {
+                                    setShowNewPassword(!showNewPassword);
+                                  }}
+                                >
+                                  {showNewPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
                         onChange={(e) => {
                             setNewPassword(e.target.value);
                             if (e.target.value === "") {
@@ -196,6 +229,20 @@ const ChangePassword = () => {
                         autoComplete="none"
                         required
                         value={confirmNewPassword}
+                        InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={() => {
+                                    setShowConfirmNewPassword(!showConfirmNewPassword);
+                                  }}
+                                >
+                                  {showConfirmNewPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
                         onChange={(e) => {
                             setConfirmNewPassword(e.target.value);
                             if (e.target.value === "") {
