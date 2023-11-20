@@ -132,7 +132,7 @@ const ChangePassword = () => {
                         label="Current password"
                         variant="standard"
                         fullWidth
-                        type="password"
+                        type={showCurrentPassword ? "text" : "password"}
                         placeholder="Enter current password"
                         spellCheck="false"
                         autoComplete="none"
@@ -177,7 +177,7 @@ const ChangePassword = () => {
                         label="New password"
                         variant="standard"
                         fullWidth
-                        type="password"
+                        type={showNewPassword ? "text" : "password"}
                         placeholder="Enter new password"
                         spellCheck="false"
                         autoComplete="none"
@@ -223,7 +223,7 @@ const ChangePassword = () => {
                         label="Confirm new password"
                         variant="standard"
                         fullWidth
-                        type="password"
+                        type={showConfirmNewPassword ? "text" : "password"}
                         placeholder="Enter confirm new password"
                         spellCheck="false"
                         autoComplete="none"
