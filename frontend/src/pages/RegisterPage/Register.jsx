@@ -44,24 +44,27 @@ export default function Register() {
       const res = await axios({
         url: "https://webnc-2023.vercel.app/auth/me",
         method: "GET",
-        withCredentials: true
+        withCredentials: true,
       });
       return res;
     }
-    checkLoggedIn().then(res => {
-      navigate("/home-page");
-    })
-      .catch(err => {
+    checkLoggedIn()
+      .then((res) => {
+        navigate("/home-page");
+      })
+      .catch((err) => {
         setLoadingRegisterPage(false);
         if (err.response.data.message === "Unauthorized") {
           localStorage.removeItem("userInfo");
           setLoadingRegisterPage(false);
-          dispatch(update({
-            fullName: " ",
-            avatar: ""
-          }));
+          dispatch(
+            update({
+              fullName: " ",
+              avatar: "",
+            })
+          );
         }
-      })
+      });
 
     if (isSuccess) {
       toast.success(`Register successfully ! Login now !`);
@@ -92,7 +95,15 @@ export default function Register() {
       dispatch(registerAction(data));
     },
   });
-  if (loadingRegisterPage) return <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>;
+  if (loadingRegisterPage)
+    return (
+      <div className="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    );
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -111,7 +122,7 @@ export default function Register() {
           >
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h3">
+          <Typography component="h1" variant="h4">
             Sign up
           </Typography>
           <Box
