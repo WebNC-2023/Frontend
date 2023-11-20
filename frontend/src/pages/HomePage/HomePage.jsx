@@ -26,6 +26,7 @@ const HomePage = () => {
     }
     checkLoggedIn()
       .then((res) => {
+        console.log(res.data);
         localStorage.setItem(
           "userInfo",
           JSON.stringify({
