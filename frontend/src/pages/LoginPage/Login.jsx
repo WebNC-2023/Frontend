@@ -54,32 +54,40 @@ export default function SignIn() {
       const res = await axios({
         url: "https://webnc-2023.vercel.app/auth/me",
         method: "GET",
-        withCredentials: true
+        withCredentials: true,
       });
       return res;
     }
-    checkLoggedIn().then(res => {
-      navigate("/home-page");
-    })
-      .catch(err => {
-        setLoadingLoginPage(false);
-        if (err.response.data.message === "Unauthorized") {
-          localStorage.removeItem("userInfo");
-          dispatch(update({
-            fullName: " ",
-            avatar: ""
-          }))
-        }
+    checkLoggedIn()
+      .then((res) => {
+        navigate("/home-page");
       })
-    // if (isSuccess) {
-    //   toast.success(`Welcome back ${userInfo?.lastName}`);
-    // }
+      .catch((err) => {
+        setLoadingLoginPage(false);
+        if (err?.response?.data?.message === "Unauthorized") {
+          localStorage.removeItem("userInfo");
+          dispatch(
+            update({
+              fullName: " ",
+              avatar: "",
+            })
+          );
+        }
+      });
     if (isError) {
       toast.error(isError);
       dispatch({ type: "USER_LOGIN_RESET" });
     }
   }, [userInfo, isSuccess, isError, navigate, dispatch]);
-  if (loadingLoginPage) return <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>;
+  if (loadingLoginPage)
+    return (
+      <div className="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    );
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
