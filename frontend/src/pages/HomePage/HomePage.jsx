@@ -12,7 +12,7 @@ import { update } from "../../redux/Reducers/fullNameUserSlice";
 const HomePage = () => {
   const navigate = useNavigate();
   const [loadingHomePage, setLoadingHomPage] = useState(true);
-  const { showScreen, setShowScreen } = useContext(DataContext);
+  const { showScreen } = useContext(DataContext);
   const dispatch = useDispatch();
   useEffect(() => {
     async function checkLoggedIn() {
@@ -55,9 +55,6 @@ const HomePage = () => {
         }
       });
   }, [navigate, dispatch]);
-  useEffect(() => {
-    setShowScreen("courses");
-  }, [setShowScreen]);
   if (loadingHomePage)
     return (
       <div className="lds-ellipsis">
