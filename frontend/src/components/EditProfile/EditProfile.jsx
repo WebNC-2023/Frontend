@@ -42,6 +42,8 @@ const EditProfile = () => {
             if (avatarUrl !== "") dataEdit.avatar = avatarFile;
             async function sendEditProfile() {
                 setShowLoadingEditBtn(true);
+                setEditProfileSuccess(false);
+                setEditProfileError(false);
                 dispatch(updateStart());
                 const res = await axios({
                     method: "PATCH",
@@ -58,7 +60,6 @@ const EditProfile = () => {
             }
             sendEditProfile().then(res => {
                 setShowLoadingEditBtn(false);
-                console.log(res.data.data);
                 const userInfo = JSON.parse(localStorage.getItem('userInfo'));
                 userInfo.firstName = res.data.data.firstName;
                 userInfo.lastName = res.data.data.lastName;
@@ -87,14 +88,14 @@ const EditProfile = () => {
     return (
         <Grid container justifyContent={"center"} className="">
             <Grid item xs={12} sm={8} md={4} className="editProfile-container" style={{ marginTop: "20px" }}>
-                {editProfileSuccess && <><Alert severity="success" className="change-edit-success">Change profile Successful</Alert><CloseIcon className="close-change-edit-success" onClick={() => setEditProfileSuccess(false)} /></>}
-                {editProfileError && <><Alert severity="error" className="change-edit-error">Change profile Fail</Alert><CloseIcon className="close-change-edit-error" onClick={() => setEditProfileError(false)} /></>}
+                {editProfileSuccess && <><Alert severity="success" className="change-edit-success">Change Profile Successful</Alert><CloseIcon className="close-change-edit-success" onClick={() => setEditProfileSuccess(false)} /></>}
+                {editProfileError && <><Alert severity="error" className="change-edit-error">Change Profile Fail</Alert><CloseIcon className="close-change-edit-error" onClick={() => setEditProfileError(false)} /></>}
                 <Paper elevation={10} className="editProfile-form">
                     <Grid container direction={"column"} alignItems={"center"}>
                         <Avatar style={{ backgroundColor: "#1bbd7e" }}><AppRegistrationOutlinedIcon /></Avatar>
                         <h2 className="editProfile-title">Edit profile</h2>
                     </Grid>
-                    <TextField error={firstNameErrorState} helperText={firstNameErrorMsg} style={{ marginTop: "16px" }} label="First name" variant="standard" fullWidth placeholder="Enter first name" spellCheck="false" autoComplete="none" required value={firstName} onChange={e => {
+                    <TextField error={firstNameErrorState} helperText={firstNameErrorMsg} style={{ marginTop: "16px" }} label="First name" variant="standard" fullWidth placeholder="Enter first name" spellCheck="false" autoComplete="none" value={firstName} onChange={e => {
                         setFirstName(e.target.value);
                         if (e.target.value === "") {
                             if (lastName === "" && avatarUrl === "") {
@@ -123,7 +124,7 @@ const EditProfile = () => {
                             setAvatarUrlErrorMsg("");
                         }
                     }} />
-                    <TextField error={lastNameErrorState} helperText={lastNameErrorMsg} style={{ margin: "16px 0" }} label="Last name" variant="standard" fullWidth placeholder="Enter last name" spellCheck="false" autoComplete="none" required value={lastName} onChange={e => {
+                    <TextField error={lastNameErrorState} helperText={lastNameErrorMsg} style={{ margin: "16px 0" }} label="Last name" variant="standard" fullWidth placeholder="Enter last name" spellCheck="false" autoComplete="none" value={lastName} onChange={e => {
                         setLastName(e.target.value);
                         if (e.target.value === "") {
                             if (firstName === "" && avatarUrl === "") {
@@ -153,7 +154,7 @@ const EditProfile = () => {
                         }
                     }} />
                     <FormLabel style={{ userSelect: "none" }}>Avatar</FormLabel>
-                    <TextField error={avatarUrlErrorState} helperText={avatarUrlErrorMsg} inputProps={{ accept: 'image/*' }} type="file" style={{ marginBottom: "16px" }} fullWidth variant="standard" value={avatarUrl} required onChange={e => {
+                    <TextField error={avatarUrlErrorState} helperText={avatarUrlErrorMsg} inputProps={{ accept: 'image/*' }} type="file" style={{ marginBottom: "16px" }} fullWidth variant="standard" value={avatarUrl} onChange={e => {
                         if (e.target.value) {
                             setAvatarFile(e.target.files[0]);
                             setAvatarUrl(e.target.value);

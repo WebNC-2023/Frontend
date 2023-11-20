@@ -26,8 +26,8 @@ const HomePageHeader = () => {
     userSelect: "none",
     fontSize: "1rem",
     position: "absolute",
-    top: "0",
-    right: "25px"
+    top: "20px",
+    right: "60px"
   }
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
