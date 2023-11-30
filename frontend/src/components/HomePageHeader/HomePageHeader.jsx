@@ -18,7 +18,7 @@ import axios from "axios";
 import { DataContext } from "../../contexts/DataContext";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 const HomePageHeader = () => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
   const { setShowScreen } = useContext(DataContext);

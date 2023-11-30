@@ -65,18 +65,18 @@ const HomePage = () => {
   //     </div>
   //   );
   // else
-    return (
-      <div className="home-page-container">
-        <HomePageHeader />
-        {showScreen === "courses" ? (
-          <Courses />
-        ) : showScreen === "edit profile" ? (
-          <EditProfile />
-        ) : (
-          <ChangePassword />
-        )}
-      </div>
-    );
+  return (
+    <div className="home-page-container">
+      <HomePageHeader />
+      {showScreen === "courses" ? (
+        <Courses />
+      ) : showScreen === "edit profile" ? (
+        <EditProfile />
+      ) : (
+        <ChangePassword />
+      )}
+    </div>
+  );
 };
 
 export default HomePage;
