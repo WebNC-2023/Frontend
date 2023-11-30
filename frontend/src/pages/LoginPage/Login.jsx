@@ -19,8 +19,8 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { loginAction } from "../../redux/Actions/userActions";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { update } from "../../redux/Reducers/fullNameUserSlice";
+// import axios from "axios";
+// import { update } from "../../redux/Reducers/fullNameUserSlice";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -31,7 +31,7 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const [show, setShow] = React.useState(false);
-  const [loadingLoginPage, setLoadingLoginPage] = React.useState(true);
+  //const [loadingLoginPage, setLoadingLoginPage] = React.useState(true);
   const { isLoading, isError, isSuccess, userInfo } = useSelector(
     (state) => state.userLogin
   );
@@ -49,45 +49,45 @@ export default function SignIn() {
 
   // useEffect
   React.useEffect(() => {
-    async function checkLoggedIn() {
-      setLoadingLoginPage(true);
-      const res = await axios({
-        url: "https://webnc-2023.vercel.app/auth/me",
-        method: "GET",
-        withCredentials: true,
-      });
-      return res;
-    }
-    checkLoggedIn()
-      .then((res) => {
-        navigate("/home-page");
-      })
-      .catch((err) => {
-        setLoadingLoginPage(false);
-        if (err.response.data === "Unauthorized") {
-          localStorage.removeItem("userInfo");
-          dispatch(
-            update({
-              fullName: " ",
-              avatar: "",
-            })
-          );
-        }
-      });
+    // async function checkLoggedIn() {
+    //   setLoadingLoginPage(true);
+    //   const res = await axios({
+    //     url: "https://webnc-2023.vercel.app/auth/me",
+    //     method: "GET",
+    //     withCredentials: true,
+    //   });
+    //   return res;
+    // }
+    // checkLoggedIn()
+    //   .then((res) => {
+    //     navigate("/home-page");
+    //   })
+    //   .catch((err) => {
+    //     setLoadingLoginPage(false);
+    //     if (err.response.data === "Unauthorized") {
+    //       localStorage.removeItem("userInfo");
+    //       dispatch(
+    //         update({
+    //           fullName: " ",
+    //           avatar: "",
+    //         })
+    //       );
+    //     }
+    //   });
     if (isError) {
       toast.error(isError);
       dispatch({ type: "USER_LOGIN_RESET" });
     }
   }, [userInfo, isSuccess, isError, navigate, dispatch]);
-  if (loadingLoginPage)
-    return (
-      <div className="lds-ellipsis">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    );
+  // if (loadingLoginPage)
+  //   return (
+  //     <div className="lds-ellipsis">
+  //       <div></div>
+  //       <div></div>
+  //       <div></div>
+  //       <div></div>
+  //     </div>
+  //   );
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
