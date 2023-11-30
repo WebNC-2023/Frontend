@@ -64,7 +64,7 @@ export default function SignIn() {
       })
       .catch((err) => {
         setLoadingLoginPage(false);
-        if (err?.response?.data?.message === "Unauthorized") {
+        if (err.response.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(
             update({
