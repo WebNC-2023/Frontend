@@ -12,6 +12,8 @@ import { DataContext } from "./contexts/DataContext";
 import ProtectedLanding from "./components/ProtectedLanding/ProtectedLanding";
 import ProtectedSign from "./components/ProtectedSign/ProtectedSign";
 import ProtectedHome from "./components/ProtectedHome/ProtectedHome";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotPasswordPage";
+import RenewPasswordPage from "./pages/RenewPasswordPage/RenewPasswordPage";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -39,7 +41,12 @@ function App() {
           <Route element={<ProtectedSign />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           </Route>
+          <Route
+            path="/reset-password/:token"
+            element={<RenewPasswordPage />}
+          />
           <Route path="*" element={<Error />} />
         </Routes>
       </Router>

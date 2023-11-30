@@ -78,6 +78,9 @@ export default function SignIn() {
       toast.error(isError);
       dispatch({ type: "USER_LOGIN_RESET" });
     }
+    if (isSuccess) {
+      if (localStorage.getItem("userInfo")) navigate("/home-page");
+    }
   }, [userInfo, isSuccess, isError, navigate, dispatch]);
   // if (loadingLoginPage)
   //   return (
@@ -174,11 +177,27 @@ export default function SignIn() {
               {isLoading ? "Loading..." : "Sign In"}
             </Button>
             <Grid container>
-              <Grid item xs></Grid>
+              {/* <Grid item xs></Grid> */}
               <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Link
+                    href="/forgot-password"
+                    variant="body2"
+                    style={{ fontStyle: "italic" }}
+                  >
+                    {"Forgot Password?"}
+                  </Link>
+                  <Link href="/register" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </div>
               </Grid>
             </Grid>
           </Box>
