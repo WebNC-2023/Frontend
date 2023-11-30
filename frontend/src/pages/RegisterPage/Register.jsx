@@ -54,7 +54,7 @@ export default function Register() {
       })
       .catch((err) => {
         setLoadingRegisterPage(false);
-        if (err.response.data.message === "Unauthorized") {
+        if (err.response.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
           setLoadingRegisterPage(false);
           dispatch(

@@ -45,7 +45,7 @@ const HomePage = () => {
         setLoadingHomPage(false);
       })
       .catch((err) => {
-        if (err.response.data.message === "Unauthorized") {
+        if (err.response.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(update({
             fullName: " ",
