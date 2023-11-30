@@ -13,7 +13,8 @@ import ProtectedLanding from "./components/ProtectedLanding/ProtectedLanding";
 import ProtectedSign from "./components/ProtectedSign/ProtectedSign";
 import ProtectedHome from "./components/ProtectedHome/ProtectedHome";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotPasswordPage";
-import RenewPasswordPage from "./pages/RenewPasswordPage/RenewPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage";
+import ProtectedResetPassword from "./components/ProtectedResetPassword/ProtectedResetPassword";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -44,8 +45,12 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           </Route>
           <Route
-            path="/reset-password/:token"
-            element={<RenewPasswordPage />}
+            path="/reset-password/:code"
+            element={
+              <ProtectedResetPassword>
+                <ResetPasswordPage />
+              </ProtectedResetPassword>
+            }
           />
           <Route path="*" element={<Error />} />
         </Routes>
