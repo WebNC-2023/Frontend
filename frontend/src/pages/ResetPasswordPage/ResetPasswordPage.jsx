@@ -5,18 +5,18 @@ import Avatar from "@mui/material/Avatar";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 //import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
 import axios from "axios";
 import "../ForgotPasswordPage/ForgotPasswordPage.css";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "./ResetPasswordPage.css";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 const ResetPasswordPage = () => {
-  const navigate = useNavigate();
   const { code } = useParams();
   const [sending, setSending] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -30,6 +30,7 @@ const ResetPasswordPage = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const [sendChangePassword, setSendChangePassword] = useState(false);
+  const [changedSuccess, setChangedSuccess] = useState(false);
   const loginLockStyles = {
     backgroundColor: "#1bbd7e",
   };
@@ -54,6 +55,7 @@ const ResetPasswordPage = () => {
       async function sendResetPasswordByEmail() {
         setSending(true);
         setSendChangePassword(false);
+        setChangedSuccess(false);
         const res = await axios({
           url: "https://webnc-2023.vercel.app/auth/reset-password",
           method: "POST",
@@ -69,26 +71,61 @@ const ResetPasswordPage = () => {
         .then((res) => {
           setSending(false);
           setSendChangePassword(true);
-          toast.success(`${res.data.message}
-          Return to the login page to log in now.
-          `, {
-            autoClose: false,
-          });
+          setChangedSuccess(true);
         })
         .catch((err) => {
           setSending(false);
           setSendChangePassword(true);
-          toast.error(`${err.response.data.message}`);
-          setTimeout(() => {
-            navigate("/forgot-password");
-          }, 5000);
+          setChangedSuccess(false);
         });
     }
   };
   return (
     <Grid container justifyContent={"center"} direction={"row"}>
       {sendChangePassword ? (
-        <></>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={4}
+          className="resetPassword-container"
+          style={{ marginTop: "20px" }}
+        >
+          <Paper elevation={10} className="resetPassword-form">
+            <Grid
+              container
+              alignItems={"center"}
+              flexDirection={"column"}
+              justifyContent={"center"}
+            >
+              <Avatar
+                style={
+                  changedSuccess
+                    ? {
+                        backgroundColor: "#1bbd7e",
+                      }
+                    : {
+                        backgroundColor: "red",
+                      }
+                }
+              >
+                {changedSuccess ? (
+                  <CheckCircleOutlineIcon />
+                ) : (
+                  <ErrorOutlineIcon />
+                )}
+              </Avatar>
+              <h2 className="resetPassword-title">
+                {changedSuccess ? "Password Changed" : "Password Change Failed"}
+              </h2>
+              <p className="resetPassword-title2">
+                {changedSuccess
+                  ? "Your password has been changed successfully."
+                  : "Reset password code is invalid!"}
+              </p>
+            </Grid>
+          </Paper>
+        </Grid>
       ) : (
         <Grid
           item
@@ -237,12 +274,6 @@ const ResetPasswordPage = () => {
           </Paper>
         </Grid>
       )}
-      <ToastContainer
-        position="top-center"
-        pauseOnFocusLoss={false}
-        pauseOnHover={false}
-        autoClose={3000}
-      />
     </Grid>
   );
 };
