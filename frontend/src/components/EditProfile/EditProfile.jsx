@@ -1,6 +1,5 @@
 import {
   Grid,
-  Alert,
   Paper,
   Avatar,
   TextField,
@@ -9,16 +8,14 @@ import {
 } from "@mui/material";
 import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
 import SendIcon from "@mui/icons-material/Send";
-import CloseIcon from "@mui/icons-material/Close";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import { useState, useContext } from "react";
 import { DataContext } from "../../contexts/DataContext";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update, updateStart } from "../../redux/Reducers/fullNameUserSlice";
+import { ToastContainer, toast } from "react-toastify";
 const EditProfile = () => {
-  const [editProfileSuccess, setEditProfileSuccess] = useState(false);
-  const [editProfileError, setEditProfileError] = useState(false);
   const [firstNameErrorState, setFirstNameErrorState] = useState(false);
   const [firstNameErrorMsg, setFirstNameErrorMsg] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -49,8 +46,6 @@ const EditProfile = () => {
       if (avatarUrl !== "") dataEdit.avatar = avatarFile;
       async function sendEditProfile() {
         setShowLoadingEditBtn(true);
-        setEditProfileSuccess(false);
-        setEditProfileError(false);
         dispatch(updateStart());
         const res = await axios({
           method: "PATCH",
@@ -81,11 +76,11 @@ const EditProfile = () => {
               }?${Date.now()}`,
             })
           );
-          setEditProfileSuccess(true);
+          toast.success("Your profile has been changed successful");
         })
         .catch((err) => {
           setShowLoadingEditBtn(false);
-          setEditProfileError(true);
+          toast.error("Your profile has been changed fail");
         });
     }
   };
@@ -102,28 +97,6 @@ const EditProfile = () => {
         className="editProfile-container"
         style={{ marginTop: "20px" }}
       >
-        {editProfileSuccess && (
-          <>
-            <Alert severity="success" className="change-edit-success">
-              Change Profile Successful
-            </Alert>
-            <CloseIcon
-              className="close-change-edit-success"
-              onClick={() => setEditProfileSuccess(false)}
-            />
-          </>
-        )}
-        {editProfileError && (
-          <>
-            <Alert severity="error" className="change-edit-error">
-              Change Profile Fail
-            </Alert>
-            <CloseIcon
-              className="close-change-edit-error"
-              onClick={() => setEditProfileError(false)}
-            />
-          </>
-        )}
         <Paper elevation={10} className="editProfile-form">
           <Grid container direction={"column"} alignItems={"center"}>
             <Avatar style={{ backgroundColor: "#1bbd7e" }}>
@@ -132,9 +105,14 @@ const EditProfile = () => {
             <h2 className="editProfile-title">Edit profile</h2>
           </Grid>
           <TextField
+            disabled={showLoadingEditBtn}
             error={firstNameErrorState}
             helperText={firstNameErrorMsg}
-            style={{ marginTop: "16px" }}
+            style={
+              showLoadingEditBtn
+                ? { marginTop: "16px", pointerEvents: "none" }
+                : { marginTop: "16px" }
+            }
             label="First name"
             variant="standard"
             fullWidth
@@ -177,9 +155,14 @@ const EditProfile = () => {
             }}
           />
           <TextField
+            disabled={showLoadingEditBtn}
             error={lastNameErrorState}
             helperText={lastNameErrorMsg}
-            style={{ margin: "16px 0" }}
+            style={
+              showLoadingEditBtn
+                ? { margin: "16px 0", pointerEvents: "none" }
+                : { margin: "16px 0" }
+            }
             label="Last name"
             variant="standard"
             fullWidth
@@ -223,11 +206,16 @@ const EditProfile = () => {
           />
           <FormLabel style={{ userSelect: "none" }}>Avatar</FormLabel>
           <TextField
+            disabled={showLoadingEditBtn}
             error={avatarUrlErrorState}
             helperText={avatarUrlErrorMsg}
             inputProps={{ accept: "image/*" }}
             type="file"
-            style={{ marginBottom: "16px" }}
+            style={
+              showLoadingEditBtn
+                ? { marginBottom: "16px", pointerEvents: "none" }
+                : { marginBottom: "16px" }
+            }
             fullWidth
             variant="standard"
             value={avatarUrl}
@@ -314,6 +302,12 @@ const EditProfile = () => {
           )}
         </Paper>
       </Grid>
+      <ToastContainer
+        position="top-right"
+        pauseOnFocusLoss={false}
+        pauseOnHover={false}
+        autoClose={3000}
+      />
     </Grid>
   );
 };
