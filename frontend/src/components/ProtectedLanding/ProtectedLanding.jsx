@@ -19,17 +19,7 @@ const ProtectedLanding = () => {
     checkLoggedIn()
       .then((res) => {
         console.log(res.data);
-        localStorage.setItem(
-          "userInfo",
-          JSON.stringify({
-            firstName: res.data.data.firstName,
-            lastName: res.data.data.lastName,
-            id: res.data.data.id,
-            email: res.data.data.email,
-            refreshToken: res.data.data.refreshToken,
-            avatar: res.data.data.avatar,
-          })
-        );
+        localStorage.setItem("userInfo", JSON.stringify(res.data.data));
         dispatch(
           update({
             fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,

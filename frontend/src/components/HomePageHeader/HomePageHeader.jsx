@@ -153,12 +153,14 @@ const HomePageHeader = () => {
             </ListItemIcon>
             Edit profile
           </MenuItem>
-          <MenuItem onClick={handleClickChangePasswordBtn}>
-            <ListItemIcon>
-              <PasswordIcon fontSize="small" />
-            </ListItemIcon>
-            Change password
-          </MenuItem>
+          {JSON.parse(localStorage.getItem("userInfo")).isSSO === false && (
+            <MenuItem onClick={handleClickChangePasswordBtn}>
+              <ListItemIcon>
+                <PasswordIcon fontSize="small" />
+              </ListItemIcon>
+              Change password
+            </MenuItem>
+          )}
           <MenuItem onClick={handleClickLogOut}>
             <ListItemIcon>
               <Logout fontSize="small" />
