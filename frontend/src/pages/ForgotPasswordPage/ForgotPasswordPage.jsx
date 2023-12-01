@@ -50,6 +50,9 @@ const ForgotPasswordPage = () => {
             toast.success(`${res.data.message}`, {
               autoClose: 10000,
             });
+            setTimeout(() => {
+              navigate("/login");
+            }, 11000);
           })
           .catch((err) => {
             setSending(false);
