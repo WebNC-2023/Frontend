@@ -6,7 +6,6 @@ import LockResetIcon from "@mui/icons-material/LockReset";
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-//import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
 import axios from "axios";
 import "../ForgotPasswordPage/ForgotPasswordPage.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -256,20 +255,6 @@ const ResetPasswordPage = () => {
               justifyContent={"center"}
               alignItems={"center"}
             >
-              {/* <Avatar style={{ backgroundColor: "#1bbd7e" }}>
-                <UndoOutlinedIcon />
-              </Avatar>
-              <span
-                className="back-to-login-page"
-                style={
-                  sending
-                    ? { pointerEvents: "none", color: "gray" }
-                    : { pointerEvents: "" }
-                }
-                onClick={(e) => navigate("/login")}
-              >
-                Back to login page
-              </span> */}
             </Grid>
           </Paper>
         </Grid>
