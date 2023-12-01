@@ -65,12 +65,12 @@ const ChangePassword = () => {
         setChangePasswordError(false);
         setShowLoadingChangePasswordBtn(true);
         const res = await axios({
-          url: "https://webnc-2023.vercel.app/users/change-password",
           method: "PATCH",
+          url: "https://webnc-2023.vercel.app/users/change-password",
           withCredentials: true,
           data: {
-            newPassword: newPassword,
             currentPassword: currentPassword,
+            newPassword: newPassword,
           },
         });
         return res;
@@ -78,12 +78,7 @@ const ChangePassword = () => {
       sendChangePassword()
         .then((res) => {
           setShowLoadingChangePasswordBtn(false);
-          const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-          userInfo.firstName = res.data.data.firstName;
-          userInfo.lastName = res.data.data.lastName;
-          userInfo.avatar = res.data.data.avatar;
-          userInfo.refreshToken = res.data.data.refreshToken;
-          localStorage.setItem("userInfo", JSON.stringify(userInfo));
+          localStorage.setItem("userInfo", JSON.stringify(res.data.data));
           setCurrentPassword("");
           setNewPassword("");
           setConfirmNewPassword("");

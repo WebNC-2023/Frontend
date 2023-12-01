@@ -141,26 +141,32 @@ const HomePageHeader = () => {
           transformOrigin={{ horizontal: "right", vertical: "top" }}
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
-          <MenuItem className="userInfo-mobile-screen">
-            <ListItemIcon>
-              <InfoIcon fontSize="small" />
-            </ListItemIcon>
-            Hi, {fullName}
-          </MenuItem>
+          <div
+            className="userInfo-mobile-screen"
+            style={{ pointerEvents: "none" }}
+          >
+            <MenuItem>
+              <ListItemIcon>
+                <InfoIcon fontSize="small" />
+              </ListItemIcon>
+              Hi, {fullName}
+            </MenuItem>
+          </div>
           <MenuItem onClick={handleClickEditProfileBtn}>
             <ListItemIcon>
               <Settings fontSize="small" />
             </ListItemIcon>
             Edit profile
           </MenuItem>
-          {JSON.parse(localStorage.getItem("userInfo")).isSSO === false && (
-            <MenuItem onClick={handleClickChangePasswordBtn}>
-              <ListItemIcon>
-                <PasswordIcon fontSize="small" />
-              </ListItemIcon>
-              Change password
-            </MenuItem>
-          )}
+          {JSON.parse(localStorage.getItem("userInfo")) &&
+            JSON.parse(localStorage.getItem("userInfo")).isSSO === false && (
+              <MenuItem onClick={handleClickChangePasswordBtn}>
+                <ListItemIcon>
+                  <PasswordIcon fontSize="small" />
+                </ListItemIcon>
+                Change password
+              </MenuItem>
+            )}
           <MenuItem onClick={handleClickLogOut}>
             <ListItemIcon>
               <Logout fontSize="small" />
