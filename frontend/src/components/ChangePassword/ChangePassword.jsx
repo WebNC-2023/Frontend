@@ -4,12 +4,10 @@ import {
   Paper,
   TextField,
   Button,
-  Alert,
   InputAdornment,
   IconButton,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import CloseIcon from "@mui/icons-material/Close";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import EnhancedEncryptionIcon from "@mui/icons-material/EnhancedEncryption";
 import { useState, useContext } from "react";
@@ -17,6 +15,7 @@ import { DataContext } from "../../contexts/DataContext";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -32,9 +31,6 @@ const ChangePassword = () => {
     useState("");
   const [showLoadingChangePasswordBtn, setShowLoadingChangePasswordBtn] =
     useState(false);
-  const [changePasswordSuccess, setChangePasswordSuccess] = useState(false);
-  const [changePasswordError, setChangePasswordError] = useState(false);
-  const [changePasswordErrorMsg, setChangePasswordErrorMsg] = useState("");
   const { setShowScreen } = useContext(DataContext);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -61,8 +57,6 @@ const ChangePassword = () => {
       !confirmNewPasswordErrorState
     ) {
       async function sendChangePassword() {
-        setChangePasswordSuccess(false);
-        setChangePasswordError(false);
         setShowLoadingChangePasswordBtn(true);
         const res = await axios({
           method: "PATCH",
@@ -82,12 +76,15 @@ const ChangePassword = () => {
           setCurrentPassword("");
           setNewPassword("");
           setConfirmNewPassword("");
-          setChangePasswordSuccess(true);
+          toast.success("Your password has been changed successfully.", {
+            autoClose: 3000,
+          });
         })
         .catch((err) => {
-          setChangePasswordErrorMsg(err.response.data.message);
           setShowLoadingChangePasswordBtn(false);
-          setChangePasswordError(true);
+          toast.error(`${err.response.data.message}`, {
+            autoClose: 3000,
+          });
         });
     }
   };
@@ -104,28 +101,6 @@ const ChangePassword = () => {
         className="editProfile-container"
         style={{ marginTop: "20px" }}
       >
-        {changePasswordSuccess && (
-          <>
-            <Alert severity="success" className="change-edit-success">
-              Change password successful
-            </Alert>
-            <CloseIcon
-              className="close-change-edit-success"
-              onClick={() => setChangePasswordSuccess(false)}
-            />
-          </>
-        )}
-        {changePasswordError && (
-          <>
-            <Alert severity="error" className="change-edit-error">
-              {changePasswordErrorMsg}
-            </Alert>
-            <CloseIcon
-              className="close-change-edit-error"
-              onClick={() => setChangePasswordError(false)}
-            />
-          </>
-        )}
         <Paper elevation={10} className="editProfile-form">
           <Grid container direction={"column"} alignItems={"center"}>
             <Avatar style={{ backgroundColor: "#1bbd7e" }}>
@@ -134,9 +109,14 @@ const ChangePassword = () => {
             <h2 className="editProfile-title">Change password</h2>
           </Grid>
           <TextField
+            disabled={showLoadingChangePasswordBtn}
             error={currentPasswordErrorState}
             helperText={currentPasswordErrorMsg}
-            style={{ marginTop: "16px" }}
+            style={
+              showLoadingChangePasswordBtn
+                ? { marginTop: "16px", pointerEvents: "none" }
+                : { marginTop: "16px" }
+            }
             label="Current password"
             variant="standard"
             fullWidth
@@ -180,9 +160,14 @@ const ChangePassword = () => {
             }}
           />
           <TextField
+            disabled={showLoadingChangePasswordBtn}
             error={newPasswordErrorState}
             helperText={newPasswordErrorMsg}
-            style={{ marginTop: "16px" }}
+            style={
+              showLoadingChangePasswordBtn
+                ? { marginTop: "16px", pointerEvents: "none" }
+                : { marginTop: "16px" }
+            }
             label="New password"
             variant="standard"
             fullWidth
@@ -226,9 +211,14 @@ const ChangePassword = () => {
             }}
           />
           <TextField
+            disabled={showLoadingChangePasswordBtn}
             error={confirmNewPasswordErrorState}
             helperText={confirmNewPasswordErrorMsg}
-            style={{ marginTop: "16px" }}
+            style={
+              showLoadingChangePasswordBtn
+                ? { marginTop: "16px", pointerEvents: "none" }
+                : { marginTop: "16px" }
+            }
             label="Confirm new password"
             variant="standard"
             fullWidth
@@ -320,6 +310,12 @@ const ChangePassword = () => {
           )}
         </Paper>
       </Grid>
+      <ToastContainer
+        position="top-right"
+        pauseOnFocusLoss={false}
+        pauseOnHover={false}
+        autoClose={3000}
+      />
     </Grid>
   );
 };
