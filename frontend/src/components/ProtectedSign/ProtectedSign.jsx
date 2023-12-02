@@ -20,7 +20,13 @@ const ProtectedSign = () => {
     }
     checkLoggedIn()
       .then((res) => {
-        console.log(res.data);
+        localStorage.removeItem("userInfo");
+        dispatch(
+          update({
+            fullName: " ",
+            avatar: "",
+          })
+        );
         setLoadingSignPage(false);
         setIsAuth(true);
       })
@@ -47,11 +53,7 @@ const ProtectedSign = () => {
         <div></div>
       </div>
     );
-  return isAuth && localStorage.getItem("userInfo") ? (
-    <Navigate to="/home-page" />
-  ) : (
-    <Outlet />
-  );
+  return isAuth ? <Navigate to="/home-page" /> : <Outlet />;
 };
 
 export default ProtectedSign;
