@@ -37,27 +37,30 @@ const defaultTheme = createTheme();
 export default function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoading, isError, isSuccess } = useSelector(
-    (state) => state.userRegister
-  );
+  const {
+    isLoading,
+    isError,
+    isSuccess,
+    userInfo: registerMess,
+  } = useSelector((state) => state.userRegister);
   const { userInfo } = useSelector((state) => state.userLogin);
   const [show, setShow] = React.useState(false);
   React.useEffect(() => {
     if (isSuccess) {
-      toast.success(`Register successfully ! Login now !`);
+      toast.success(`${registerMess.message}`);
 
-      const redirectTimeout = setTimeout(() => {
-        dispatch({ type: "USER_REGISTER_RESET" });
-        navigate("/login");
-      }, 3000);
+      // const redirectTimeout = setTimeout(() => {
+      //   dispatch({ type: "USER_REGISTER_RESET" });
+      //   navigate("/login");
+      // }, 3000);
 
-      return () => clearTimeout(redirectTimeout);
+      // return () => clearTimeout(redirectTimeout);
     }
     if (isError) {
       toast.error(isError);
       dispatch({ type: "USER_REGISTER_RESET" });
     }
-  }, [dispatch, isError, isSuccess, navigate, userInfo]);
+  }, [dispatch, isError, isSuccess, navigate, userInfo, registerMess]);
   const formik = useFormik({
     initialValues: {
       firstName: "",
