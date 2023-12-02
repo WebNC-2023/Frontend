@@ -5,7 +5,7 @@ import Avatar from "@mui/material/Avatar";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../ForgotPasswordPage/ForgotPasswordPage.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,6 +17,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 const ResetPasswordPage = () => {
   const { code } = useParams();
+  const navigate = useNavigate();
   const [sending, setSending] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -122,6 +123,17 @@ const ResetPasswordPage = () => {
                   ? "Your password has been changed successfully."
                   : "Reset password code is invalid!"}
               </p>
+              <span
+                className="back-to-login-page"
+                style={
+                  sending
+                    ? { pointerEvents: "none", color: "gray", marginTop: "16px" }
+                    : { pointerEvents: "", marginTop: "16px" }
+                }
+                onClick={(e) => navigate("/login")}
+              >
+                Back to login page
+              </span>
             </Grid>
           </Paper>
         </Grid>
@@ -179,6 +191,21 @@ const ResetPasswordPage = () => {
                   if (regexPassword.test(e.target.value)) {
                     setNewPasswordErrorMsg("");
                     setNewPasswordErrorState(false);
+                    if (
+                      e.target.value === confirmNewPassword &&
+                      confirmNewPassword.length >= 8
+                    ) {
+                      setConfirmNewPasswordErrorMsg("");
+                      setConfirmNewPasswordErrorState(false);
+                    } else if (
+                      e.target.value !== confirmNewPassword &&
+                      confirmNewPassword.length >= 8
+                    ) {
+                      setConfirmNewPasswordErrorMsg(
+                        "Password confirmation does not match the new password"
+                      );
+                      setConfirmNewPasswordErrorState(true);
+                    }
                   } else {
                     setNewPasswordErrorMsg(
                       "Password must have a minimum of 8 characters and a maximum of 20 characters"
@@ -254,8 +281,7 @@ const ResetPasswordPage = () => {
               marginTop={4}
               justifyContent={"center"}
               alignItems={"center"}
-            >
-            </Grid>
+            ></Grid>
           </Paper>
         </Grid>
       )}

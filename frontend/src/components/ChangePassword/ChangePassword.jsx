@@ -201,6 +201,15 @@ const ChangePassword = () => {
                 if (regexPassword.test(e.target.value)) {
                   setNewPasswordErrorMsg("");
                   setNewPasswordErrorState(false);
+                  if (e.target.value === confirmNewPassword && confirmNewPassword.length >= 8) {
+                    setConfirmNewPasswordErrorMsg("");
+                    setConfirmNewPasswordErrorState(false);
+                  } else if (e.target.value !== confirmNewPassword && confirmNewPassword.length >= 8) {
+                    setConfirmNewPasswordErrorMsg(
+                      "Password confirmation does not match the new password"
+                    );
+                    setConfirmNewPasswordErrorState(true);
+                  }
                 } else {
                   setNewPasswordErrorMsg(
                     "Password must have a minimum of 8 characters and a maximum of 20 characters"

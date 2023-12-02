@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { Outlet, Navigate } from "react-router-dom";
+import Axios from "../../redux/APIs/Axios";
 const ProtectedHome = () => {
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
@@ -11,11 +11,7 @@ const ProtectedHome = () => {
     async function checkLoggedIn() {
       setLoadingHomePage(true);
       setIsAuth(false);
-      const res = await axios({
-        url: "https://webnc-2023.vercel.app/auth/me",
-        method: "GET",
-        withCredentials: true,
-      });
+      const res = await Axios.get("https://webnc-2023.vercel.app/auth/me");
       return res;
     }
     checkLoggedIn()
