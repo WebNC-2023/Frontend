@@ -47,7 +47,11 @@ const ProtectedSign = () => {
         <div></div>
       </div>
     );
-  return isAuth ? <Navigate to="/home-page" /> : <Outlet />;
+  return isAuth && localStorage.getItem("userInfo") ? (
+    <Navigate to="/home-page" />
+  ) : (
+    <Outlet />
+  );
 };
 
 export default ProtectedSign;

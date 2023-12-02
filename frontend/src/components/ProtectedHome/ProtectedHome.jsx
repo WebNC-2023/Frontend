@@ -54,7 +54,11 @@ const ProtectedHome = () => {
         <div></div>
       </div>
     );
-  return isAuth ? <Outlet /> : <Navigate to="/" />;
+  return isAuth && localStorage.getItem("userInfo") ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/" />
+  );
 };
 
 export default ProtectedHome;
