@@ -43,6 +43,7 @@ const HomePageHeader = () => {
   };
   const handleClickLogOut = () => {
     async function userLogout() {
+      localStorage.removeItem("userInfo");
       const res = await axios({
         url: "https://webnc-2023.vercel.app/auth/sign-out",
         method: "POST",
@@ -52,7 +53,6 @@ const HomePageHeader = () => {
     }
     userLogout()
       .then((res) => {
-        localStorage.removeItem("userInfo");
         if (res.data.message === "Sign out successfully") {
           dispatch(
             update({
