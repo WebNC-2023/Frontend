@@ -21,13 +21,6 @@ const ProtectedSign = () => {
     checkLoggedIn()
       .then((res) => {
         console.log(res.data);
-        localStorage.setItem("userInfo", JSON.stringify(res.data.data));
-        dispatch(
-          update({
-            fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-            avatar: `https://webnc-2023.vercel.app/files/${res.data.data.avatar}`,
-          })
-        );
         setLoadingSignPage(false);
         setIsAuth(true);
       })
