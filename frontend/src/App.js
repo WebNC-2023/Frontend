@@ -15,6 +15,8 @@ import ProtectedHome from "./components/ProtectedHome/ProtectedHome";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage";
 import ProtectedResetPassword from "./components/ProtectedResetPassword/ProtectedResetPassword";
+import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
+import ProtectedVerifyEmail from "./components/ProtectedVerifyEmail/ProtectedVerifyEmail";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -50,6 +52,14 @@ function App() {
               <ProtectedResetPassword>
                 <ResetPasswordPage />
               </ProtectedResetPassword>
+            }
+          />
+          <Route
+            path="/active-account/:code"
+            element={
+              <ProtectedVerifyEmail>
+                <VerifyEmail />
+              </ProtectedVerifyEmail>
             }
           />
           <Route path="*" element={<Error />} />
