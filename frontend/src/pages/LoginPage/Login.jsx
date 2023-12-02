@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
+import { Divider } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -19,6 +20,16 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { loginAction } from "../../redux/Actions/userActions";
 import { useNavigate } from "react-router-dom";
+import Stack from "@mui/material/Stack";
+
+import {
+  FacebookLoginButton,
+  GoogleLoginButton,
+} from "react-social-login-buttons";
+import {
+  handleFacebookLogin,
+  handleGoogleLogin,
+} from "../../utils/SocialLoginHandle";
 
 const defaultTheme = createTheme();
 
@@ -69,6 +80,7 @@ export default function SignIn() {
           >
             <LockOutlinedIcon />
           </Avatar>
+
           <Typography component="h1" variant="h4">
             Sign in
           </Typography>
@@ -119,7 +131,20 @@ export default function SignIn() {
                   </InputAdornment>
                 ),
               }}
+              sx={{ mb: 2 }}
             />
+            <Link
+              href="/forgot-password"
+              variant="body2"
+              style={{
+                textDecoration: "none",
+                fontWeight: "bold",
+                fontStyle: "italic",
+              }}
+            >
+              {"Forgot Password?"}
+            </Link>
+
             <Button
               type="submit"
               fullWidth
@@ -139,27 +164,73 @@ export default function SignIn() {
             <Grid container>
               {/* <Grid item xs></Grid> */}
               <Grid item>
-                <div
+                <Link
+                  href="/register"
+                  variant="body2"
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
+                    textDecoration: "none",
                   }}
                 >
-                  <Link
-                    href="/forgot-password"
-                    variant="body2"
-                    style={{ fontStyle: "italic" }}
-                  >
-                    {"Forgot Password?"}
-                  </Link>
-                  <Link href="/register" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </div>
+                  {"Don't have an account? Sign Up"}
+                </Link>
               </Grid>
             </Grid>
+            <Divider
+              sx={{
+                mt: 2,
+                mb: 2,
+                color: "#868e96",
+                fontSize: "14px",
+              }}
+            >
+              OR
+            </Divider>
+            <Stack
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              spacing={3}
+              style={{
+                gap: "0.5rem",
+              }}
+            >
+              <FacebookLoginButton
+                style={{
+                  background: "#5175e0",
+                  gap: "1rem",
+                  border: "1px solid #5175e0",
+                }}
+                activeStyle={{
+                  background: "#3c5fc9",
+                  boxShadow: "0 0 5px rgba(0, 0, 0, 0.05)",
+                }}
+                iconSize="20px"
+                onClick={handleFacebookLogin}
+              >
+                <span
+                  style={{
+                    marginLeft: "0.5rem",
+                  }}
+                >
+                  Continue with Facebook
+                </span>
+              </FacebookLoginButton>
+              <GoogleLoginButton
+                style={{
+                  border: "1px solid #f5f5f5",
+                }}
+                iconSize="20px"
+                onClick={handleGoogleLogin}
+              >
+                <span
+                  style={{
+                    marginLeft: "0.5rem",
+                  }}
+                >
+                  Continue with Google{" "}
+                </span>
+              </GoogleLoginButton>
+            </Stack>
           </Box>
         </Box>
       </Container>
