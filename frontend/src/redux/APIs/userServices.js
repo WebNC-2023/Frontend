@@ -7,7 +7,7 @@ import Axios from "./Axios";
 export const registerService = async (user) => {
   const { data } = await Axios.post("/auth/sign-up", user);
 
-  return data.data;
+  return data;
 };
 
 // Logout user Function
