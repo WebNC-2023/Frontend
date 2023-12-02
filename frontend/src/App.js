@@ -36,14 +36,23 @@ function App() {
           <Route element={<ProtectedLanding />}>
             <Route path="/" element={<LandingPage />} />
           </Route>
+
           <Route element={<ProtectedHome />}>
             <Route path="/home-page" element={<HomePage />} />
           </Route>
+
           <Route element={<ProtectedSign />}>
             <Route path="/login" element={<Login />} />
+          </Route>
+
+          <Route element={<ProtectedSign />}>
             <Route path="/register" element={<Register />} />
+          </Route>
+
+          <Route element={<ProtectedSign />}>
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           </Route>
+
           <Route
             path="/reset-password/:code"
             element={
