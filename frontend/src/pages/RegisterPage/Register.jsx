@@ -19,6 +19,18 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { Divider } from "@mui/material";
+
+import Stack from "@mui/material/Stack";
+
+import {
+  FacebookLoginButton,
+  GoogleLoginButton,
+} from "react-social-login-buttons";
+import {
+  handleFacebookLogin,
+  handleGoogleLogin,
+} from "../../utils/SocialLoginHandle";
 
 const defaultTheme = createTheme();
 
@@ -185,11 +197,72 @@ export default function Register() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/login" variant="body2" sx={{ color: "#5175e0" }}>
+                <Link
+                  href="/login"
+                  variant="body2"
+                  sx={{ color: "#5175e0" }}
+                  style={{
+                    textDecoration: "none",
+                  }}
+                >
                   Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
+            <Divider
+              sx={{
+                mt: 2,
+                mb: 2,
+                color: "#868e96",
+                fontSize: "14px",
+              }}
+            >
+              OR
+            </Divider>
+            <Stack
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              spacing={3}
+              style={{
+                gap: "0.5rem",
+              }}
+            >
+              <FacebookLoginButton
+                style={{
+                  background: "#5175e0",
+                  gap: "1rem",
+                  border: "1px solid #5175e0",
+                }}
+                activeStyle={{
+                  background: "#3c5fc9",
+                  boxShadow: "0 0 5px rgba(0, 0, 0, 0.05)",
+                }}
+                onClick={handleFacebookLogin}
+              >
+                <span
+                  style={{
+                    marginLeft: "0.5rem",
+                  }}
+                >
+                  Continue with Facebook
+                </span>
+              </FacebookLoginButton>
+              <GoogleLoginButton
+                style={{
+                  border: "1px solid #f5f5f5",
+                }}
+                onClick={handleGoogleLogin}
+              >
+                <span
+                  style={{
+                    marginLeft: "0.5rem",
+                  }}
+                >
+                  Continue with Google{" "}
+                </span>
+              </GoogleLoginButton>
+            </Stack>
           </Box>
         </Box>
       </Container>
