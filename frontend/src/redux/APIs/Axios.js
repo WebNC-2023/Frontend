@@ -9,13 +9,13 @@ const Axios = axios.create({
 // Request interceptor để thêm token vào mỗi request
 Axios.interceptors.request.use(
   (config) => {
-    // Lấy token từ cookies
-    const accessToken = Cookies.get("accessToken");
-
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-
+    //Lấy token từ cookies
+    // const accessToken = Cookies.get("accessToken");
+    // console.log(accessToken);
+    // if (accessToken) {
+    //   config.headers.Authorization = `Bearer ${accessToken}`;
+    // }
+    //console.log(document.cookie);
     return config;
   },
   (error) => {
@@ -29,41 +29,25 @@ Axios.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.log(error);
-    const originalRequest = error.config;
-    const refreshToken = Cookies.get("refreshToken");
-
-    console.log(originalRequest);
+    console.log("Access token expired");
     // Kiểm tra nếu lỗi là do token hết hạn và chưa thử refresh token
-    console.log(error.response.status, originalRequest._retry, refreshToken);
+    //console.log(error.response.status, originalRequest._retry, refreshToken);
     if (
+      error.response &&
       error.response.status === 401 &&
-      !originalRequest._retry &&
-      Cookies.get("refreshToken")
-      // originalRequest.headers.Authorization
+      error.response.data === "Unauthorized"
     ) {
-      console.log("refresh");
-      originalRequest._retry = true;
-
       try {
-        // Thực hiện refresh token
-        const response = await Axios.get("/auth/refresh");
-        // Lấy token từ cookies sau khi đã refresh
-        const newAccessToken = Cookies.get("accessToken");
-
-        // Thực hiện lại request gốc với token mới
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return Axios(originalRequest);
-      } catch (refreshError) {
-        // Nếu refresh token cũng lỗi, đăng xuất người dùng hoặc thực hiện các xử lý khác
-        console.log("Refresh token failed");
-        // Đăng xuất hoặc thực hiện các xử lý khác
-        const res = await Axios.post("/auth/sign-out");
-        localStorage.removeItem("userInfo");
-        return Promise.reject(refreshError);
+        console.log("call refresh token");
+        const result = await Axios.get("/auth/refresh");
+        return result;
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem("userInfo");
+        }
+        return Promise.reject(err);
       }
     }
-
     return Promise.reject(error);
   }
 );

@@ -28,6 +28,7 @@ const ProtectedHome = () => {
         setIsAuth(true);
       })
       .catch((err) => {
+        console.log(err.response);
         if (err.response.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(
