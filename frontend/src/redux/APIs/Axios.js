@@ -30,9 +30,12 @@ Axios.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-
     // Kiểm tra nếu lỗi là do token hết hạn và chưa thử refresh token
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest.headers.Authorization
+    ) {
       originalRequest._retry = true;
 
       try {

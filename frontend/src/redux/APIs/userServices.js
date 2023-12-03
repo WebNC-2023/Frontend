@@ -18,6 +18,7 @@ export const logoutService = () => {
 // Login user API call
 export const loginService = async (user) => {
   const { data } = await Axios.post("/auth/sign-in", user);
+  console.log(data);
   if (data) {
     localStorage.setItem("userInfo", JSON.stringify(data.data));
   }
