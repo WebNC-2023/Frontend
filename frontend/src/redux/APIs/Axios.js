@@ -11,7 +11,6 @@ Axios.interceptors.request.use(
   (config) => {
     // Lấy token từ cookies
     const accessToken = Cookies.get("accessToken");
-
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -26,15 +25,20 @@ Axios.interceptors.request.use(
 // Response interceptor để xử lý refresh token khi token hết hạn
 Axios.interceptors.response.use(
   (response) => {
+    console.log(response);
     return response;
   },
   async (error) => {
+    console.log(error);
+    console.log("haha");
     const originalRequest = error.config;
+
     // Kiểm tra nếu lỗi là do token hết hạn và chưa thử refresh token
     if (
       error.response.status === 401 &&
       !originalRequest._retry &&
-      originalRequest.headers.Authorization
+      Cookies.get("refreshToken")
+      // originalRequest.headers.Authorization
     ) {
       originalRequest._retry = true;
 
