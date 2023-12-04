@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { Outlet, Navigate } from "react-router-dom";
-//import Axios from "../../redux/APIs/Axios";
+import Axios from "../../redux/APIs/Axios";
 const ProtectedSign = () => {
   const dispatch = useDispatch();
   const [loadingSignPage, setLoadingSignPage] = useState(true);
@@ -12,10 +12,9 @@ const ProtectedSign = () => {
     async function checkLoggedIn() {
       setLoadingSignPage(true);
       setIsAuth(false);
-      const res = await axios({
-        url: "https://webnc-2023.vercel.app/auth/me",
+      const res = await Axios({
+        url: "/auth/me",
         method: "GET",
-        withCredentials: true,
       });
       return res;
     }

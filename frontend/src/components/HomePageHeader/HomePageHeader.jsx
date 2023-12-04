@@ -14,11 +14,12 @@ import { useState, useContext } from "react";
 import Logout from "@mui/icons-material/Logout";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
-import axios from "axios";
+//import axios from "axios";
 import { DataContext } from "../../contexts/DataContext";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import InfoIcon from "@mui/icons-material/Info";
+import Axios from "../../redux/APIs/Axios";
 const HomePageHeader = () => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
   const { setShowScreen } = useContext(DataContext);
@@ -44,10 +45,9 @@ const HomePageHeader = () => {
   const handleClickLogOut = () => {
     async function userLogout() {
       localStorage.removeItem("userInfo");
-      const res = await axios({
-        url: "https://webnc-2023.vercel.app/auth/sign-out",
+      const res = await Axios({
+        url: "/auth/sign-out",
         method: "POST",
-        withCredentials: true,
       });
       return res;
     }

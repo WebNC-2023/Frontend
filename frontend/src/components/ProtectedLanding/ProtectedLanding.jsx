@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { Outlet } from "react-router-dom";
-//import Axios from "../../redux/APIs/Axios";
+import Axios from "../../redux/APIs/Axios";
 const ProtectedLanding = () => {
   const dispatch = useDispatch();
   const [loadingLandingPage, setLoadingLandingPage] = useState(true);
   useEffect(() => {
     async function checkLoggedIn() {
       setLoadingLandingPage(true);
-      const res = await axios({
-        url: "https://webnc-2023.vercel.app/auth/me",
+      const res = await Axios({
+        url: "/auth/me",
         method: "GET",
-        withCredentials: true
       });
       return res;
     }
@@ -24,7 +23,7 @@ const ProtectedLanding = () => {
         dispatch(
           update({
             fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-            avatar: `https://webnc-2023.vercel.app/files/${res.data.data.avatar}`,
+            avatar: `${process.env.REACT_APP_SERVER_BASE_URL}/files/${res.data.data.avatar}`,
           })
         );
         setLoadingLandingPage(false);

@@ -16,7 +16,9 @@ import { useDispatch } from "react-redux";
 import { update, updateStart } from "../../redux/Reducers/fullNameUserSlice";
 import { ToastContainer, toast } from "react-toastify";
 import Axios from "../../redux/APIs/Axios";
+import { useNavigate } from "react-router-dom";
 const EditProfile = () => {
+  const navigate = useNavigate();
   const [firstNameErrorState, setFirstNameErrorState] = useState(false);
   const [firstNameErrorMsg, setFirstNameErrorMsg] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -71,7 +73,7 @@ const EditProfile = () => {
           dispatch(
             update({
               fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-              avatar: `https://webnc-2023.vercel.app/files/${
+              avatar: `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
                 res.data.data.avatar
               }?${Date.now()}`,
             })
@@ -80,7 +82,18 @@ const EditProfile = () => {
         })
         .catch((err) => {
           setShowLoadingEditBtn(false);
-          toast.error("Your profile has been changed fail");
+          if (
+            err?.response?.status === 401 &&
+            err?.response?.data === "Unauthorized"
+          ) {
+            toast.error(`${err?.response?.data}`);
+            setTimeout(() => {
+              navigate("/");
+            }, 4000);
+          }
+          else {
+            toast.error("Your profile has been changed fail");
+          }
         });
     }
   };
