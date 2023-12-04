@@ -44,8 +44,6 @@ const ProtectedHome = () => {
           setLoadingHomePage(false);
           setIsAuth(false);
         } else {
-          setLoadingHomePage(false);
-          setIsAuth(false);
           throw err;
         }
       }

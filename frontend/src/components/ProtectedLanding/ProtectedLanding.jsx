@@ -39,7 +39,6 @@ const ProtectedLanding = () => {
           );
           setLoadingLandingPage(false);
         } else {
-          setLoadingLandingPage(false);
           throw err;
         }
       });

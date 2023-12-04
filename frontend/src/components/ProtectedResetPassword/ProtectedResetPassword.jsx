@@ -32,8 +32,6 @@ const ProtectedResetPassword = ({ children }) => {
           setLoading(false);
           setValidate(false);
         } else {
-          setLoading(false);
-          setValidate(false);
           throw err;
         }
       });
