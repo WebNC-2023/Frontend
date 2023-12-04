@@ -29,7 +29,7 @@ const ProtectedLanding = () => {
         setLoadingLandingPage(false);
       })
       .catch((err) => {
-        if (err.response.data === "Unauthorized") {
+        if (err?.response?.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(
             update({

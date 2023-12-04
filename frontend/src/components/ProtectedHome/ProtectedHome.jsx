@@ -32,7 +32,7 @@ const ProtectedHome = () => {
       } catch (err) {
         console.error(err.response);
 
-        if (err.response?.data === "Unauthorized") {
+        if (err?.response?.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(
             update({
