@@ -6,10 +6,11 @@ import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
-import axios from "axios";
+//import axios from "axios";
 import "./ForgotPasswordPage.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Axios from "../../redux/APIs/Axios";
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -34,10 +35,9 @@ const ForgotPasswordPage = () => {
       if (emailErrorMsg === "") {
         async function sendEmailToResetPassword() {
           setSending(true);
-          const res = await axios({
-            url: "https://webnc-2023.vercel.app/auth/forgot-password",
+          const res = await Axios({
+            url: "/auth/forgot-password",
             method: "POST",
-            withCredentials: true,
             data: {
               email,
             },

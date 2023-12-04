@@ -14,10 +14,11 @@ import { useState, useContext } from "react";
 import { DataContext } from "../../contexts/DataContext";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-//import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import Axios from "../../redux/APIs/Axios";
+import { useNavigate } from "react-router-dom";
 const ChangePassword = () => {
+  const navigate = useNavigate();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -82,9 +83,21 @@ const ChangePassword = () => {
         })
         .catch((err) => {
           setShowLoadingChangePasswordBtn(false);
-          toast.error(`${err.response.data.message}`, {
-            autoClose: 3000,
-          });
+          if (
+            err?.response?.status === 401 &&
+            err?.response?.data === "Unauthorized"
+          ) {
+            toast.error(`${err?.response?.data}`, {
+              autoClose: 3000,
+            });
+            setTimeout(() => {
+              navigate("/");
+            }, 4000);
+          } else {
+            toast.error(`${err?.response?.data?.message}`, {
+              autoClose: 3000,
+            });
+          }
         });
     }
   };
@@ -201,10 +214,16 @@ const ChangePassword = () => {
                 if (regexPassword.test(e.target.value)) {
                   setNewPasswordErrorMsg("");
                   setNewPasswordErrorState(false);
-                  if (e.target.value === confirmNewPassword && confirmNewPassword.length >= 8) {
+                  if (
+                    e.target.value === confirmNewPassword &&
+                    confirmNewPassword.length >= 8
+                  ) {
                     setConfirmNewPasswordErrorMsg("");
                     setConfirmNewPasswordErrorState(false);
-                  } else if (e.target.value !== confirmNewPassword && confirmNewPassword.length >= 8) {
+                  } else if (
+                    e.target.value !== confirmNewPassword &&
+                    confirmNewPassword.length >= 8
+                  ) {
                     setConfirmNewPasswordErrorMsg(
                       "Password confirmation does not match the new password"
                     );

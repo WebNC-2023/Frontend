@@ -6,7 +6,7 @@ import LockResetIcon from "@mui/icons-material/LockReset";
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+//import axios from "axios";
 import "../ForgotPasswordPage/ForgotPasswordPage.css";
 import "react-toastify/dist/ReactToastify.css";
 import Visibility from "@mui/icons-material/Visibility";
@@ -14,6 +14,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "./ResetPasswordPage.css";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import Axios from "../../redux/APIs/Axios";
 
 const ResetPasswordPage = () => {
   const { code } = useParams();
@@ -56,10 +57,9 @@ const ResetPasswordPage = () => {
         setSending(true);
         setSendChangePassword(false);
         setChangedSuccess(false);
-        const res = await axios({
-          url: "https://webnc-2023.vercel.app/auth/reset-password",
+        const res = await Axios({
+          url: "/auth/reset-password",
           method: "POST",
-          withCredentials: true,
           data: {
             resetPasswordCode: `${code}`,
             newPassword: newPassword,
