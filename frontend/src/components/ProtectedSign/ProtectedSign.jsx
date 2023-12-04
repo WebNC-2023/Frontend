@@ -3,6 +3,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { Outlet, Navigate } from "react-router-dom";
+//import Axios from "../../redux/APIs/Axios";
 const ProtectedSign = () => {
   const dispatch = useDispatch();
   const [loadingSignPage, setLoadingSignPage] = useState(true);
