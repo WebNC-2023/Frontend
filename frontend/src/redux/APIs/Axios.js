@@ -6,22 +6,7 @@ const Axios = axios.create({
   withCredentials: true,
 });
 
-// Request interceptor để thêm token vào mỗi request
-Axios.interceptors.request.use(
-  (config) => {
-    //Lấy token từ cookies
-    // const accessToken = Cookies.get("accessToken");
-    // console.log(accessToken);
-    // if (accessToken) {
-    //   config.headers.Authorization = `Bearer ${accessToken}`;
-    // }
-    //console.log(document.cookie);
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+let count = 0;
 
 // Response interceptor để xử lý refresh token khi token hết hạn
 Axios.interceptors.response.use(
@@ -32,23 +17,25 @@ Axios.interceptors.response.use(
     console.log("Access token expired");
     // Kiểm tra nếu lỗi là do token hết hạn và chưa thử refresh token
     //console.log(error.response.status, originalRequest._retry, refreshToken);
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      error.response.data === "Unauthorized"
-    ) {
+    if (error.response.status === 401 && count <= 1) {
       try {
+        count++;
         console.log("call refresh token");
-        const result = await Axios.get("/auth/refresh");
-        return result;
+        const result = await axios({
+          url: "https://webnc-2023.vercel.app/auth/refresh",
+          method: "GET",
+          withCredentials: true,
+        });
+        return Axios(error.config);
       } catch (err) {
-        if (err.response && err.response.status === 401) {
+        if (err.response && err.response.status === 400) {
           localStorage.removeItem("userInfo");
+          window.location = "/login";
         }
         return Promise.reject(err);
       }
     }
-    return Promise.reject(error);
+    window.location = "/home-page";
   }
 );
 
