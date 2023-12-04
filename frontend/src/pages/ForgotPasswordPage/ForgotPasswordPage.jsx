@@ -94,8 +94,7 @@ const ForgotPasswordPage = () => {
             onChange={(e) => {
               setEmail(e.target.value);
               if (e.target.value !== "") {
-                const gmailRegex =
-                  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@gmail.com)$/gim;
+                const gmailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
                 if (gmailRegex.test(e.target.value)) {
                   setEmailErrorState(false);
                   setEmailErrorMsg("");
