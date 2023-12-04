@@ -26,7 +26,7 @@ const ProtectedResetPassword = ({ children }) => {
         setValidate(true);
       })
       .catch((err) => {
-        if (err.response.data.message === "Reset password code is invalid!") {
+        if (err?.response?.data?.message === "Reset password code is invalid!") {
           setLoading(false);
           setValidate(false);
         }
