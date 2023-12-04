@@ -1,6 +1,7 @@
 import { useParams, Navigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
+//import axios from "axios";
+import Axios from "../../redux/APIs/Axios";
 const ProtectedResetPassword = ({ children }) => {
   const { code } = useParams();
   const [loading, setLoading] = useState(true);
@@ -10,10 +11,9 @@ const ProtectedResetPassword = ({ children }) => {
     async function sendValidateResetPasswordCode() {
       setLoading(true);
       setValidate(false);
-      const res = await axios({
+      const res = await Axios({
         method: "POST",
-        url: "https://webnc-2023.vercel.app/auth/validate-reset-password-code",
-        withCredentials: true,
+        url: "/auth/validate-reset-password-code",
         data: {
           resetPasswordCode: code,
         },

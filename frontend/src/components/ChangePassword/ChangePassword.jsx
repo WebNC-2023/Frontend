@@ -14,8 +14,9 @@ import { useState, useContext } from "react";
 import { DataContext } from "../../contexts/DataContext";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import axios from "axios";
+//import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import Axios from "../../redux/APIs/Axios";
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -58,10 +59,9 @@ const ChangePassword = () => {
     ) {
       async function sendChangePassword() {
         setShowLoadingChangePasswordBtn(true);
-        const res = await axios({
+        const res = await Axios({
           method: "PATCH",
-          url: "https://webnc-2023.vercel.app/users/change-password",
-          withCredentials: true,
+          url: "/users/change-password",
           data: {
             currentPassword: currentPassword,
             newPassword: newPassword,

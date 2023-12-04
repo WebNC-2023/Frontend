@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const Axios = axios.create({
   baseURL: "https://webnc-2023.vercel.app",
   withCredentials: true,
@@ -12,31 +11,31 @@ Axios.interceptors.response.use(
   },
   async (error) => {
     console.log("Access token expired");
+    window.location = "/login";
     // Kiểm tra nếu lỗi là do token hết hạn và chưa thử refresh token
     //console.log(error.response.status, originalRequest._retry, refreshToken);
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      error.response.data === "Unauthorized"
-    ) {
-      try {
-        console.log("call refresh token");
-        await Axios.get("/auth/refresh");
+    // if (
+    //   error.response &&
+    //   error.response.status === 401 &&
+    //   error.response.data === "Unauthorized"
+    // ) {
+      // try {
+      //   console.log("call refresh token");
+      //   await Axios.get("/auth/refresh");
+      //   return Axios.request(error.config);
+      // } catch (err) {
+      //   localStorage.removeItem("userInfo");
+      //   setTimeout(
+      //     () => (window.location.href = "http://localhost:3000/login"),
+      //     3000
+      //   );
 
-        return Axios.request(error.config);
-      } catch (err) {
-        localStorage.removeItem("userInfo");
-        // setTimeout(
-        //   () => (window.location.href = "http://localhost:3000/login"),
-        //   3000
-        // );
+      //   console.log(err);
 
-        console.log(err);
-
-        return Promise.reject(err);
-      }
-    }
-    return Promise.reject(error);
+      //   return Promise.reject(err);
+      // }
+    // }
+    // return Promise.reject(error);
   }
 );
 

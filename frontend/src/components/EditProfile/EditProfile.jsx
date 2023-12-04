@@ -11,10 +11,11 @@ import SendIcon from "@mui/icons-material/Send";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import { useState, useContext } from "react";
 import { DataContext } from "../../contexts/DataContext";
-import axios from "axios";
+//import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update, updateStart } from "../../redux/Reducers/fullNameUserSlice";
 import { ToastContainer, toast } from "react-toastify";
+import Axios from "../../redux/APIs/Axios";
 const EditProfile = () => {
   const [firstNameErrorState, setFirstNameErrorState] = useState(false);
   const [firstNameErrorMsg, setFirstNameErrorMsg] = useState("");
@@ -47,13 +48,12 @@ const EditProfile = () => {
       async function sendEditProfile() {
         setShowLoadingEditBtn(true);
         dispatch(updateStart());
-        const res = await axios({
+        const res = await Axios({
           method: "PATCH",
-          url: "https://webnc-2023.vercel.app/users/update-profile",
+          url: "/users/update-profile",
           headers: {
             "Content-Type": "multipart/form-data",
           },
-          withCredentials: true,
           data: {
             ...dataEdit,
           },

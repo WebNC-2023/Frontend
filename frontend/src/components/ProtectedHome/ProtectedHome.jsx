@@ -15,7 +15,7 @@ const ProtectedHome = () => {
       setIsAuth(false);
 
       try {
-        const res = await Axios.get("https://webnc-2023.vercel.app/auth/me");
+        const res = await Axios.get("/auth/me");
         console.log(res.data);
 
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
