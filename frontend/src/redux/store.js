@@ -9,9 +9,7 @@ const rootReducer = combineReducers({
 });
 
 // get userInfo from localStorage
-const userInfoFromStorage = localStorage.getItem("userInfo")
-  ? JSON.parse(localStorage.getItem("userInfo"))
-  : null;
+const userInfoFromStorage = localStorage.getItem("userInfo") ?? null;
 
 // initialState
 const initialState = {
