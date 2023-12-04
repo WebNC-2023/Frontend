@@ -5,9 +5,14 @@ let lastUserName;
 let userAvatar;
 
 if (localStorage.getItem("userInfo")) {
-  if (localStorage.getItem("userInfo").firstName)
-    firstUserName = localStorage.getItem("userInfo").firstName;
-  else firstUserName = "";
+  if (localStorage.getItem("userInfo").firstName) {
+    if (
+      localStorage.getItem("userInfo").firstName !== null &&
+      localStorage.getItem("userInfo").firstName !== undefined
+    ) {
+      firstUserName = localStorage.getItem("userInfo").firstName;
+    } else firstUserName = "";
+  } else firstUserName = "";
   if (localStorage.getItem("userInfo").lastName)
     lastUserName = localStorage.getItem("userInfo").lastName;
   else lastUserName = "";
