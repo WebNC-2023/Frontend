@@ -17,7 +17,7 @@ Axios.interceptors.response.use(
     console.log("Access token expired");
     // Kiểm tra nếu lỗi là do token hết hạn và chưa thử refresh token
     //console.log(error.response.status, originalRequest._retry, refreshToken);
-    if (error.response.status === 401 && count <= 1) {
+    if (error.response.status === 401 && count <= 5) {
       try {
         count++;
         console.log("call refresh token");
