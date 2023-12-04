@@ -26,9 +26,15 @@ const ProtectedResetPassword = ({ children }) => {
         setValidate(true);
       })
       .catch((err) => {
-        if (err?.response?.data?.message === "Reset password code is invalid!") {
+        if (
+          err?.response?.data?.message === "Reset password code is invalid!"
+        ) {
           setLoading(false);
           setValidate(false);
+        } else {
+          setLoading(false);
+          setValidate(false);
+          throw err;
         }
       });
   }, [code]);
@@ -43,7 +49,10 @@ const ProtectedResetPassword = ({ children }) => {
     );
   else {
     if (validate) return children;
-    else return <Navigate to="/forgot-password" state={{ from: location }} replace />;
+    else
+      return (
+        <Navigate to="/forgot-password" state={{ from: location }} replace />
+      );
   }
 };
 

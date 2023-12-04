@@ -41,6 +41,10 @@ const ProtectedSign = () => {
           );
           setLoadingSignPage(false);
           setIsAuth(false);
+        } else {
+          setLoadingSignPage(false);
+          setIsAuth(false);
+          throw err;
         }
       });
   }, [dispatch]);
