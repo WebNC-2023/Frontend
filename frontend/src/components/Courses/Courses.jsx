@@ -221,7 +221,6 @@ const Courses = () => {
   }, [itemOffset]);
   return (
     <>
-      {" "}
       <p className="best-seller-course-title">Best seller courses</p>
       <div className="best-seller-course">
         <div className="best-seller-courses-container">
