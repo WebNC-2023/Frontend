@@ -1,4 +1,4 @@
-import { Grid, TextField, Button } from "@mui/material";
+import { Grid } from "@mui/material";
 const Home = () => {
   return (
     <Grid
@@ -16,7 +16,7 @@ const Home = () => {
           provide information related to various academic subjects and skill
           development.
         </p>
-        <div className="landing-page-form">
+        {/* <div className="landing-page-form">
           <TextField
             className="landing-page-input"
             id="outlined-basic"
@@ -31,7 +31,7 @@ const Home = () => {
           >
             Register
           </Button>
-        </div>
+        </div> */}
       </Grid>
       <Grid item xs={12} md={6} className="landing-page-content-right">
         <div className="landing-page-image">

@@ -9,7 +9,7 @@ const HomePage = () => {
   const { showScreen } = useContext(DataContext);
   return (
     <div className="home-page-container">
-      <HomePageHeader />
+      <HomePageHeader showScreen={showScreen}/>
       {showScreen === "courses" ? (
         <Courses />
       ) : showScreen === "edit profile" ? (

@@ -112,7 +112,7 @@ const ChangePassword = () => {
         sm={8}
         md={4}
         className="editProfile-container"
-        style={{ marginTop: "20px" }}
+        style={{ paddingTop: "105px" }}
       >
         <Paper elevation={10} className="editProfile-form">
           <Grid container direction={"column"} alignItems={"center"}>

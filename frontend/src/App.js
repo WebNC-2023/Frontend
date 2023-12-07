@@ -17,6 +17,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage";
 import ProtectedResetPassword from "./components/ProtectedResetPassword/ProtectedResetPassword";
 import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import ProtectedVerifyEmail from "./components/ProtectedVerifyEmail/ProtectedVerifyEmail";
+import ClassDetailsPage from "./pages/ClassDetailsPage/ClassDetailsPage";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -70,6 +71,10 @@ function App() {
                 <VerifyEmail />
               </ProtectedVerifyEmail>
             }
+          />
+          <Route
+            path="/class-details/:classId"
+            element={<ClassDetailsPage />}
           />
           <Route path="*" element={<Error />} />
         </Routes>
