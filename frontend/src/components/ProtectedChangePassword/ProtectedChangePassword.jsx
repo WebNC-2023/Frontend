@@ -1,34 +1,40 @@
-import { useEffect, useState } from "react";
-//import axios from "axios";
+import { useEffect, useState, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
+import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
-const ProtectedLanding = () => {
+
+const ProtectedChangePassword = () => {
+  const {setShowSidebar} = useContext(DataContext);
   const dispatch = useDispatch();
-  const [loadingLandingPage, setLoadingLandingPage] = useState(true);
+  const [loadingHomePage, setLoadingHomePage] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
+
   useEffect(() => {
-    async function checkLoggedIn() {
-      setLoadingLandingPage(true);
-      const res = await Axios({
-        url: "/auth/me",
-        method: "GET",
-      });
-      return res;
-    }
-    checkLoggedIn()
-      .then((res) => {
+    const checkLoggedIn = async () => {
+      setLoadingHomePage(true);
+      setIsAuth(false);
+
+      try {
+        const res = await Axios.get("/auth/me");
         console.log(res.data);
+
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
+
         dispatch(
           update({
             fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
             avatar: `${process.env.REACT_APP_SERVER_BASE_URL ?? "https://webnc-2023.vercel.app"}/files/${res.data.data.avatar}?${Date.now()}`,
           })
         );
-        setLoadingLandingPage(false);
-      })
-      .catch((err) => {
+
+        setLoadingHomePage(false);
+        setIsAuth(true);
+        setShowSidebar(false);
+      } catch (err) {
+        console.error(err.response);
+
         if (err?.response?.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(
@@ -37,13 +43,19 @@ const ProtectedLanding = () => {
               avatar: "",
             })
           );
-          setLoadingLandingPage(false);
+
+          setLoadingHomePage(false);
+          setIsAuth(false);
         } else {
           throw err;
         }
-      });
-  }, [dispatch]);
-  if (loadingLandingPage)
+      }
+    };
+
+    checkLoggedIn();
+  }, [dispatch, setShowSidebar]);
+
+  if (loadingHomePage) {
     return (
       <div className="lds-ellipsis">
         <div></div>
@@ -52,7 +64,13 @@ const ProtectedLanding = () => {
         <div></div>
       </div>
     );
-  return <Outlet />;
+  }
+
+  return isAuth && localStorage.getItem("userInfo") ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/" />
+  );
 };
 
-export default ProtectedLanding;
+export default ProtectedChangePassword;

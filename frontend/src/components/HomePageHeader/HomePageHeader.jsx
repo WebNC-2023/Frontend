@@ -10,12 +10,11 @@ import {
   Tooltip,
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import Logout from "@mui/icons-material/Logout";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
 //import axios from "axios";
-import { DataContext } from "../../contexts/DataContext";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import InfoIcon from "@mui/icons-material/Info";
@@ -37,9 +36,8 @@ import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
-const HomePageHeader = ({ showScreen }) => {
+const HomePageHeader = ({ showSidebar }) => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
-  const { setShowScreen } = useContext(DataContext);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,11 +51,11 @@ const HomePageHeader = ({ showScreen }) => {
   };
   const handleClickChangePasswordBtn = () => {
     setAnchorEl(null);
-    setShowScreen("change password");
+    navigate("/change-password");
   };
   const handleClickEditProfileBtn = () => {
     setAnchorEl(null);
-    setShowScreen("edit profile");
+    navigate("/edit-profile");
   };
   const handleClickLogOut = () => {
     async function userLogout() {
@@ -187,7 +185,7 @@ const HomePageHeader = ({ showScreen }) => {
               marginLeft: "-10px",
             }}
           >
-            {showScreen === "courses" ? (
+            {showSidebar ? (
               <Tooltip title="Trình đơn chính">
                 <IconButton onClick={toggleDrawer("left", true)}>
                   <MenuIcon />

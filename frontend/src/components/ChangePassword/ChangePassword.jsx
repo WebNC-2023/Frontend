@@ -10,8 +10,7 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import EnhancedEncryptionIcon from "@mui/icons-material/EnhancedEncryption";
-import { useState, useContext } from "react";
-import { DataContext } from "../../contexts/DataContext";
+import { useState} from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { ToastContainer, toast } from "react-toastify";
@@ -33,7 +32,6 @@ const ChangePassword = () => {
     useState("");
   const [showLoadingChangePasswordBtn, setShowLoadingChangePasswordBtn] =
     useState(false);
-  const { setShowScreen } = useContext(DataContext);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
@@ -102,7 +100,7 @@ const ChangePassword = () => {
     }
   };
   const handleClickCancelEdit = () => {
-    setShowScreen("courses");
+    navigate("/home-page");
   };
   return (
     <Grid container justifyContent={"center"} className="">

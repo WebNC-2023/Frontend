@@ -6,7 +6,7 @@ import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
 
 const ProtectedHome = () => {
-  const {setShowScreen} = useContext(DataContext);
+  const {setShowSidebar} = useContext(DataContext);
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
@@ -25,13 +25,13 @@ const ProtectedHome = () => {
         dispatch(
           update({
             fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-            avatar: `${process.env.REACT_APP_SERVER_BASE_URL}/files/${res.data.data.avatar}`,
+            avatar: `${process.env.REACT_APP_SERVER_BASE_URL ?? "https://webnc-2023.vercel.app"}/files/${res.data.data.avatar}?${Date.now()}`,
           })
         );
 
         setLoadingHomePage(false);
         setIsAuth(true);
-        setShowScreen("courses");
+        setShowSidebar(true);
       } catch (err) {
         console.error(err.response);
 
@@ -46,6 +46,7 @@ const ProtectedHome = () => {
 
           setLoadingHomePage(false);
           setIsAuth(false);
+          
         } else {
           throw err;
         }
@@ -53,7 +54,7 @@ const ProtectedHome = () => {
     };
 
     checkLoggedIn();
-  }, [dispatch, setShowScreen]);
+  }, [dispatch, setShowSidebar]);
 
   if (loadingHomePage) {
     return (
