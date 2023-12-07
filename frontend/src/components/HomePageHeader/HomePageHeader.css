@@ -1,32 +1,28 @@
 .userInfo-mobile-screen {
-    display: none;
+  display: none;
 }
 
 .userInfo-default-screen {
-    user-select: none;
-    font-size: 1rem;
-    position: absolute;
-    top: 20p;
-    right: 80px;
-    display: block;
+  user-select: none;
+  font-size: 1rem;
 }
 
 .sidebar-menu-icon {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .sidebar-menu-icon:hover {
-    border-radius: 100px;
-    background-color: #f5f5f5;
-    box-shadow: 0 0 0 10px #f5f5f5;
+  border-radius: 100px;
+  background-color: #f5f5f5;
+  box-shadow: 0 0 0 10px #f5f5f5;
 }
 
 @media screen and (max-width: 639.98px) {
-    .userInfo-default-screen {
-        display: none;
-    }
+  .userInfo-default-screen {
+    display: none;
+  }
 
-    .userInfo-mobile-screen {
-        display: block;
-    }
+  .userInfo-mobile-screen {
+    display: block;
+  }
 }
