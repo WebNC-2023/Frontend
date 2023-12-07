@@ -1,5 +1,9 @@
+import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
+import { DataContext } from "../../contexts/DataContext";
+import { useContext } from "react";
 const ClassDetailsPage = () => {
-    return ( <>This is class details page</> );
-}
- 
+  const { showSidebar } = useContext(DataContext);
+  return <HomePageHeader showSidebar={showSidebar} />;
+};
+
 export default ClassDetailsPage;

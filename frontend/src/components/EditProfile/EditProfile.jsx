@@ -9,8 +9,7 @@ import {
 import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import AlarmIcon from "@mui/icons-material/Alarm";
-import { useState, useContext } from "react";
-import { DataContext } from "../../contexts/DataContext";
+import { useState} from "react";
 //import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update, updateStart } from "../../redux/Reducers/fullNameUserSlice";
@@ -30,7 +29,6 @@ const EditProfile = () => {
   const [avatarFile, setAvatarFile] = useState();
   const [avatarUrl, setAvatarUrl] = useState("");
   const [showLoadingEditBtn, setShowLoadingEditBtn] = useState(false);
-  const { setShowScreen } = useContext(DataContext);
   const dispatch = useDispatch();
   const handleClickSaveChangeEditProfile = () => {
     if (firstName === "" && lastName === "" && avatarUrl === "") {
@@ -73,7 +71,7 @@ const EditProfile = () => {
           dispatch(
             update({
               fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-              avatar: `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+              avatar: `${process.env.REACT_APP_SERVER_BASE_URL ?? "https://webnc-2023.vercel.app"}/files/${
                 res.data.data.avatar
               }?${Date.now()}`,
             })
@@ -97,7 +95,7 @@ const EditProfile = () => {
     }
   };
   const handleClickCancelEdit = () => {
-    setShowScreen("courses");
+    navigate("/home-page");
   };
   return (
     <Grid container justifyContent={"center"}>

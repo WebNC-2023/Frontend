@@ -8,15 +8,13 @@ import {
   ListItemIcon,
   IconButton,
   Tooltip,
-  Stack,
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import Logout from "@mui/icons-material/Logout";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
 //import axios from "axios";
-import { DataContext } from "../../contexts/DataContext";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import InfoIcon from "@mui/icons-material/Info";
@@ -38,44 +36,26 @@ import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
-import AppsOutlinedIcon from "@mui/icons-material/AppsOutlined";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import InputIcon from "@mui/icons-material/Input";
-import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
-import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
-
-const HomePageHeader = ({ showScreen }) => {
+const HomePageHeader = ({ showSidebar }) => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
-  const { setShowScreen } = useContext(DataContext);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [classAnchorEl, setClassAnchorEl] = useState(null);
-  const [openDialogCreateClass, setOpenDialogCreateClass] = useState(false);
-  const [openDialogJoinClass, setOpenDialogJoinClass] = useState(false);
-  const openMenuClass = Boolean(classAnchorEl);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleCreateClick = (event) => {
-    setClassAnchorEl(event.currentTarget);
-  };
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleClassClose = () => {
-    setClassAnchorEl(null);
-  };
   const handleClickChangePasswordBtn = () => {
     setAnchorEl(null);
-    setShowScreen("change password");
+    navigate("/change-password");
   };
   const handleClickEditProfileBtn = () => {
     setAnchorEl(null);
-    setShowScreen("edit profile");
+    navigate("/edit-profile");
   };
   const handleClickLogOut = () => {
     async function userLogout() {
@@ -122,23 +102,6 @@ const HomePageHeader = ({ showScreen }) => {
 
   const handleClick1 = () => {
     setOpen1(!open1);
-  };
-
-  // Handle create & join Class
-
-  const handleOpenDialogCreate = () => {
-    setOpenDialogCreateClass(true);
-  };
-
-  const handleCloseDialogCreate = () => {
-    setOpenDialogCreateClass(false);
-  };
-
-  const handleOpenDialogJoin = () => {
-    setOpenDialogJoinClass(true);
-  };
-  const handleCloseDialogJoin = () => {
-    setOpenDialogJoinClass(false);
   };
 
   const list = (anchor) => (
@@ -211,7 +174,7 @@ const HomePageHeader = ({ showScreen }) => {
           backgroundColor: "white",
           position: "fixed",
           top: "0",
-          zIndex: "10",
+          zIndex: "10"
         }}
       >
         <Grid item>
@@ -222,7 +185,7 @@ const HomePageHeader = ({ showScreen }) => {
               marginLeft: "-10px",
             }}
           >
-            {showScreen === "courses" ? (
+            {showSidebar ? (
               <Tooltip title="Trình đơn chính">
                 <IconButton onClick={toggleDrawer("left", true)}>
                   <MenuIcon />
@@ -241,124 +204,26 @@ const HomePageHeader = ({ showScreen }) => {
           </div>
         </Grid>
         <Grid item>
-          <Stack
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
+          <Box
+            sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
           >
-            {/* Start Button create class */}
-            <Stack
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              spacing={1}
-            >
-              {/* CreateClass */}
-              <Tooltip title="Create or join a class">
-                <IconButton
-                  onClick={handleCreateClick}
-                  aria-label="create"
-                  sx={{ color: "#5175e0" }}
-                  size="large"
-                  aria-controls={openMenuClass ? "class-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={openMenuClass ? "true" : undefined}
-                >
-                  <AddOutlinedIcon fontSize="inherit" />
-                </IconButton>
-              </Tooltip>
-              {/* Applications */}
-              <Tooltip title="Applications">
-                <IconButton
-                  aria-label="App"
-                  sx={{ color: "#5175e0" }}
-                  size="large"
-                >
-                  <AppsOutlinedIcon fontSize="inherit" />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-            {/* End Button create class */}
-            <p className="userInfo-default-screen"> Hi, {fullName}</p>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                textAlign: "center",
-              }}
-            >
-              <Tooltip title="My account">
-                <IconButton
-                  onClick={handleClick}
-                  size="small"
-                  aria-controls={open ? "account-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}
-                  style={{ marginTop: "5px" }}
-                >
-                  <Avatar
-                    src={avatarImg}
-                    sx={{ width: 32, height: 32, backgroundColor: "#5175e0" }}
-                  ></Avatar>
-                </IconButton>
-              </Tooltip>
-            </Box>
-          </Stack>
-          {/* Menu Class */}
-          <Menu
-            anchorEl={classAnchorEl}
-            id="class-menu"
-            open={openMenuClass}
-            onClose={handleClassClose}
-            onClick={handleClassClose}
-            PaperProps={{
-              elevation: 0,
-              sx: {
-                overflow: "visible",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                mt: 0.5,
-                "& .MuiAvatar-root": {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1.5,
-                },
-                "&:before": {
-                  content: '""',
-                  display: "block",
-                  position: "absolute",
-                  top: 0,
-                  right: 20,
-                  width: 10,
-                  height: 10,
-                  bgcolor: "background.paper",
-                  transform: "translateY(-50%) rotate(45deg)",
-                  zIndex: 0,
-                },
-              },
-            }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <MenuItem onClick={handleOpenDialogCreate}>
-              <ListItemIcon>
-                <AddCircleOutlineIcon
-                  fontSize="small"
-                  sx={{ color: "#5175e0" }}
-                />
-              </ListItemIcon>
-              Create classes
-            </MenuItem>
-
-            <MenuItem onClick={handleOpenDialogJoin}>
-              <ListItemIcon>
-                <InputIcon fontSize="small" sx={{ color: "#5175e0" }} />
-              </ListItemIcon>
-              Join the class
-            </MenuItem>
-          </Menu>
-          {/* Menu Account */}
+            <Tooltip title="My account">
+              <IconButton
+                onClick={handleClick}
+                size="small"
+                sx={{ ml: 2 }}
+                aria-controls={open ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                style={{ marginTop: "5px" }}
+              >
+                <Avatar
+                  src={avatarImg}
+                  sx={{ width: 32, height: 32, backgroundColor: "#5175e0" }}
+                ></Avatar>
+              </IconButton>
+            </Tooltip>
+          </Box>
           <Menu
             anchorEl={anchorEl}
             id="account-menu"
@@ -400,14 +265,14 @@ const HomePageHeader = ({ showScreen }) => {
             >
               <MenuItem>
                 <ListItemIcon>
-                  <InfoIcon fontSize="small" sx={{ color: "#5175e0" }} />
+                  <InfoIcon fontSize="small" />
                 </ListItemIcon>
                 Hi, {fullName}
               </MenuItem>
             </div>
             <MenuItem onClick={handleClickEditProfileBtn}>
               <ListItemIcon>
-                <Settings fontSize="small" sx={{ color: "#5175e0" }} />
+                <Settings fontSize="small" />
               </ListItemIcon>
               Edit profile
             </MenuItem>
@@ -415,30 +280,20 @@ const HomePageHeader = ({ showScreen }) => {
               JSON.parse(localStorage.getItem("userInfo")).isSSO === false && (
                 <MenuItem onClick={handleClickChangePasswordBtn}>
                   <ListItemIcon>
-                    <PasswordIcon fontSize="small" sx={{ color: "#5175e0" }} />
+                    <PasswordIcon fontSize="small" />
                   </ListItemIcon>
                   Change password
                 </MenuItem>
               )}
             <MenuItem onClick={handleClickLogOut}>
               <ListItemIcon>
-                <Logout fontSize="small" sx={{ color: "#5175e0" }} />
+                <Logout fontSize="small" />
               </ListItemIcon>
               Logout
             </MenuItem>
           </Menu>
-          {/* Dialog Create Class */}
-          <FormDialogCreateClass
-            open={openDialogCreateClass}
-            handleClose={handleCloseDialogCreate}
-          />
-
-          {/* Dialog Join Class */}
-          <FormDialogJoinClass
-            open={openDialogJoinClass}
-            handleClose={handleCloseDialogJoin}
-          />
         </Grid>
+        <p className="userInfo-default-screen"> Hi, {fullName}</p>
       </Grid>
       <Drawer
         anchor="left"
