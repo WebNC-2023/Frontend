@@ -90,8 +90,7 @@ const EditProfile = () => {
             setTimeout(() => {
               navigate("/");
             }, 4000);
-          }
-          else {
+          } else {
             toast.error("Your profile has been changed fail");
           }
         });
@@ -101,14 +100,14 @@ const EditProfile = () => {
     setShowScreen("courses");
   };
   return (
-    <Grid container justifyContent={"center"} className="">
+    <Grid container justifyContent={"center"}>
       <Grid
         item
         xs={12}
         sm={8}
         md={4}
         className="editProfile-container"
-        style={{ marginTop: "20px" }}
+        style={{ paddingTop: "105px" }}
       >
         <Paper elevation={10} className="editProfile-form">
           <Grid container direction={"column"} alignItems={"center"}>

@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { Outlet, Navigate } from "react-router-dom";
+import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
 
 const ProtectedHome = () => {
+  const {setShowScreen} = useContext(DataContext);
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
@@ -29,6 +31,7 @@ const ProtectedHome = () => {
 
         setLoadingHomePage(false);
         setIsAuth(true);
+        setShowScreen("courses");
       } catch (err) {
         console.error(err.response);
 
@@ -50,7 +53,7 @@ const ProtectedHome = () => {
     };
 
     checkLoggedIn();
-  }, [dispatch]);
+  }, [dispatch, setShowScreen]);
 
   if (loadingHomePage) {
     return (

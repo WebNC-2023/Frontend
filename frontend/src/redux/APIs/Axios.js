@@ -1,6 +1,7 @@
 import axios from "axios";
 const Axios = axios.create({
-  baseURL: process.env.REACT_APP_SERVER_BASE_URL,
+  // baseURL: process.env.REACT_APP_SERVER_BASE_URL,
+  baseURL: "https://webnc-2023.vercel.app",
   withCredentials: true,
 });
 
