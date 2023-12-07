@@ -26,6 +26,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import InputIcon from "@mui/icons-material/Input";
 import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
 import Axios from "../../redux/APIs/Axios";
+import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
 
 const HomePageHeader = () => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
@@ -36,6 +37,7 @@ const HomePageHeader = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [classAnchorEl, setClassAnchorEl] = useState(null);
   const [openDialogCreateClass, setOpenDialogCreateClass] = useState(false);
+  const [openDialogJoinClass, setOpenDialogJoinClass] = useState(false);
   const openMenuClass = Boolean(classAnchorEl);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -91,6 +93,13 @@ const HomePageHeader = () => {
 
   const handleCloseDialogCreate = () => {
     setOpenDialogCreateClass(false);
+  };
+
+  const handleOpenDialogJoin = () => {
+    setOpenDialogJoinClass(true);
+  };
+  const handleCloseDialogJoin = () => {
+    setOpenDialogJoinClass(false);
   };
 
   return (
@@ -219,7 +228,7 @@ const HomePageHeader = () => {
             Create classes
           </MenuItem>
 
-          <MenuItem>
+          <MenuItem onClick={handleOpenDialogJoin}>
             <ListItemIcon>
               <InputIcon fontSize="small" sx={{ color: "#5175e0" }} />
             </ListItemIcon>
@@ -299,6 +308,12 @@ const HomePageHeader = () => {
         <FormDialogCreateClass
           open={openDialogCreateClass}
           handleClose={handleCloseDialogCreate}
+        />
+
+        {/* Dialog Join Class */}
+        <FormDialogJoinClass
+          open={openDialogJoinClass}
+          handleClose={handleCloseDialogJoin}
         />
       </Grid>
     </Grid>
