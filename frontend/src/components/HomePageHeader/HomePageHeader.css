@@ -1,22 +1,26 @@
 .userInfo-mobile-screen {
-    display: none;
+  display: none;
 }
 
 .userInfo-default-screen {
-    user-select: none;
-    font-size: 1rem;
-    position: absolute;
-    top: 20p;
-    right: 80px;
-    display: block;
+  user-select: none;
+  font-size: 1rem;
+}
+
+.icon-create-default-screen {
+  font-size: 1rem;
+  position: absolute;
+  top: 20p;
+  right: 120px;
+  display: block;
 }
 
 @media screen and (max-width: 639.98px) {
-    .userInfo-default-screen {
-        display: none;
-    }
+  .userInfo-default-screen {
+    display: none;
+  }
 
-    .userInfo-mobile-screen {
-        display: block;
-    }
+  .userInfo-mobile-screen {
+    display: block;
+  }
 }
