@@ -10,7 +10,6 @@ import {
   Tooltip,
   Stack,
 } from "@mui/material";
-
 import Settings from "@mui/icons-material/Settings";
 import { useState, useContext } from "react";
 import Logout from "@mui/icons-material/Logout";
