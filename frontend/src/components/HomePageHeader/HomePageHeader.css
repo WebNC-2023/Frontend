@@ -5,6 +5,8 @@
 .userInfo-default-screen {
   user-select: none;
   font-size: 1rem;
+  position: absolute;
+  right: 80px;
 }
 
 .sidebar-menu-icon {
