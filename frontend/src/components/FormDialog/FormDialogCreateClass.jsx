@@ -7,7 +7,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Fade from "@mui/material/Fade";
 
-export default function FormDialogCreateClass({ open, handleClose }) {
+export default function FormDialogCreateClass({
+  open,
+  handleClose,
+  edit,
+  classData,
+}) {
   const [formData, setFormData] = React.useState({
     className: "",
     part: "",
@@ -15,12 +20,27 @@ export default function FormDialogCreateClass({ open, handleClose }) {
     room: "",
   });
 
+  const [isDirty, setIsDirty] = React.useState(false);
+
+  React.useEffect(() => {
+    // Update formData when edit or classData changes
+    if (edit && classData) {
+      setFormData({
+        className: classData.className || "",
+        part: classData.part || "",
+        topic: classData.topic || "",
+        room: classData.room || "",
+      });
+    }
+  }, [edit, classData]);
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [id]: value,
     }));
+    setIsDirty(true); // Set isDirty to true on any input change
   };
 
   const handleDialogClose = () => {
@@ -31,10 +51,11 @@ export default function FormDialogCreateClass({ open, handleClose }) {
       topic: "",
       room: "",
     });
+    setIsDirty(false);
     handleClose();
   };
 
-  const isCreateButtonDisabled = formData.className === "";
+  const isCreateButtonDisabled = formData.className === "" || !isDirty;
 
   return (
     <Dialog
@@ -46,7 +67,9 @@ export default function FormDialogCreateClass({ open, handleClose }) {
       transitionDuration={500} // Điều chỉnh thời gian hiển thị
       keepMounted
     >
-      <DialogTitle sx={{ fontSize: "24px" }}>Create classes</DialogTitle>
+      <DialogTitle sx={{ fontSize: "24px" }}>
+        {edit ? "Edit classes" : "Create classes"}{" "}
+      </DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
@@ -115,7 +138,7 @@ export default function FormDialogCreateClass({ open, handleClose }) {
           sx={{ color: "#5175e0" }}
           disabled={isCreateButtonDisabled}
         >
-          Create
+          {edit ? "Save" : "Create"}{" "}
         </Button>
       </DialogActions>
     </Dialog>
