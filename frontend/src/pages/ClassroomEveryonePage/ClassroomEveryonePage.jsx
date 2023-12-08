@@ -6,7 +6,7 @@ const ClassroomEveryonePage = () => {
   const { showSidebar, contentClassTab } = useContext(DataContext);
   return (
     <>
-      <HomePageHeader showSidebar={showSidebar} />
+      <HomePageHeader showSidebar={showSidebar} classRoom={true} />
       <ClassTabs contentClassTab={contentClassTab} />
     </>
   );
