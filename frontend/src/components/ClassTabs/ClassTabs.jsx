@@ -1,28 +1,34 @@
-import { useState } from "react";
-import { Tabs, Tab, Box } from "@mui/material";
+import { Tabs, Tab } from "@mui/material";
 import "./ClassTabs.css";
+import { useNavigate, useParams } from "react-router-dom";
 
-const ClassTabs = () => {
-  const [value, setValue] = useState("one");
-
+const ClassTabs = ({ contentClassTab }) => {
+  const navigate = useNavigate();
+  const { classId } = useParams();
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    if (newValue === "two") navigate(`/class-details/${classId}/exercises`);
+    else if (newValue === "one") {
+      navigate(`/class-details/${classId}`);
+    } else if (newValue === "three") {
+      navigate(`/class-details/${classId}/everyone`);
+    }
   };
   return (
-    <Box sx={{ width: "100%" }}>
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        textColor="secondary"
-        indicatorColor="secondary"
-        aria-label="secondary tabs example"
-        className="class-tabs"
-      >
-        <Tab value="one" label="Item One" />
-        <Tab value="two" label="Item Two" />
-        <Tab value="three" label="Item Three" />
-      </Tabs>
-    </Box>
+    <Tabs
+      value={contentClassTab}
+      onChange={handleChange}
+      textColor="secondary"
+      indicatorColor="secondary"
+      aria-label="secondary tabs example"
+      className="tabs-class-container"
+      variant="scrollable"
+      scrollButtons="auto"
+      allowScrollButtonsMobile
+    >
+      <Tab value="one" label="Bảng tin" />
+      <Tab value="two" label="Bài tập trên lớp" />
+      <Tab value="three" label="Mọi người" />
+    </Tabs>
   );
 };
 

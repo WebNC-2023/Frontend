@@ -5,7 +5,7 @@ import { Outlet, Navigate } from "react-router-dom";
 import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
 
-const ProtectedClassDetails = () => {
+const ProtectedClassroomEveryone = () => {
   const {setShowSidebar, setContentClassTab} = useContext(DataContext);
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
@@ -32,7 +32,7 @@ const ProtectedClassDetails = () => {
         setLoadingHomePage(false);
         setIsAuth(true);
         setShowSidebar(true);
-        setContentClassTab("one");
+        setContentClassTab("three");
       } catch (err) {
         console.error(err.response);
 
@@ -74,4 +74,4 @@ const ProtectedClassDetails = () => {
   );
 };
 
-export default ProtectedClassDetails;
+export default ProtectedClassroomEveryone;

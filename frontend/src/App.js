@@ -23,10 +23,15 @@ import ChangePasswordPage from "./pages/ChangePasswordPage/ChangePasswordPage";
 import ProtectedChangePassword from "./components/ProtectedChangePassword/ProtectedChangePassword";
 import ProtectedEditProfile from "./components/ProtectedEditProfile/ProtectedEditProfile";
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
+import ProtectedClassroomExercises from "./components/ProtectedClassroomExercises/ProtectedClassroomExercises";
+import ClassroomExercisesPage from "./pages/ClassroomExercisesPage/ClassroomExercisesPage";
+import ProtectedClassroomEveryone from "./components/ProtectedClassroomEveryone/ProtectedClassroomEveryone";
+import ClassroomEveryonePage from "./pages/ClassroomEveryonePage/ClassroomEveryonePage";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
   const [showSidebar, setShowSidebar] = useState(true);
+  const [contentClassTab, setContentClassTab] = useState();
   return (
     <DataContext.Provider
       value={{
@@ -36,6 +41,8 @@ function App() {
         setShowContent,
         showSidebar,
         setShowSidebar,
+        contentClassTab,
+        setContentClassTab,
       }}
     >
       <Router>
@@ -53,8 +60,8 @@ function App() {
             <Route element={<ChangePasswordPage />} path="/change-password" />
           </Route>
 
-          <Route element={<ProtectedEditProfile/>}>
-            <Route element={<EditProfilePage/>} path="/edit-profile" />
+          <Route element={<ProtectedEditProfile />}>
+            <Route element={<EditProfilePage />} path="/edit-profile" />
           </Route>
 
           <Route element={<ProtectedSign />}>
@@ -91,6 +98,21 @@ function App() {
               element={<ClassDetailsPage />}
             />
           </Route>
+
+          <Route element={<ProtectedClassroomExercises />}>
+            <Route
+              path="/class-details/:classId/exercises"
+              element={<ClassroomExercisesPage />}
+            />
+          </Route>
+
+          <Route element={<ProtectedClassroomEveryone />}>
+            <Route
+              path="/class-details/:classId/everyone"
+              element={<ClassroomEveryonePage />}
+            />
+          </Route>
+
           <Route path="*" element={<Error />} />
         </Routes>
       </Router>
