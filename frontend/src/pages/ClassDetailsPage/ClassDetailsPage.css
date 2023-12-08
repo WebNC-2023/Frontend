@@ -4,3 +4,9 @@
     margin: 0 auto;
     padding: 25px;
 }
+
+@media screen and (max-width: 639.98px) {
+    .class-details-page-container {
+        padding: 25px 10px;
+    }
+}

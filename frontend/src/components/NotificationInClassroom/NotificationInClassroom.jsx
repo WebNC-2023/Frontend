@@ -6,9 +6,14 @@ import { Grid, Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+import { useDispatch, useSelector } from "react-redux";
+import { update } from "../../redux/Reducers/ClassroomPostSlice";
 const NotificationInClassroom = () => {
+  const fullName = useSelector((state) => state.fullNameUser.fullName);
   const [showWriteNotification, setShowWriteNotification] = useState(false);
   const [content, setContent] = useState("");
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state.classroomPost.posts);
   const handleShowWriteNotification = () => {
     setShowWriteNotification(true);
   };
@@ -19,6 +24,30 @@ const NotificationInClassroom = () => {
 
   const handleFormat = (event, newFormats) => {
     setFormats(newFormats);
+  };
+  const handleClickPostNotification = () => {
+    let present = new Date();
+    dispatch(
+      update({
+        postId: posts.length,
+        username: fullName,
+        dateSubmitted: `${present.getDate()} thg ${
+          present.getMonth() + 1
+        }, ${present.getFullYear()}`,
+        avatar: `${
+          process.env.REACT_APP_SERVER_BASE_URL ??
+          "https://webnc-2023.vercel.app"
+        }/files/${
+          JSON.parse(localStorage.getItem("userInfo")).avatar
+        }?${Date.now()}`,
+        postContent: content,
+        boldStyle: formats.includes("bold"),
+        italicStyle: formats.includes("italic"),
+        underlineStyle: formats.includes("underlined"),
+      })
+    );
+    setShowWriteNotification(false);
+    setFormats([]);
   };
   return (
     <>
@@ -72,6 +101,7 @@ const NotificationInClassroom = () => {
               <Button
                 variant="contained"
                 disabled={content === "" ? true : false}
+                onClick={handleClickPostNotification}
               >
                 Đăng
               </Button>

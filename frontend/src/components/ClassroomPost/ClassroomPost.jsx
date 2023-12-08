@@ -13,10 +13,16 @@ import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import { useState } from "react";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-const ClassroomPost = () => {
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import ClassroomComment from "../ClassroomComment/ClassroomComment";
+import { useDispatch, useSelector } from "react-redux";
+import { update } from "../../redux/Reducers/ClassroomCommentSlice";
+const ClassroomPost = ({ post }) => {
   const [formats, setFormats] = useState(() => []);
   const [focusForm, setFocusForm] = useState(false);
   const [content, setContent] = useState("");
+  const fullName = useSelector((state) => state.fullNameUser.fullName);
+  const comments = useSelector((state) => state.classroomComment.comments);
   const handleFormat = (event, newFormats) => {
     setFormats(newFormats);
   };
@@ -26,84 +32,144 @@ const ClassroomPost = () => {
   const handleBlurForm = () => {
     setFocusForm(false);
   };
+  const dispatch = useDispatch();
+  const handleClickSendComment = () => {
+    let present = new Date();
+    dispatch(
+      update({
+        postId: post.postId,
+        commentId: comments.length,
+        username: fullName,
+        dateSubmitted: `${present.getDate()} thg ${
+          present.getMonth() + 1
+        }, ${present.getFullYear()}`,
+        avatar: `${
+          process.env.REACT_APP_SERVER_BASE_URL ??
+          "https://webnc-2023.vercel.app"
+        }/files/${
+          JSON.parse(localStorage.getItem("userInfo")).avatar
+        }?${Date.now()}`,
+        commentContent: content,
+        boldStyle: formats.includes("bold"),
+        italicStyle: formats.includes("italic"),
+        underlineStyle: formats.includes("underlined"),
+      })
+    );
+    setContent("");
+    setFormats([]);
+    setFocusForm(false);
+  };
   return (
     <>
       <div className="content-classroom-post">
         <div className="classroom-post-info">
           <div className="classroom-post-info-left">
-            <Avatar sx={{ backgroundColor: "#a0c3ff", color: "#4374e0" }} />
+            <Avatar
+              src={post.avatar}
+              sx={{ backgroundColor: "#a0c3ff", color: "#4374e0" }}
+            />
             <div className="classroom-post-info-user">
               <div className="classroom-post-username">Huu Thien</div>
-              <div className="classroom-post-date">
-                17 thg 12, 2021 (Đã chỉnh sửa 16 thg 1, 2022)
-              </div>
+              <div className="classroom-post-date">{post.dateSubmitted}</div>
             </div>
           </div>
           <MoreVertIcon />
         </div>
-        <div className="classroom-post-content">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum sunt
-          eveniet explicabo? Nulla eum sit delectus dolores officia obcaecati
-          consequatur minus, dolore eaque nobis numquam, qui, asperiores enim
-          est corporis!
+        <div
+          className="classroom-post-content"
+          style={{
+            fontWeight: post.boldStyle ? "bold" : "normal",
+            fontStyle: post.italicStyle ? "italic" : "normal",
+            textDecoration: post.underlineStyle ? "underline" : "none",
+          }}
+        >
+          {post.postContent}
         </div>
       </div>
-      <div className="comment-classroom-post">
-        <Avatar
-          sx={{
-            backgroundColor: "#a0c3ff",
-            width: 35,
-            height: 35,
-            color: "#4374e0",
-          }}
-        />
-        <div className="add-comment-in-post-container">
-          <TextareaAutosize
-            className="add-comment-in-post"
-            placeholder="Thêm nhận xét trong lớp học..."
-            onFocus={handleFocusForm}
-            onChange={(e) => {
-              setContent(e.target.value);
-              if (e.target.value === "") handleBlurForm();
-              else handleFocusForm();
-            }}
-            spellCheck="false"
-            style={{
-              fontWeight: formats.includes("bold") ? "bold" : "normal",
-              fontStyle: formats.includes("italic") ? "italic" : "normal",
-              textDecoration: formats.includes("underlined")
-                ? "underline"
-                : "none",
-            }}
-          />
-          {focusForm ? (
-            <ToggleButtonGroup
-              sx={{ paddingTop: "10px" }}
-              value={formats}
-              onChange={handleFormat}
-            >
-              <ToggleButton value="bold" aria-label="bold">
-                <FormatBoldIcon />
-              </ToggleButton>
-              <ToggleButton value="italic" aria-label="italic">
-                <FormatItalicIcon />
-              </ToggleButton>
-              <ToggleButton value="underlined" aria-label="underlined">
-                <FormatUnderlinedIcon />
-              </ToggleButton>
-            </ToggleButtonGroup>
-          ) : (
+      <div className="comment-classroom-post-container">
+        <div className="numbers-of-comment-classroom">
+          {comments.filter((comment) => comment.postId === post.postId)
+            .length === 0 ? (
             <></>
+          ) : (
+            <>
+              <GroupOutlinedIcon />
+              <p>
+                {
+                  comments.filter((comment) => comment.postId === post.postId)
+                    .length
+                }{" "}
+                nhận xét về lớp học
+              </p>
+            </>
           )}
         </div>
-        <Tooltip title="Đăng">
-          <IconButton
-            style={content === "" ? {} : { color: "#1967d2" }}
-            disabled={content === "" ? true : false}
-          >
-            <SendIcon />
-          </IconButton>
-        </Tooltip>
+        {comments
+          .filter((comment) => comment.postId === post.postId)
+          .map((comment, index) => (
+            <ClassroomComment key={index} comment={comment} />
+          ))}
+        <div className="comment-classroom-post">
+          <Avatar
+            sx={{
+              backgroundColor: "#a0c3ff",
+              width: 35,
+              height: 35,
+              color: "#4374e0",
+            }}
+          />
+          <div className="add-comment-in-post-container">
+            <TextareaAutosize
+              className="add-comment-in-post"
+              placeholder="Thêm nhận xét trong lớp học..."
+              onFocus={handleFocusForm}
+              value={content}
+              onChange={(e) => {
+                setContent(e.target.value);
+                if (e.target.value === "") handleBlurForm();
+                else handleFocusForm();
+              }}
+              spellCheck="false"
+              style={{
+                fontWeight: formats.includes("bold") ? "bold" : "normal",
+                fontStyle: formats.includes("italic") ? "italic" : "normal",
+                textDecoration: formats.includes("underlined")
+                  ? "underline"
+                  : "none",
+              }}
+            />
+            {focusForm ? (
+              <ToggleButtonGroup
+                sx={{ paddingTop: "10px" }}
+                value={formats}
+                onChange={handleFormat}
+              >
+                <ToggleButton value="bold" aria-label="bold">
+                  <FormatBoldIcon />
+                </ToggleButton>
+                <ToggleButton value="italic" aria-label="italic">
+                  <FormatItalicIcon />
+                </ToggleButton>
+                <ToggleButton value="underlined" aria-label="underlined">
+                  <FormatUnderlinedIcon />
+                </ToggleButton>
+              </ToggleButtonGroup>
+            ) : (
+              <></>
+            )}
+          </div>
+          <Tooltip title="Đăng">
+            <div>
+              <IconButton
+                style={content === "" ? {} : { color: "#1967d2" }}
+                disabled={content === "" ? true : false}
+                onClick={handleClickSendComment}
+              >
+                <SendIcon />
+              </IconButton>
+            </div>
+          </Tooltip>
+        </div>
       </div>
     </>
   );

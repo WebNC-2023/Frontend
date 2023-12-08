@@ -6,8 +6,10 @@ import { useContext } from "react";
 import "./ClassDetailsPage.css";
 import NotificationInClassroom from "../../components/NotificationInClassroom/NotificationInClassroom";
 import ClassroomPost from "../../components/ClassroomPost/ClassroomPost";
+import { useSelector } from "react-redux";
 const ClassDetailsPage = () => {
   const { showSidebar, contentClassTab } = useContext(DataContext);
+  const posts = useSelector((state) => state.classroomPost.posts);
   return (
     <>
       <HomePageHeader showSidebar={showSidebar} classRoom={true} />
@@ -15,7 +17,7 @@ const ClassDetailsPage = () => {
       <div className="class-details-page-container">
         <ClassDetailsName />
         <NotificationInClassroom />
-        <ClassroomPost />
+        {posts.slice(1).map((post, index) => <ClassroomPost key={index} post={post}/>)}
       </div>
     </>
   );
