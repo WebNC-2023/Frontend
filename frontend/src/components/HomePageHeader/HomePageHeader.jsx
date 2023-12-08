@@ -44,7 +44,7 @@ import InputIcon from "@mui/icons-material/Input";
 import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
 import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
 
-const HomePageHeader = ({ showSidebar }) => {
+const HomePageHeader = ({ showSidebar, classRoom }) => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const dispatch = useDispatch();
@@ -247,9 +247,10 @@ const HomePageHeader = ({ showSidebar }) => {
             ) : (
               <></>
             )}
+
             <Link
               style={{ marginLeft: "10px" }}
-              to="/home-page"
+              to={`${classRoom ? "/home-page" : "/"}`}
               className="home-page-logo"
             >
               Learners
@@ -272,19 +273,24 @@ const HomePageHeader = ({ showSidebar }) => {
                 spacing={1}
               >
                 {/* CreateClass */}
-                <Tooltip title="Create or join a class">
-                  <IconButton
-                    onClick={handleCreateClick}
-                    aria-label="create"
-                    sx={{ color: "#5175e0" }}
-                    size="large"
-                    aria-controls={openMenuClass ? "class-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={openMenuClass ? "true" : undefined}
-                  >
-                    <AddOutlinedIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
+                {classRoom ? (
+                  ""
+                ) : (
+                  <Tooltip title="Create or join a class">
+                    <IconButton
+                      onClick={handleCreateClick}
+                      aria-label="create"
+                      sx={{ color: "#5175e0" }}
+                      size="large"
+                      aria-controls={openMenuClass ? "class-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={openMenuClass ? "true" : undefined}
+                    >
+                      <AddOutlinedIcon fontSize="inherit" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+
                 {/* Applications */}
                 <Tooltip title="Applications">
                   <IconButton

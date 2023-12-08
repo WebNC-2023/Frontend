@@ -9,11 +9,13 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const JoinedClasses = ({ classData }) => {
   const [classAnchorEl, setClassAnchorEl] = React.useState(null);
   const openMenuClass = Boolean(classAnchorEl);
   const [openDialogEditClass, setOpenDialogEditClass] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setClassAnchorEl(event.currentTarget);
@@ -36,14 +38,23 @@ const JoinedClasses = ({ classData }) => {
     handleClassClose();
   };
 
+  const navgiateHandle = (e) => {
+    if (e.target.classList.contains("joined__content")) {
+      navigate(`/class-details/${classData.id}`);
+    }
+  };
+
   return (
     <li className="joined__list">
       <div className="joined__wrapper">
         <div className="joined__container">
           <div className="joined__imgWrapper" />
           <div className="joined__image" />
-          <div className="joined__content">
-            <Link className="joined__title" to={`/${classData.id}`}>
+          <div className="joined__content" onClick={navgiateHandle}>
+            <Link
+              className="joined__title"
+              to={`/class-details/${classData.id}`}
+            >
               <h2>{classData.className}</h2>
               <h4>{classData.part}</h4>
             </Link>
