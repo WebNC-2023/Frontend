@@ -249,7 +249,7 @@ const HomePageHeader = ({ showSidebar }) => {
             )}
             <Link
               style={{ marginLeft: "10px" }}
-              to="/"
+              to="/home-page"
               className="home-page-logo"
             >
               Learners
