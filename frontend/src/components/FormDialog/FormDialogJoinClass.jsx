@@ -18,6 +18,22 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function FullScreenDialog({ open, handleClose }) {
+  const [classCode, setClassCode] = React.useState("");
+  const [classCodeError, setClassCodeError] = React.useState(false);
+
+  const handleClassCodeChange = (event) => {
+    const inputValue = event.target.value;
+    setClassCode(inputValue);
+
+    // Check the condition for the class code
+    const isValidClassCode = /^[a-zA-Z0-9]{5,7}$/.test(inputValue);
+    setClassCodeError(!isValidClassCode);
+  };
+
+  const handleJoinClick = () => {
+    console.log(classCode);
+  };
+
   return (
     <Dialog
       fullScreen
@@ -50,8 +66,9 @@ export default function FullScreenDialog({ open, handleClose }) {
           </Typography>
           <Button
             variant="contained"
-            disabled
+            disabled={classCodeError || !classCode.trim()}
             sx={{ textTransform: "none", padding: "6px 22px" }}
+            onClick={handleJoinClick}
           >
             Join
           </Button>
@@ -63,7 +80,7 @@ export default function FullScreenDialog({ open, handleClose }) {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          height: "70%",
+          height: "80%",
         }}
       >
         <Card
@@ -87,6 +104,14 @@ export default function FullScreenDialog({ open, handleClose }) {
               label="Class Code"
               variant="outlined"
               style={{ marginTop: "1rem", width: "50%" }}
+              value={classCode}
+              onChange={handleClassCodeChange}
+              error={classCodeError}
+              helperText={
+                classCodeError
+                  ? "The class code has 5-7 characters including letters and numbers, without spaces or symbols"
+                  : ""
+              }
             />
           </CardContent>
         </Card>
