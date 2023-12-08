@@ -1,0 +1,41 @@
+.classroom-comment-container {
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+    user-select: none;
+    padding: 20px 0;
+}
+
+.classroom-comment-info-username {
+    color: #3c4043;
+    font-weight: 500;
+    margin-right: 10px
+}
+
+.classroom-comment-info-date {
+    color: #5f6368;
+    font-size: 0.875rem;
+}
+
+.classroom-comment-info-content {
+    color: #3c4043;
+    white-space: pre-line;
+}
+
+@media screen and (max-width: 639.98px) {
+
+    .classroom-comment-info-content,
+    .classroom-comment-info-username {
+        font-size: 0.875rem;
+        /* 14px */
+        line-height: 1.25rem;
+        /* 20px */
+    }
+
+    .classroom-comment-info-date {
+        font-size: 0.75rem;
+        /* 12px */
+        line-height: 1rem;
+        /* 16px */
+    }
+}
