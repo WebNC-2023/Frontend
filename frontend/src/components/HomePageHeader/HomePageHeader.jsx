@@ -192,6 +192,25 @@ const HomePageHeader = ({ showSidebar }) => {
           </ListItem>
         ))}
       </List>
+      <div className="show-create-application-icon-tab">
+        <Divider />
+        <ListItem disablePadding>
+          <ListItemButton onClick={handleCreateClick}>
+            <ListItemIcon>
+              <AddOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Create or join a class" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton onClick={toggleDrawer(anchor, false)}>
+            <ListItemIcon>
+              <AppsOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Applications" />
+          </ListItemButton>
+        </ListItem>
+      </div>
     </Box>
   );
   return (
@@ -245,37 +264,39 @@ const HomePageHeader = ({ showSidebar }) => {
             spacing={2}
           >
             {/* Start Button create class */}
-            <Stack
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              spacing={1}
-            >
-              {/* CreateClass */}
-              <Tooltip title="Create or join a class">
-                <IconButton
-                  onClick={handleCreateClick}
-                  aria-label="create"
-                  sx={{ color: "#5175e0" }}
-                  size="large"
-                  aria-controls={openMenuClass ? "class-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={openMenuClass ? "true" : undefined}
-                >
-                  <AddOutlinedIcon fontSize="inherit" />
-                </IconButton>
-              </Tooltip>
-              {/* Applications */}
-              <Tooltip title="Applications">
-                <IconButton
-                  aria-label="App"
-                  sx={{ color: "#5175e0" }}
-                  size="large"
-                >
-                  <AppsOutlinedIcon fontSize="inherit" />
-                </IconButton>
-              </Tooltip>
-            </Stack>
+            <div className="show-create-application-icon">
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={1}
+              >
+                {/* CreateClass */}
+                <Tooltip title="Create or join a class">
+                  <IconButton
+                    onClick={handleCreateClick}
+                    aria-label="create"
+                    sx={{ color: "#5175e0" }}
+                    size="large"
+                    aria-controls={openMenuClass ? "class-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={openMenuClass ? "true" : undefined}
+                  >
+                    <AddOutlinedIcon fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
+                {/* Applications */}
+                <Tooltip title="Applications">
+                  <IconButton
+                    aria-label="App"
+                    sx={{ color: "#5175e0" }}
+                    size="large"
+                  >
+                    <AppsOutlinedIcon fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+            </div>
             {/* End Button create class */}
             <p className="userInfo-default-screen"> Hi, {fullName}</p>
             <Box
