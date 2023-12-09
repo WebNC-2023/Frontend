@@ -44,8 +44,8 @@ const JoinedClasses = ({ classData }) => {
     }
   };
 
-  const urlImage = classData
-    ? classData
+  const urlImage = classData.avatar
+    ? classData.avatar
     : "https://gstatic.com/classroom/themes/Physics.jpg";
 
   return (
