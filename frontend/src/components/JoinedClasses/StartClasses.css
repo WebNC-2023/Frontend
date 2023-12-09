@@ -1,0 +1,33 @@
+.start_classes {
+  align-items: center;
+  height: calc(100vh - 10rem);
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 1rem;
+  overflow: hidden;
+  text-align: center;
+}
+
+.start_classes_img {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  flex-shrink: 1;
+  height: 23.75rem;
+  margin-bottom: 1.875rem;
+  max-height: 15rem;
+  width: 90%;
+  background-image: url(https://www.gstatic.com/classroom/empty_states_home.svg);
+}
+
+.start_classes_text {
+  letter-spacing: 0.07em;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  color: #3c4043;
+}

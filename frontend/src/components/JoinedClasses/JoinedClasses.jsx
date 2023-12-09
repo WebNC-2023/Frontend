@@ -44,21 +44,34 @@ const JoinedClasses = ({ classData }) => {
     }
   };
 
+  const urlImage = classData
+    ? classData
+    : "https://gstatic.com/classroom/themes/Physics.jpg";
+
   return (
     <li className="joined__list">
       <div className="joined__wrapper">
         <div className="joined__container">
           <div className="joined__imgWrapper" />
-          <div className="joined__image" />
+          <div
+            className="joined__image"
+            style={{
+              backgroundImage: `url(${urlImage})`,
+            }}
+          />
           <div className="joined__content" onClick={navgiateHandle}>
             <Link
               className="joined__title"
               to={`/class-details/${classData.id}`}
             >
-              <h2>{classData.className}</h2>
+              <h2>{classData.name}</h2>
               <h4>{classData.part}</h4>
             </Link>
-            <p className="joined__owner">{classData.owner}</p>
+            {!classData.isOwner && (
+              <p className="joined__owner">
+                {classData.owner.lastName} {classData.owner.firstName}
+              </p>
+            )}
           </div>
           <div className="joined__edit">
             <IconButton
@@ -71,10 +84,12 @@ const JoinedClasses = ({ classData }) => {
             </IconButton>
           </div>
         </div>
-        <Avatar
-          className="joined__avatar"
-          src="https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/s75-c-fbw=1/photo.jpg"
-        />
+        {!classData.isOwner && (
+          <Avatar
+            className="joined__avatar"
+            src="https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/s75-c-fbw=1/photo.jpg"
+          />
+        )}
       </div>
       {/* Dialog Create Class */}
       <FormDialogCreateClass
