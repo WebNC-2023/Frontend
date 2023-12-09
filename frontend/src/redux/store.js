@@ -14,6 +14,7 @@ const rootReducer = combineReducers({
   classroomComment: classroomCommentReducer,
   createClass: Class.classCreateReducer,
   classes: Class.classGetReducer,
+  editClass: Class.classEditReducer,
 });
 
 // get userInfo from localStorage
