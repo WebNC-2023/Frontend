@@ -13,6 +13,9 @@
     /* 30px */
     line-height: 2.25rem;
     /* 36px */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .classroom-everyone-student-header {
