@@ -3,11 +3,15 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Tooltip, IconButton } from "@mui/material";
 import { useState } from "react";
 import InfoIcon from "@mui/icons-material/Info";
+import { useSelector } from "react-redux";
 const ClassDetailsName = () => {
   const [showInfo, setShowInfo] = useState(false);
   const handleClickShowInfo = () => {
     setShowInfo(!showInfo);
   };
+  const classroomDetailsInfo = useSelector(
+    (state) => state.classroomDetailsInfo
+  );
   return (
     <>
       <div
@@ -18,16 +22,16 @@ const ClassDetailsName = () => {
                 borderBottomLeftRadius: "none",
                 borderBottomRightRadius: "none",
                 borderTopLeftRadius: "10px",
-                borderTopRightRadius: "10px"
+                borderTopRightRadius: "10px",
               }
             : {
                 borderRadius: "10px",
-                marginBottom: "25px"
+                marginBottom: "25px",
               }
         }
       >
         <div className="class-details-name-title">
-          Môi Trường Đại cương - 20DTV
+          {classroomDetailsInfo.name}
         </div>
         <Tooltip
           title={showInfo ? "Ẩn thông tin về lớp" : "Hiện thông tin về lớp"}
@@ -42,13 +46,22 @@ const ClassDetailsName = () => {
         </Tooltip>
       </div>
       {showInfo ? (
-        <div className="class-details-name-header-more" style={showInfo ? {
-            marginBottom: "25px"
-        }: {
-
-        }}>
-            <p className="class-details-name-header-more-content">Chủ đề: Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos, voluptas ipsa. Harum ratione delectus cumque minus. Voluptatibus assumenda incidunt sunt ipsum delectus. Quos quidem quasi nam illo, unde fugiat nemo.</p>
-            <p className="class-details-name-header-more-content">Phòng: Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos, voluptas ipsa. Harum ratione delectus cumque minus. Voluptatibus assumenda incidunt sunt ipsum delectus. Quos quidem quasi nam illo, unde fugiat nemo.</p>
+        <div
+          className="class-details-name-header-more"
+          style={
+            showInfo
+              ? {
+                  marginBottom: "25px",
+                }
+              : {}
+          }
+        >
+          <p className="class-details-name-header-more-content">
+            Chủ đề: {classroomDetailsInfo.topic}
+          </p>
+          <p className="class-details-name-header-more-content">
+            Phòng: {classroomDetailsInfo.room}
+          </p>
         </div>
       ) : (
         <></>

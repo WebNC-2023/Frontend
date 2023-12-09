@@ -3,6 +3,8 @@ import * as User from "./Reducers/userReducer";
 import fullNameUserReducer from "./Reducers/fullNameUserSlice";
 import classroomPostReducer from "./Reducers/ClassroomPostSlice";
 import classroomCommentReducer from "./Reducers/ClassroomCommentSlice";
+import classroomDetailsInfoReducer from "./Reducers/ClassroomDetailsInfoSlice";
+import classroomDetailsPendingReducer from "./Reducers/classroomDetailsPendingSlice";
 import * as Class from "./Reducers/classReducer";
 
 const rootReducer = combineReducers({
@@ -14,6 +16,8 @@ const rootReducer = combineReducers({
   classroomComment: classroomCommentReducer,
   createClass: Class.classCreateReducer,
   classes: Class.classGetReducer,
+  classroomDetailsInfo: classroomDetailsInfoReducer,
+  classroomDetailsPending: classroomDetailsPendingReducer,
 });
 
 // get userInfo from localStorage
