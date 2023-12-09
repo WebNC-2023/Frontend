@@ -3,13 +3,17 @@ import * as User from "./Reducers/userReducer";
 import fullNameUserReducer from "./Reducers/fullNameUserSlice";
 import classroomPostReducer from "./Reducers/ClassroomPostSlice";
 import classroomCommentReducer from "./Reducers/ClassroomCommentSlice";
+import * as Class from "./Reducers/classReducer";
+
 const rootReducer = combineReducers({
   // user reducers
   userLogin: User.userLoginReducer,
   userRegister: User.userRegisterReducer,
   fullNameUser: fullNameUserReducer,
   classroomPost: classroomPostReducer,
-  classroomComment: classroomCommentReducer
+  classroomComment: classroomCommentReducer,
+  createClass: Class.classCreateReducer,
+  classes: Class.classGetReducer,
 });
 
 // get userInfo from localStorage

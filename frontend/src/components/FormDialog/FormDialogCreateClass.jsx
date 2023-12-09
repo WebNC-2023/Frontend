@@ -7,32 +7,50 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Fade from "@mui/material/Fade";
 
+import { useDispatch, useSelector } from "react-redux";
+import { createClassAction } from "../../redux/Actions/classAction";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 export default function FormDialogCreateClass({
   open,
   handleClose,
   edit,
   classData,
 }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isLoading, isError, isSuccess, classInfo } = useSelector(
+    (state) => state.createClass
+  );
+
   const [formData, setFormData] = React.useState({
-    className: "",
+    name: "",
     part: "",
     topic: "",
     room: "",
   });
 
   const [isDirty, setIsDirty] = React.useState(false);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
     // Update formData when edit or classData changes
     if (edit && classData) {
       setFormData({
-        className: classData.className || "",
-        part: classData.part || "",
-        topic: classData.topic || "",
-        room: classData.room || "",
+        name: classData.name,
+        part: classData.part,
+        topic: classData.topic,
+        room: classData.room,
       });
     }
   }, [edit, classData]);
+
+  React.useEffect(() => {
+    if (open) {
+      setIsDialogOpen(true);
+    }
+  }, [open]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -44,18 +62,37 @@ export default function FormDialogCreateClass({
   };
 
   const handleDialogClose = () => {
-    // Clear input values when closing the dialog
-    setFormData({
-      className: "",
-      part: "",
-      topic: "",
-      room: "",
-    });
-    setIsDirty(false);
+    // Clear input values when closing the dialog, but only if not in edit mode
+    if (!edit) {
+      setFormData({
+        name: "",
+        part: "",
+        topic: "",
+        room: "",
+      });
+      setIsDirty(false);
+    }
+    setIsDialogOpen(false);
     handleClose();
   };
 
-  const isCreateButtonDisabled = formData.className === "" || !isDirty;
+  const isCreateButtonDisabled = formData.name === "" || !isDirty;
+
+  const handleSubmit = () => {
+    dispatch(createClassAction(formData));
+  };
+
+  React.useEffect(() => {
+    if (isError) {
+      toast.error(isError);
+      dispatch({ type: "CREATE_CLASS_RESET" });
+    }
+    if (isSuccess) {
+      dispatch({ type: "CREATE_CLASS_RESET" });
+
+      navigate(`/class-details/${classInfo?.id}`);
+    }
+  }, [classInfo?.id, dispatch, isError, isSuccess, navigate]);
 
   return (
     <Dialog
@@ -74,7 +111,7 @@ export default function FormDialogCreateClass({
         <TextField
           autoFocus
           margin="dense"
-          id="className"
+          id="name"
           label="Class name (Required)"
           type="text"
           fullWidth
@@ -82,7 +119,7 @@ export default function FormDialogCreateClass({
           inputProps={{ style: { fontSize: 18 } }} // font size of input text
           InputLabelProps={{ style: { fontSize: 18 } }} // font size of input label
           style={{ marginBottom: "1rem" }}
-          value={formData.className}
+          value={formData.name}
           onChange={handleInputChange}
         />
         <TextField
@@ -132,13 +169,11 @@ export default function FormDialogCreateClass({
           Cancel
         </Button>
         <Button
-          onClick={() => {
-            console.log(formData);
-          }}
+          onClick={handleSubmit}
           sx={{ color: "#5175e0" }}
-          disabled={isCreateButtonDisabled}
+          disabled={isCreateButtonDisabled || isLoading}
         >
-          {edit ? "Save" : "Create"}{" "}
+          {isLoading ? "Creating..." : edit ? "Save" : "Create"}
         </Button>
       </DialogActions>
     </Dialog>
