@@ -8,7 +8,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Fade from "@mui/material/Fade";
 
 import { useDispatch, useSelector } from "react-redux";
-import { createClassAction } from "../../redux/Actions/classAction";
+import {
+  createClassAction,
+  editClassAction,
+} from "../../redux/Actions/classAction";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -24,6 +27,10 @@ export default function FormDialogCreateClass({
     (state) => state.createClass
   );
 
+  const { isLoading: isLoadingEdit, isError: isErrorEdit } = useSelector(
+    (state) => state.editClass
+  );
+
   const [formData, setFormData] = React.useState({
     name: "",
     part: "",
@@ -32,7 +39,6 @@ export default function FormDialogCreateClass({
   });
 
   const [isDirty, setIsDirty] = React.useState(false);
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
     // Update formData when edit or classData changes
@@ -45,12 +51,6 @@ export default function FormDialogCreateClass({
       });
     }
   }, [edit, classData]);
-
-  React.useEffect(() => {
-    if (open) {
-      setIsDialogOpen(true);
-    }
-  }, [open]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -72,27 +72,32 @@ export default function FormDialogCreateClass({
       });
       setIsDirty(false);
     }
-    setIsDialogOpen(false);
     handleClose();
   };
 
   const isCreateButtonDisabled = formData.name === "" || !isDirty;
 
   const handleSubmit = () => {
-    dispatch(createClassAction(formData));
+    if (edit) {
+      dispatch(editClassAction(classData.id, formData));
+    } else {
+      dispatch(createClassAction(formData));
+    }
   };
 
   React.useEffect(() => {
-    if (isError) {
-      toast.error(isError);
-      dispatch({ type: "CREATE_CLASS_RESET" });
+    if (isError || isErrorEdit) {
+      toast.error(isError || isErrorEdit);
+      isError
+        ? dispatch({ type: "CREATE_CLASS_RESET" })
+        : dispatch({ type: "EDIT_CLASS_RESET" });
     }
     if (isSuccess) {
       dispatch({ type: "CREATE_CLASS_RESET" });
 
       navigate(`/class-details/${classInfo?.id}`);
     }
-  }, [classInfo?.id, dispatch, isError, isSuccess, navigate]);
+  }, [classInfo?.id, dispatch, isError, isSuccess, navigate, isErrorEdit]);
 
   return (
     <Dialog
@@ -171,9 +176,15 @@ export default function FormDialogCreateClass({
         <Button
           onClick={handleSubmit}
           sx={{ color: "#5175e0" }}
-          disabled={isCreateButtonDisabled || isLoading}
+          disabled={isCreateButtonDisabled || isLoading || isLoadingEdit}
         >
-          {isLoading ? "Creating..." : edit ? "Save" : "Create"}
+          {isLoading
+            ? "Creating..."
+            : isLoadingEdit
+            ? "Saving..."
+            : edit
+            ? "Save"
+            : "Create"}
         </Button>
       </DialogActions>
     </Dialog>
