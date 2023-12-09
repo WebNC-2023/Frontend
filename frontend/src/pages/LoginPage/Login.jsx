@@ -41,6 +41,9 @@ export default function SignIn() {
   const { isLoading, isError, isSuccess, userInfo } = useSelector(
     (state) => state.userLogin
   );
+  const pendingUrl = useSelector(
+    (state) => state.classroomDetailsPending.pendingUrl
+  );
 
   const formik = useFormik({
     initialValues: {
@@ -59,9 +62,13 @@ export default function SignIn() {
       dispatch({ type: "USER_LOGIN_RESET" });
     }
     if (isSuccess) {
-      if (localStorage.getItem("userInfo")) navigate("/home-page");
+      if (pendingUrl === null) {
+        if (localStorage.getItem("userInfo")) navigate("/home-page");
+      } else {
+        if (localStorage.getItem("userInfo")) navigate(pendingUrl);
+      }
     }
-  }, [userInfo, isSuccess, isError, navigate, dispatch]);
+  }, [userInfo, isSuccess, isError, navigate, dispatch, pendingUrl]);
   return (
     <ThemeProvider theme={defaultTheme}>
       <div
