@@ -1,0 +1,30 @@
+.classroom-everyone-teacher-container {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.classroom-everyone-teacher-name {
+    font-size: 0.875rem;
+    /* 14px */
+    line-height: 1.25rem;
+    /* 20px */
+    user-select: none;
+    color: #3c4043;
+}
+
+@media screen and (max-width: 639.98px) {
+    .classroom-everyone-teacher-container {
+        padding: 10px;
+        column-gap: 15px;
+    }
+
+    .classroom-everyone-teacher-name {
+        font-size: 0.75rem;
+        /* 12px */
+        line-height: 1rem;
+        /* 16px */
+    }
+}
