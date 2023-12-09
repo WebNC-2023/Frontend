@@ -1,0 +1,66 @@
+.classroom-everyone-page-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 25px;
+}
+
+.classroom-everyone-teacher-header {
+    padding: 20px;
+    user-select: none;
+    border-bottom: 1px solid black;
+    font-size: 1.875rem;
+    /* 30px */
+    line-height: 2.25rem;
+    /* 36px */
+}
+
+.classroom-everyone-student-header {
+    padding: 20px;
+    user-select: none;
+    border-bottom: 1px solid black;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.classroom-everyone-student-title {
+    font-size: 1.875rem;
+    /* 30px */
+    line-height: 2.25rem;
+    /* 36px */
+}
+
+.classroom-everyone-student-total {
+    font-size: 0.875rem;
+    /* 14px */
+    line-height: 1.25rem;
+    /* 20px */
+    font-weight: 500;
+}
+
+@media screen and (max-width: 639.98px) {
+    .classroom-everyone-page-container {
+        padding: 10px;
+    }
+
+    .classroom-everyone-student-header,
+    .classroom-everyone-teacher-header {
+        padding: 10px;
+    }
+
+    .classroom-everyone-teacher-header,
+    .classroom-everyone-student-title {
+        font-size: 1.5rem;
+        /* 24px */
+        line-height: 2rem;
+        /* 32px */
+    }
+
+    .classroom-everyone-student-total {
+        font-size: 0.75rem;
+        /* 12px */
+        line-height: 1rem;
+        /* 16px */
+    }
+}
