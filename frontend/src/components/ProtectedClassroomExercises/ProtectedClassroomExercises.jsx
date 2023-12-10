@@ -5,14 +5,13 @@ import { Outlet, Navigate, useParams } from "react-router-dom";
 import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
 import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
-
+import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 const ProtectedClassroomExercises = () => {
   const { setShowSidebar, setContentClassTab } = useContext(DataContext);
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
   const { classId } = useParams();
-
   useEffect(() => {
     const checkLoggedIn = async () => {
       setLoadingHomePage(true);
@@ -20,6 +19,16 @@ const ProtectedClassroomExercises = () => {
       try {
         const res = await Axios.get(`/classes/${classId}`);
         console.log(res.data);
+        dispatch(
+          updateClassroomDetailsInfo({
+            name: res.data.data.name,
+            topic: res.data.data.topic,
+            room: res.data.data.room,
+            isOwner: res.data.data.isOwner,
+            people: res.data.data.people,
+            owner: res.data.data.owner,
+          })
+        );
         dispatch(
           updateClassroomDetailsPendingUrl({
             pendingUrl: null,

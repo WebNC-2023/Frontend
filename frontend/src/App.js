@@ -27,6 +27,7 @@ import ProtectedClassroomExercises from "./components/ProtectedClassroomExercise
 import ClassroomExercisesPage from "./pages/ClassroomExercisesPage/ClassroomExercisesPage";
 import ProtectedClassroomEveryone from "./components/ProtectedClassroomEveryone/ProtectedClassroomEveryone";
 import ClassroomEveryonePage from "./pages/ClassroomEveryonePage/ClassroomEveryonePage";
+import AcceptInvitePage from "./pages/AcceptInvitePage/AcceptInvitePage";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -112,6 +113,11 @@ function App() {
               element={<ClassroomEveryonePage />}
             />
           </Route>
+
+          <Route
+            path="/accept-invite/:classId"
+            element={<AcceptInvitePage />}
+          />
 
           <Route path="*" element={<Error />} />
         </Routes>

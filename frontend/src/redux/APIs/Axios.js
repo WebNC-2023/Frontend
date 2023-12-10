@@ -1,45 +1,46 @@
 import axios from "axios";
 const Axios = axios.create({
-  // baseURL: process.env.REACT_APP_SERVER_BASE_URL,
-  baseURL: "https://webnc-2023.vercel.app",
+  baseURL: process.env.REACT_APP_SERVER_BASE_URL,
   withCredentials: true,
 });
 
-// Tạm thời ẩn cái interceptor này, tại vì nếu window.location = '/login' thì mọi lỗi về chuyển về login hết
+Axios.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-// Response interceptor để xử lý refresh token khi token hết hạn
-// Axios.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   async (error) => {
-//     console.log("Access token expired");
-//     window.location = "/login";
-//     // Kiểm tra nếu lỗi là do token hết hạn và chưa thử refresh token
-//     //console.log(error.response.status, originalRequest._retry, refreshToken);
-//     // if (
-//     //   error.response &&
-//     //   error.response.status === 401 &&
-//     //   error.response.data === "Unauthorized"
-//     // ) {
-//     // try {
-//     //   console.log("call refresh token");
-//     //   await Axios.get("/auth/refresh");
-//     //   return Axios.request(error.config);
-//     // } catch (err) {
-//     //   localStorage.removeItem("userInfo");
-//     //   setTimeout(
-//     //     () => (window.location.href = "http://localhost:3000/login"),
-//     //     3000
-//     //   );
-
-//     //   console.log(err);
-
-//     //   return Promise.reject(err);
-//     // }
-//     // }
-//     // return Promise.reject(error);
-//   }
-// );
+Axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      error.response.data === "Unauthorized"
+    ) {
+      try {
+        const res = await Axios.post("/auth/refresh", {
+          refreshToken: localStorage.getItem("refreshToken"),
+        });
+        localStorage.setItem("accessToken", res.data.data.accessToken);
+        return Axios.request(error.config);
+      } catch (err) {
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default Axios;

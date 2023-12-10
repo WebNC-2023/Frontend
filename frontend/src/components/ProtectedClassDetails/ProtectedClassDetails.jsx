@@ -26,6 +26,9 @@ const ProtectedClassDetails = () => {
             name: res.data.data.name,
             topic: res.data.data.topic,
             room: res.data.data.room,
+            isOwner: res.data.data.isOwner,
+            people: res.data.data.people,
+            owner: res.data.data.owner,
           })
         );
         dispatch(
