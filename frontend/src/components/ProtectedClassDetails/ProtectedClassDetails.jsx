@@ -96,6 +96,8 @@ const ProtectedClassDetails = () => {
               success: false,
             })
           );
+          setContentClassTab("one");
+          setShowSidebar(false);
           setLoadingHomePage(false);
           setIsAuth(true);
         } else {
