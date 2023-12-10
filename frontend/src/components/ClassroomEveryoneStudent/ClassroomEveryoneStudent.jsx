@@ -1,6 +1,6 @@
 import { Avatar } from "@mui/material";
-import "./ClassroomEveryoneTeacher.css";
-const ClassroomEveryoneTeacher = ({ firstName, lastName, avatar, email }) => {
+import "../ClassroomEveryoneTeacher/ClassroomEveryoneTeacher.css";
+const ClassroomEveryoneStudent = ({ firstName, lastName, avatar, email }) => {
   return (
     <div className="classroom-everyone-teacher-container">
       <Avatar
@@ -39,4 +39,4 @@ const ClassroomEveryoneTeacher = ({ firstName, lastName, avatar, email }) => {
   );
 };
 
-export default ClassroomEveryoneTeacher;
+export default ClassroomEveryoneStudent;
