@@ -27,6 +27,7 @@ import ProtectedClassroomExercises from "./components/ProtectedClassroomExercise
 import ClassroomExercisesPage from "./pages/ClassroomExercisesPage/ClassroomExercisesPage";
 import ProtectedClassroomEveryone from "./components/ProtectedClassroomEveryone/ProtectedClassroomEveryone";
 import ClassroomEveryonePage from "./pages/ClassroomEveryonePage/ClassroomEveryonePage";
+import SSOSuccess from "./pages/SSOSuccess";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -66,6 +67,10 @@ function App() {
 
           <Route element={<ProtectedSign />}>
             <Route path="/login" element={<Login />} />
+          </Route>
+
+          <Route element={<ProtectedSign />}>
+            <Route path="/sso-success/" element={<SSOSuccess />} />
           </Route>
 
           <Route element={<ProtectedSign />}>

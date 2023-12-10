@@ -18,9 +18,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { IconButton, InputAdornment } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { loginAction } from "../../redux/Actions/userActions";
 import { useNavigate } from "react-router-dom";
 import Stack from "@mui/material/Stack";
+import * as userApi from "../../redux/APIs/userServices";
 
 import {
   FacebookLoginButton,
@@ -36,9 +36,10 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const [show, setShow] = React.useState(false);
-  const { isLoading, isError, isSuccess, userInfo } = useSelector(
+  const { isError, isSuccess, userInfo } = useSelector(
     (state) => state.userLogin
   );
   const pendingUrl = useSelector(
@@ -51,8 +52,18 @@ export default function SignIn() {
       password: "",
     },
     validationSchema: LoginValidation,
-    onSubmit: (data) => {
-      dispatch(loginAction(data));
+    onSubmit: async (data) => {
+      setIsLoading(true);
+      try {
+        await userApi.loginService(data);
+        toast.success("Sign in successfully!");
+        setTimeout(() => {
+          navigate("/home-page");
+        }, 100);
+      } catch (error) {
+        toast.error("Email or password incorrect!");
+      }
+      setIsLoading(false);
     },
   });
 
@@ -225,6 +236,21 @@ export default function SignIn() {
                   gap: "0.5rem",
                 }}
               >
+                <GoogleLoginButton
+                  style={{
+                    border: "1px solid #f5f5f5",
+                  }}
+                  iconSize="20px"
+                  onClick={handleGoogleLogin}
+                >
+                  <span
+                    style={{
+                      marginLeft: "0.5rem",
+                    }}
+                  >
+                    Continue with Google{" "}
+                  </span>
+                </GoogleLoginButton>
                 <FacebookLoginButton
                   style={{
                     background: "#5175e0",
@@ -246,21 +272,6 @@ export default function SignIn() {
                     Continue with Facebook
                   </span>
                 </FacebookLoginButton>
-                <GoogleLoginButton
-                  style={{
-                    border: "1px solid #f5f5f5",
-                  }}
-                  iconSize="20px"
-                  onClick={handleGoogleLogin}
-                >
-                  <span
-                    style={{
-                      marginLeft: "0.5rem",
-                    }}
-                  >
-                    Continue with Google{" "}
-                  </span>
-                </GoogleLoginButton>
               </Stack>
             </Box>
           </Box>

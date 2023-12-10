@@ -1,8 +1,8 @@
 export const handleGoogleLogin = () => {
   // Thực hiện chuyển hướng đến trang Google Login
-  window.location.href = "https://webnc-2023.vercel.app/auth/google";
+  window.location.href = `${process.env.REACT_APP_SERVER_BASE_URL}/auth/google`;
 };
 
 export const handleFacebookLogin = () => {
-  window.location.href = "https://webnc-2023.vercel.app/auth/facebook";
+  window.location.href = `${process.env.REACT_APP_SERVER_BASE_URL}/auth/facebook`;
 };
