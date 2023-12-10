@@ -6,7 +6,7 @@ import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
 
 const ProtectedHome = () => {
-  const {setShowSidebar} = useContext(DataContext);
+  const { setShowSidebar } = useContext(DataContext);
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
@@ -18,14 +18,19 @@ const ProtectedHome = () => {
 
       try {
         const res = await Axios.get("/auth/me");
-        console.log(res.data);
 
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
 
         dispatch(
           update({
             fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-            avatar: res.data.data.avatar === null ? null :`${process.env.REACT_APP_SERVER_BASE_URL ?? "https://webnc-2023.vercel.app"}/files/${res.data.data.avatar}?${Date.now()}`,
+            avatar:
+              res.data.data.avatar === null
+                ? null
+                : `${
+                    process.env.REACT_APP_SERVER_BASE_URL ??
+                    "https://webnc-2023.vercel.app"
+                  }/files/${res.data.data.avatar}?${Date.now()}`,
           })
         );
 
@@ -46,7 +51,6 @@ const ProtectedHome = () => {
 
           setLoadingHomePage(false);
           setIsAuth(false);
-          
         } else {
           throw err;
         }

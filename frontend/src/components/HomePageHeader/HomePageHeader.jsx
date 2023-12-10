@@ -43,6 +43,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import InputIcon from "@mui/icons-material/Input";
 import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
 import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
+import * as userApi from "../../redux/APIs/userServices";
 
 const HomePageHeader = ({ showSidebar, classRoom }) => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
@@ -76,28 +77,14 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
     navigate("/edit-profile");
   };
   const handleClickLogOut = () => {
-    async function userLogout() {
-      localStorage.removeItem("userInfo");
-      const res = await Axios({
-        url: "/auth/sign-out",
-        method: "POST",
-      });
-      return res;
-    }
-    userLogout()
-      .then((res) => {
-        if (res.data.message === "Sign out successfully") {
-          dispatch(
-            update({
-              fullName: " ",
-              avatar: "",
-            })
-          );
-          navigate("/");
-        }
+    userApi.logoutService();
+    dispatch(
+      update({
+        fullName: " ",
+        avatar: "",
       })
-      .catch((error) => console.log(error));
-    //setAnchorEl(null);
+    );
+    navigate("/");
   };
   const [state, setState] = React.useState({
     top: false,

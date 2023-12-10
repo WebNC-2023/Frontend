@@ -12,14 +12,17 @@ export const registerService = async (user) => {
 // Logout user Function
 export const logoutService = () => {
   localStorage.removeItem("userInfo");
-  return null;
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
 };
 
 // Login user API call
-export const loginService = async (user) => {
-  const { data } = await Axios.post("/auth/sign-in", user);
-  if (data) {
-    localStorage.setItem("userInfo", JSON.stringify(data.data));
+export const loginService = async (data) => {
+  const res = await Axios.post("/auth/sign-in", data);
+  if (res.data) {
+    const { accessToken, refreshToken, ...user } = res.data.data;
+    localStorage.setItem("userInfo", JSON.stringify(user));
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("refreshToken", refreshToken);
   }
-  return data.data;
 };
