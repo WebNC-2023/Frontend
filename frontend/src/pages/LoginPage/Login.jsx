@@ -58,7 +58,11 @@ export default function SignIn() {
         await userApi.loginService(data);
         toast.success("Sign in successfully!");
         setTimeout(() => {
-          navigate("/home-page");
+          if (pendingUrl === null) {
+            navigate("/home-page");
+          } else {
+            navigate(pendingUrl);
+          }
         }, 100);
       } catch (error) {
         toast.error("Email or password incorrect!");
@@ -74,9 +78,9 @@ export default function SignIn() {
     }
     if (isSuccess) {
       if (pendingUrl === null) {
-        if (localStorage.getItem("userInfo")) navigate("/home-page");
+        navigate("/home-page");
       } else {
-        if (localStorage.getItem("userInfo")) navigate(pendingUrl);
+        navigate(pendingUrl);
       }
     }
   }, [userInfo, isSuccess, isError, navigate, dispatch, pendingUrl]);
