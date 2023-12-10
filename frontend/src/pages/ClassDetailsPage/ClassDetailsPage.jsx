@@ -1,26 +1,136 @@
 import ClassDetailsName from "../../components/ClassDetailsName/ClassDetailsName";
 import ClassTabs from "../../components/ClassTabs/ClassTabs";
 import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
-import { DataContext } from "../../contexts/DataContext";
-import { useContext } from "react";
+import { useState, useEffect } from "react";
 import "./ClassDetailsPage.css";
 import NotificationInClassroom from "../../components/NotificationInClassroom/NotificationInClassroom";
 import ClassroomPost from "../../components/ClassroomPost/ClassroomPost";
 import { useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import Axios from "../../redux/APIs/Axios";
+import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
+import { update } from "../../redux/Reducers/fullNameUserSlice";
+import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
 const ClassDetailsPage = () => {
-  const { showSidebar, contentClassTab } = useContext(DataContext);
   const posts = useSelector((state) => state.classroomPost.posts);
   const successClassDetails = useSelector(
     (state) => state.classroomDetailsPending.success
   );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [loadingHomePage, setLoadingHomePage] = useState(true);
+  const { classId } = useParams();
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      setLoadingHomePage(true);
+      try {
+        const res = await Axios.get(`/classes/${classId}`);
+        dispatch(
+          update({
+            fullName: `${
+              JSON.parse(localStorage.getItem("userInfo"))
+                ? JSON.parse(localStorage.getItem("userInfo")).firstName ?? ""
+                : ""
+            } ${
+              JSON.parse(localStorage.getItem("userInfo"))
+                ? JSON.parse(localStorage.getItem("userInfo")).lastName ?? ""
+                : ""
+            }`,
+            avatar: !JSON.parse(localStorage.getItem("userInfo"))
+              ? null
+              : JSON.parse(localStorage.getItem("userInfo")).avatar === null
+              ? null
+              : `${
+                  process.env.REACT_APP_SERVER_BASE_URL ??
+                  "https://webnc-2023.vercel.app"
+                }/files/${
+                  JSON.parse(localStorage.getItem("userInfo")).avatar
+                }?${Date.now()}`,
+          })
+        );
+        dispatch(
+          updateClassroomDetailsInfo({
+            name: res.data.data.name,
+            topic: res.data.data.topic,
+            room: res.data.data.room,
+            isOwner: res.data.data.isOwner,
+            people: res.data.data.people,
+            owner: res.data.data.owner,
+          })
+        );
+        dispatch(
+          updateClassroomDetailsPendingUrl({
+            pendingUrl: null,
+            success: true,
+          })
+        );
+        setLoadingHomePage(false);
+      } catch (err) {
+        if (err?.response?.data === "Unauthorized") {
+          localStorage.removeItem("userInfo");
+          dispatch(
+            update({
+              fullName: " ",
+              avatar: "",
+            })
+          );
+          dispatch(
+            updateClassroomDetailsPendingUrl({
+              pendingUrl: null,
+              success: false,
+            })
+          );
+          navigate("/login");
+        } else if (err?.response?.data?.message === "Class not found") {
+          dispatch(
+            update({
+              fullName: `${
+                JSON.parse(localStorage.getItem("userInfo")).firstName ?? ""
+              } ${JSON.parse(localStorage.getItem("userInfo")).lastName ?? ""}`,
+              avatar:
+                JSON.parse(localStorage.getItem("userInfo")).avatar === null
+                  ? null
+                  : `${
+                      process.env.REACT_APP_SERVER_BASE_URL ??
+                      "https://webnc-2023.vercel.app"
+                    }/files/${
+                      JSON.parse(localStorage.getItem("userInfo")).avatar
+                    }?${Date.now()}`,
+            })
+          );
+          dispatch(
+            updateClassroomDetailsPendingUrl({
+              pendingUrl: null,
+              success: false,
+            })
+          );
+          setLoadingHomePage(false);
+        } else {
+          throw err;
+        }
+      }
+    };
+    checkLoggedIn();
+  }, [dispatch, classId, navigate]);
   return (
     <>
-      <HomePageHeader showSidebar={showSidebar} classRoom={true} />
-      {successClassDetails ? (
+      <HomePageHeader showSidebar={true} classRoom={true} />
+      <ClassTabs contentClassTab="one" />
+      {loadingHomePage && (
+        <Box sx={{ width: "100%", paddingTop: "2px" }}>
+          <LinearProgress />
+        </Box>
+      )}
+      {loadingHomePage ? (
+        <></>
+      ) : successClassDetails ? (
         <>
-          <ClassTabs contentClassTab={contentClassTab} />
           <div className="class-details-page-container">
             <ClassDetailsName />
             <NotificationInClassroom />

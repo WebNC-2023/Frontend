@@ -2,7 +2,15 @@ import { Avatar } from "@mui/material";
 import "../ClassroomEveryoneTeacher/ClassroomEveryoneTeacher.css";
 const ClassroomEveryoneStudent = ({ firstName, lastName, avatar, email }) => {
   return (
-    <div className="classroom-everyone-teacher-container">
+    <div
+      style={{
+        padding: "20px",
+        display: "flex",
+        alignItems: "center",
+        columnGap: "15px",
+        borderTop: "1px solid #e0e0e0",
+      }}
+    >
       <Avatar
         src={avatar}
         sx={
