@@ -15,11 +15,9 @@ import { useState } from "react";
 import Logout from "@mui/icons-material/Logout";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
-//import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import InfoIcon from "@mui/icons-material/Info";
-import Axios from "../../redux/APIs/Axios";
 import MenuIcon from "@mui/icons-material/Menu";
 import * as React from "react";
 import Drawer from "@mui/material/Drawer";
@@ -291,7 +289,9 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
               </Stack>
             </div>
             {/* End Button create class */}
-            <p className="userInfo-default-screen"> Hi, {fullName}</p>
+            <p className="userInfo-default-screen">
+              {fullName ? `${fullName}` : ""}
+            </p>
             <Box
               sx={{
                 display: "flex",

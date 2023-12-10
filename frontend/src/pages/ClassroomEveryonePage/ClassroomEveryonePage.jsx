@@ -1,17 +1,113 @@
 import ClassTabs from "../../components/ClassTabs/ClassTabs";
 import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
-import { DataContext } from "../../contexts/DataContext";
-import { useContext } from "react";
+import { useEffect, useState } from "react";
 import "./ClassroomEveryonePage.css";
 import ClassroomEveryoneTeacher from "../../components/ClassroomEveryoneTeacher/ClassroomEveryoneTeacher";
 import InviteTeacherToClassroom from "../../components/InviteTeacherToClassroom/InviteTeacherToClassroom";
 import { useSelector } from "react-redux";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InviteStudentToClassroom from "../../components/InviteStudentToClassroom/InviteStudentToClassroom";
 import ClassroomEveryoneStudent from "../../components/ClassroomEveryoneStudent/ClassroomEveryoneStudent";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import Axios from "../../redux/APIs/Axios";
+import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
+import { update } from "../../redux/Reducers/fullNameUserSlice";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 const ClassroomEveryonePage = () => {
-  const { showSidebar, contentClassTab } = useContext(DataContext);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [loadingClassroomEveryonePage, setLoadingClassroomEveryonePage] =
+    useState(true);
+  const { classId } = useParams();
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      setLoadingClassroomEveryonePage(true);
+      try {
+        const res = await Axios.get(`/classes/${classId}`);
+        dispatch(
+          update({
+            fullName: `${
+              JSON.parse(localStorage.getItem("userInfo")).firstName ?? ""
+            } ${JSON.parse(localStorage.getItem("userInfo")).lastName ?? ""}`,
+            avatar:
+              JSON.parse(localStorage.getItem("userInfo")).avatar === null
+                ? null
+                : `${
+                    process.env.REACT_APP_SERVER_BASE_URL ??
+                    "https://webnc-2023.vercel.app"
+                  }/files/${
+                    JSON.parse(localStorage.getItem("userInfo")).avatar
+                  }?${Date.now()}`,
+          })
+        );
+        dispatch(
+          updateClassroomDetailsInfo({
+            name: res.data.data.name,
+            topic: res.data.data.topic,
+            room: res.data.data.room,
+            isOwner: res.data.data.isOwner,
+            people: res.data.data.people,
+            owner: res.data.data.owner,
+          })
+        );
+        dispatch(
+          updateClassroomDetailsPendingUrl({
+            pendingUrl: null,
+            success: true,
+          })
+        );
+        setLoadingClassroomEveryonePage(false);
+      } catch (err) {
+        if (err?.response?.data === "Unauthorized") {
+          localStorage.removeItem("userInfo");
+          dispatch(
+            update({
+              fullName: " ",
+              avatar: "",
+            })
+          );
+          dispatch(
+            updateClassroomDetailsPendingUrl({
+              pendingUrl: null,
+              success: false,
+            })
+          );
+          navigate("/login");
+        } else if (err?.response?.data?.message === "Class not found") {
+          dispatch(
+            update({
+              fullName: `${
+                JSON.parse(localStorage.getItem("userInfo")).firstName ?? ""
+              } ${JSON.parse(localStorage.getItem("userInfo")).lastName ?? ""}`,
+              avatar:
+                JSON.parse(localStorage.getItem("userInfo")).avatar === null
+                  ? null
+                  : `${
+                      process.env.REACT_APP_SERVER_BASE_URL ??
+                      "https://webnc-2023.vercel.app"
+                    }/files/${
+                      JSON.parse(localStorage.getItem("userInfo")).avatar
+                    }?${Date.now()}`,
+            })
+          );
+          dispatch(
+            updateClassroomDetailsPendingUrl({
+              pendingUrl: null,
+              success: false,
+            })
+          );
+          setLoadingClassroomEveryonePage(false);
+        } else {
+          throw err;
+        }
+      }
+    };
+    checkLoggedIn();
+  }, [dispatch, classId, navigate]);
   const successClassDetails = useSelector(
     (state) => state.classroomDetailsPending.success
   );
@@ -19,10 +115,17 @@ const ClassroomEveryonePage = () => {
   const isOwner = useSelector((state) => state.classroomDetailsInfo.isOwner);
   return (
     <>
-      <HomePageHeader showSidebar={showSidebar} classRoom={true} />
-      {successClassDetails ? (
+      <HomePageHeader showSidebar={true} classRoom={true} />
+      <ClassTabs contentClassTab={"three"} />
+      {loadingClassroomEveryonePage && (
+        <Box sx={{ width: "100%", paddingTop: "2px" }}>
+          <LinearProgress />
+        </Box>
+      )}
+      {loadingClassroomEveryonePage ? (
+        <></>
+      ) : successClassDetails ? (
         <>
-          <ClassTabs contentClassTab={contentClassTab} />
           <div className="classroom-everyone-page-container">
             <div className="classroom-everyone-teacher-header">
               <p
@@ -39,6 +142,7 @@ const ClassroomEveryonePage = () => {
               .map((teacher, index) => (
                 <ClassroomEveryoneTeacher
                   key={index}
+                  userId={teacher.id ?? null}
                   email={teacher.email}
                   firstName={teacher.firstName ?? null}
                   lastName={teacher.lastName ?? null}
@@ -57,7 +161,18 @@ const ClassroomEveryonePage = () => {
               <div className="classroom-everyone-student-title">Bạn học</div>
               {!isOwner && (
                 <div className="classroom-everyone-student-total">
-                  2 sinh viên
+                  {people.filter(
+                    (element) =>
+                      element.role === "student" && element.id !== undefined
+                  ).length > 0
+                    ? `${
+                        people.filter(
+                          (element) =>
+                            element.role === "student" &&
+                            element.id !== undefined
+                        ).length
+                      } sinh viên`
+                    : ""}
                 </div>
               )}
               {isOwner && <InviteStudentToClassroom />}
@@ -68,6 +183,7 @@ const ClassroomEveryonePage = () => {
                 <ClassroomEveryoneStudent
                   key={index}
                   email={student.email}
+                  userId={student.id ?? null}
                   firstName={student.firstName ?? null}
                   lastName={student.lastName ?? null}
                   avatar={

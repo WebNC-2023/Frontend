@@ -18,17 +18,15 @@ import ProtectedResetPassword from "./components/ProtectedResetPassword/Protecte
 import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import ProtectedVerifyEmail from "./components/ProtectedVerifyEmail/ProtectedVerifyEmail";
 import ClassDetailsPage from "./pages/ClassDetailsPage/ClassDetailsPage";
-import ProtectedClassDetails from "./components/ProtectedClassDetails/ProtectedClassDetails";
 import ChangePasswordPage from "./pages/ChangePasswordPage/ChangePasswordPage";
 import ProtectedChangePassword from "./components/ProtectedChangePassword/ProtectedChangePassword";
 import ProtectedEditProfile from "./components/ProtectedEditProfile/ProtectedEditProfile";
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
-import ProtectedClassroomExercises from "./components/ProtectedClassroomExercises/ProtectedClassroomExercises";
 import ClassroomExercisesPage from "./pages/ClassroomExercisesPage/ClassroomExercisesPage";
-import ProtectedClassroomEveryone from "./components/ProtectedClassroomEveryone/ProtectedClassroomEveryone";
 import ClassroomEveryonePage from "./pages/ClassroomEveryonePage/ClassroomEveryonePage";
 import AcceptInvitePage from "./pages/AcceptInvitePage/AcceptInvitePage";
 import SSOSuccess from "./pages/SSOSuccess";
+import ProtectedAcceptInvite from "./components/ProtectedAcceptInvite/ProtectedAcceptInvite";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -98,30 +96,29 @@ function App() {
               </ProtectedVerifyEmail>
             }
           />
-          <Route element={<ProtectedClassDetails />}>
-            <Route
-              path="/class-details/:classId"
-              element={<ClassDetailsPage />}
-            />
-          </Route>
 
-          <Route element={<ProtectedClassroomExercises />}>
-            <Route
-              path="/class-details/:classId/exercises"
-              element={<ClassroomExercisesPage />}
-            />
-          </Route>
+          <Route
+            path="/class-details/:classId"
+            element={<ClassDetailsPage />}
+          />
 
-          <Route element={<ProtectedClassroomEveryone />}>
-            <Route
-              path="/class-details/:classId/everyone"
-              element={<ClassroomEveryonePage />}
-            />
-          </Route>
+          <Route
+            path="/class-details/:classId/exercises"
+            element={<ClassroomExercisesPage />}
+          />
+
+          <Route
+            path="/class-details/:classId/everyone"
+            element={<ClassroomEveryonePage />}
+          />
 
           <Route
             path="/accept-invite"
-            element={<AcceptInvitePage />}
+            element={
+              <ProtectedAcceptInvite>
+                <AcceptInvitePage />
+              </ProtectedAcceptInvite>
+            }
           />
 
           <Route path="*" element={<Error />} />

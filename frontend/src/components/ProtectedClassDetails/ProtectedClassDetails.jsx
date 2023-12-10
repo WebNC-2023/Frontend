@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
-import { Outlet, Navigate, useParams } from "react-router-dom";
+import { Outlet, Navigate, useParams, useNavigate } from "react-router-dom";
 import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
@@ -10,10 +10,10 @@ import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroom
 const ProtectedClassDetails = () => {
   const { setShowSidebar, setContentClassTab } = useContext(DataContext);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
   const { classId } = useParams();
-
   useEffect(() => {
     const checkLoggedIn = async () => {
       setLoadingHomePage(true);
@@ -37,22 +37,22 @@ const ProtectedClassDetails = () => {
             success: true,
           })
         );
-        dispatch(
-          update({
-            fullName: `${
-              JSON.parse(localStorage.getItem("userInfo")).firstName ?? ""
-            } ${JSON.parse(localStorage.getItem("userInfo")).lastName ?? ""}`,
-            avatar:
-              JSON.parse(localStorage.getItem("userInfo")).avatar === null
-                ? null
-                : `${
-                    process.env.REACT_APP_SERVER_BASE_URL ??
-                    "https://webnc-2023.vercel.app"
-                  }/files/${
-                    JSON.parse(localStorage.getItem("userInfo")).avatar
-                  }?${Date.now()}`,
-          })
-        );
+        // dispatch(
+        //   update({
+        //     fullName: `${
+        //       JSON.parse(localStorage.getItem("userInfo")).firstName ?? ""
+        //     } ${JSON.parse(localStorage.getItem("userInfo")).lastName ?? ""}`,
+        //     avatar:
+        //       JSON.parse(localStorage.getItem("userInfo")).avatar === null
+        //         ? null
+        //         : `${
+        //             process.env.REACT_APP_SERVER_BASE_URL ??
+        //             "https://webnc-2023.vercel.app"
+        //           }/files/${
+        //             JSON.parse(localStorage.getItem("userInfo")).avatar
+        //           }?${Date.now()}`,
+        //   })
+        // );
         setLoadingHomePage(false);
         setIsAuth(true);
         setShowSidebar(true);
@@ -67,32 +67,14 @@ const ProtectedClassDetails = () => {
               avatar: "",
             })
           );
-
-          setLoadingHomePage(false);
-          setIsAuth(false);
           dispatch(
             updateClassroomDetailsPendingUrl({
               pendingUrl: `/class-details/${classId}`,
               success: false,
             })
           );
+          navigate("/login");
         } else if (err?.response?.data?.message === "Class not found") {
-          dispatch(
-            update({
-              fullName: `${
-                JSON.parse(localStorage.getItem("userInfo")).firstName ?? ""
-              } ${JSON.parse(localStorage.getItem("userInfo")).lastName ?? ""}`,
-              avatar:
-                JSON.parse(localStorage.getItem("userInfo")).avatar === null
-                  ? null
-                  : `${
-                      process.env.REACT_APP_SERVER_BASE_URL ??
-                      "https://webnc-2023.vercel.app"
-                    }/files/${
-                      JSON.parse(localStorage.getItem("userInfo")).avatar
-                    }?${Date.now()}`,
-            })
-          );
           dispatch(
             updateClassroomDetailsPendingUrl({
               pendingUrl: null,
@@ -109,7 +91,7 @@ const ProtectedClassDetails = () => {
       }
     };
     checkLoggedIn();
-  }, [dispatch, setShowSidebar, setContentClassTab, classId]);
+  }, [dispatch, setShowSidebar, setContentClassTab, classId, navigate]);
 
   if (loadingHomePage) {
     return (
