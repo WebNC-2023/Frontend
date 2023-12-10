@@ -120,7 +120,7 @@ function App() {
           </Route>
 
           <Route
-            path="/accept-invite/:classId"
+            path="/accept-invite"
             element={<AcceptInvitePage />}
           />
 

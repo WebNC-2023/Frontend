@@ -19,10 +19,7 @@ const InviteTeacherToClassroom = () => {
   const [sending, setSending] = React.useState(false);
   const { classId } = useParams();
   const dispatch = useDispatch();
-  const owner = useSelector((state) => state.classroomDetailsInfo.owner);
-  const peopleNotActive = useSelector(
-    (state) => state.classroomDetailsInfo.people
-  );
+  const people = useSelector((state) => state.classroomDetailsInfo.people);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -46,7 +43,6 @@ const InviteTeacherToClassroom = () => {
             room: res.data.data.room,
             isOwner: res.data.data.isOwner,
             people: res.data.data.people,
-            owner: res.data.data.owner,
           })
         );
         setSending(false);
@@ -102,13 +98,8 @@ const InviteTeacherToClassroom = () => {
                 content
               ) &&
               !sending &&
-              owner.email !== content &&
-              peopleNotActive
-                .filter(
-                  (element) =>
-                    element.isActive !== undefined && element.isActive === false
-                )
-                .filter((element1) => element1.email === content).length === 0
+              people.filter((element1) => element1.email === content).length ===
+                0
                 ? false
                 : true
             }
