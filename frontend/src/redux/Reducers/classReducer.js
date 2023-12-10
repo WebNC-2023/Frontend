@@ -33,3 +33,19 @@ export const classGetReducer = (state = {}, action) => {
       return state;
   }
 };
+// EDIT CLASS
+
+export const classEditReducer = (state = {}, action) => {
+  switch (action.type) {
+    case classConstants.EDIT_CLASS_REQUEST:
+      return { isLoading: true };
+    case classConstants.EDIT_CLASS_SUCCESS:
+      return { isLoading: false, classInfo: action.payload, isSuccess: true };
+    case classConstants.EDIT_CLASS_FAIL:
+      return { isLoading: false, isError: action.payload };
+    case classConstants.EDIT_CLASS_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
