@@ -25,25 +25,39 @@ const ClassroomEveryoneTeacher = ({
   const navigate = useNavigate();
   const owner = useSelector((state) => state.classroomDetailsInfo.owner);
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const [openDelete, setOpenRemoveDialog] = useState(false);
+  const [openOptionRemove, setOpenOptionRemove] = useState(false);
+  const [openOptionLeave, setOpenOptionLeave] = useState(false);
+  const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
+  const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const { classId } = useParams();
   // const [sending, setSending] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleOpenOptionRemove = () => {
+    setOpenOptionRemove(true);
   };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseOptionRemove = () => {
+    setOpenOptionRemove(false);
   };
-
+  const handleOpenOptionLeave = () => {
+    setOpenOptionLeave(true);
+  };
+  const handleCloseOptionLeave = () => {
+    setOpenOptionLeave(false);
+  };
   const handleCloseRemoveDialog = () => {
     setOpenRemoveDialog(false);
   };
+  const handleCloseLeaveDialog = () => {
+    setOpenLeaveDialog(false);
+  };
   const handleOpenRemoveDialog = () => {
-    setOpen(false);
+    setOpenOptionRemove(false);
     setOpenRemoveDialog(true);
+  };
+  const handleOpenLeaveDialog = () => {
+    setOpenOptionLeave(false);
+    setOpenLeaveDialog(true);
   };
   const handleRemoveTeacher = () => {
     async function sendRemoveTeacher() {
@@ -89,6 +103,34 @@ const ClassroomEveryoneTeacher = ({
       }
     }
     sendRemoveTeacher();
+  };
+  const handleTeacherLeave = () => {
+    async function sendTeacherLeave() {
+      setLeaving(true);
+      try {
+        await Axios.post(`/classes/${classId}/leave`);
+        navigate("/home-page");
+      } catch (error) {
+        if (error?.response?.data === "Unauthorized") {
+          localStorage.removeItem("userInfo");
+          dispatch(
+            update({
+              fullName: " ",
+              avatar: "",
+            })
+          );
+          navigate("/login");
+        } else {
+          console.log(error.response);
+          setLeaving(false);
+          setOpenLeaveDialog(false);
+          toast.error(`Leave fail!`, {
+            autoClose: 3000,
+          });
+        }
+      }
+    }
+    sendTeacherLeave();
   };
 
   return (
@@ -139,21 +181,37 @@ const ClassroomEveryoneTeacher = ({
             <></>
           ) : (
             <>
-              <IconButton onClick={handleClickOpen}>
+              <IconButton onClick={handleOpenOptionLeave}>
                 <MoreVertIcon />
               </IconButton>
-              <Dialog open={open} onClose={handleClose} fullWidth>
-                <Button onClick={handleOpenRemoveDialog}>Rời lớp học</Button>
+              <Dialog
+                open={openOptionLeave}
+                onClose={handleCloseOptionLeave}
+                fullWidth
+              >
+                <Button onClick={handleOpenLeaveDialog}>Rời lớp học</Button>
               </Dialog>
-              <Dialog open={openDelete} fullWidth>
-                <DialogTitle>Rời lớp học?</DialogTitle>
+              <Dialog open={openLeaveDialog} fullWidth>
+                <DialogTitle>Rời khỏi lớp học?</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    Bạn có chắc chắn muốn rời lớp học.
+                    Bạn sẽ không thể mở lớp học này trừ khi bạn được mời trở
+                    lại.
+                    <b> Bạn không thể hoàn tác hành động này.</b>
                   </DialogContentText>
                   <DialogActions>
-                    <Button onClick={handleOpenRemoveDialog}>Huỷ</Button>
-                    <Button onClick={handleRemoveTeacher}>Xoá</Button>
+                    <Button
+                      disabled={leaving ? true : false}
+                      onClick={handleCloseLeaveDialog}
+                    >
+                      Huỷ
+                    </Button>
+                    <Button
+                      disabled={leaving ? true : false}
+                      onClick={handleTeacherLeave}
+                    >
+                      {leaving ? "Đang rời lớp..." : "Rời lớp"}
+                    </Button>
                   </DialogActions>
                 </DialogContent>
               </Dialog>
@@ -163,13 +221,17 @@ const ClassroomEveryoneTeacher = ({
             owner.email &&
           (firstName !== null || lastName !== null) ? (
           <>
-            <IconButton onClick={handleClickOpen}>
+            <IconButton onClick={handleOpenOptionRemove}>
               <MoreVertIcon />
             </IconButton>
-            <Dialog open={open} onClose={handleClose} fullWidth>
+            <Dialog
+              open={openOptionRemove}
+              onClose={handleCloseOptionRemove}
+              fullWidth
+            >
               <Button onClick={handleOpenRemoveDialog}>Xoá</Button>
             </Dialog>
-            <Dialog open={openDelete} fullWidth>
+            <Dialog open={openRemoveDialog} fullWidth>
               <DialogTitle>Xoá giáo viên?</DialogTitle>
               <DialogContent>
                 <DialogContentText>
@@ -186,7 +248,7 @@ const ClassroomEveryoneTeacher = ({
                     disabled={deleting ? true : false}
                     onClick={handleRemoveTeacher}
                   >
-                    {deleting ? "Đang xoá" : "Xoá"}
+                    {deleting ? "Đang xoá..." : "Xoá"}
                   </Button>
                 </DialogActions>
               </DialogContent>

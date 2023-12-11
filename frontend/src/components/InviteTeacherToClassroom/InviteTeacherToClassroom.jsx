@@ -105,7 +105,7 @@ const InviteTeacherToClassroom = () => {
                 : true
             }
           >
-            {sending ? "Đang mời" : "Mời"}
+            {sending ? "Đang mời..." : "Mời"}
           </Button>
         </DialogActions>
       </Dialog>
