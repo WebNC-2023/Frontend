@@ -135,7 +135,17 @@ const ClassroomEveryonePage = () => {
               >
                 Giáo viên
               </p>
-              {isOwner && <InviteTeacherToClassroom />}
+              {people.filter(
+                (element) =>
+                  element.email ===
+                    JSON.parse(localStorage.getItem("userInfo")).email &&
+                  element.id !== undefined &&
+                  element.role === "teacher"
+              ).length === 1 ? (
+                <InviteTeacherToClassroom />
+              ) : (
+                <></>
+              )}
             </div>
             {people
               .filter((element) => element.role === "teacher")
@@ -175,7 +185,17 @@ const ClassroomEveryonePage = () => {
                     : ""}
                 </div>
               )}
-              {isOwner && <InviteStudentToClassroom />}
+              {people.filter(
+                (element) =>
+                  element.email ===
+                    JSON.parse(localStorage.getItem("userInfo")).email &&
+                  element.id !== undefined &&
+                  element.role === "teacher"
+              ).length === 1 ? (
+                <InviteStudentToClassroom />
+              ) : (
+                <></>
+              )}
             </div>
             {people
               .filter((element) => element.role === "student")
