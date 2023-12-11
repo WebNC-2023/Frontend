@@ -164,7 +164,7 @@ const ClassroomEveryoneStudent = ({
                     disabled={deleting ? true : false}
                     onClick={handleRemoveStudent}
                   >
-                    {deleting ? "Đang xoá" : "Xoá"}
+                    {deleting ? "Đang xoá..." : "Xoá"}
                   </Button>
                 </DialogActions>
               </DialogContent>
