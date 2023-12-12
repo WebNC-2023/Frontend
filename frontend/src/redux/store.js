@@ -19,6 +19,9 @@ const rootReducer = combineReducers({
   classroomDetailsInfo: classroomDetailsInfoReducer,
   classroomDetailsPending: classroomDetailsPendingReducer,
   editClass: Class.classEditReducer,
+  joinClassByCode: Class.classJoinByCodeReducer,
+  unSubClass: Class.unSubClassReducer,
+  deleteClass: Class.deleteClassReducer,
 });
 
 // get userInfo from localStorage

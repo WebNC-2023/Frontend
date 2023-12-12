@@ -10,14 +10,34 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  unSubClassAction,
+  deleteClassAction,
+} from "../../redux/Actions/classAction";
 
 const JoinedClasses = ({ classData }) => {
   const [classAnchorEl, setClassAnchorEl] = React.useState(null);
   const openMenuClass = Boolean(classAnchorEl);
   const [openDialogEditClass, setOpenDialogEditClass] = React.useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  console.log(classData);
+  const { isError } = useSelector((state) => state.unSubClass);
+
+  const { isError: deleteIsError } = useSelector((state) => state.deleteClass);
+
+  React.useEffect(() => {
+    if (isError || deleteIsError) {
+      toast.error(isError || deleteIsError);
+      dispatch({
+        type: "UNSUB_CLASS_RESET",
+      });
+      dispatch({
+        type: "DELETE_CLASS_RESET",
+      });
+    }
+  }, [dispatch, isError, deleteIsError]);
 
   const handleClick = (event) => {
     setClassAnchorEl(event.currentTarget);
@@ -35,13 +55,28 @@ const JoinedClasses = ({ classData }) => {
     setOpenDialogEditClass(false);
   };
 
-  const handleCopyLinkClick = () => {
-    toast.success("Link copied");
+  const handleCopyLinkClick = async () => {
+    const classLink = `/class-details/${classData.id}`;
+    const currentURL = window.location.origin + classLink;
+
+    try {
+      await navigator.clipboard.writeText(currentURL);
+      toast.success("Copied to clipboard");
+    } catch (error) {
+      toast.error("Can not copy to clipboard");
+    }
+
     handleClassClose();
   };
 
   const handleUnSubscribe = () => {
-    console.log("huy dang ky");
+    dispatch(unSubClassAction(classData.id));
+    handleClassClose();
+  };
+
+  const handleDeleteClass = () => {
+    dispatch(deleteClassAction(classData.id));
+    handleClassClose();
   };
 
   const navgiateHandle = (e) => {
@@ -53,6 +88,10 @@ const JoinedClasses = ({ classData }) => {
   const urlImage = classData.avatar
     ? classData.avatar
     : "https://gstatic.com/classroom/themes/Physics.jpg";
+
+  const urlAvatarOwner = classData.owner.avatar
+    ? `https://webnc-2023.vercel.app/files/${classData.owner.avatar}`
+    : "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/s75-c-fbw=1/photo.jpg";
 
   return (
     <li className="joined__list">
@@ -91,10 +130,7 @@ const JoinedClasses = ({ classData }) => {
           </div>
         </div>
         {!classData.isOwner && (
-          <Avatar
-            className="joined__avatar"
-            src="https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/s75-c-fbw=1/photo.jpg"
-          />
+          <Avatar className="joined__avatar" src={urlAvatarOwner} />
         )}
       </div>
       {/* Dialog Create Class */}
@@ -146,6 +182,9 @@ const JoinedClasses = ({ classData }) => {
           </MenuItem>,
           <MenuItem key="edit" onClick={handleOpenDialogEdit}>
             Edit
+          </MenuItem>,
+          <MenuItem key="delete" onClick={handleDeleteClass}>
+            Delete
           </MenuItem>,
         ]}
         {!classData.isOwner && (

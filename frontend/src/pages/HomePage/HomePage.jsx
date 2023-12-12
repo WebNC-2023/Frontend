@@ -14,6 +14,14 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const { isLoading, isError, classes } = useSelector((state) => state.classes);
 
+  const { isLoading: isUnSubriceLoading } = useSelector(
+    (state) => state.unSubClass
+  );
+
+  const { isLoading: isDeleteLoading } = useSelector(
+    (state) => state.deleteClass
+  );
+
   useEffect(() => {
     dispatch(getClassesAction());
 
@@ -28,7 +36,7 @@ const HomePage = () => {
     <div className="home-page-container">
       <HomePageHeader showSidebar={showSidebar} />
 
-      {isLoading ? (
+      {isLoading || isUnSubriceLoading || isDeleteLoading ? (
         <Loader />
       ) : classes?.length > 0 ? (
         <ol className="joined" style={{ marginTop: "65px" }}>
