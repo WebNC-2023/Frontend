@@ -57,7 +57,7 @@ const ContentTab3 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                 />
               ))}
             <div className="classroom-everyone-student-header">
-              <div className="classroom-everyone-student-title">Bạn học</div>
+              <div className="classroom-everyone-student-title">Học sinh</div>
               {!isOwner && (
                 <div className="classroom-everyone-student-total">
                   {people.filter(
