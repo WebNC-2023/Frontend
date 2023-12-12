@@ -5,8 +5,61 @@
     padding: 25px;
 }
 
+.class-details-page-flex {
+    display: flex;
+    margin-left: -25px;
+    align-items: flex-start;
+}
+
+.class-details-page-left {
+    width: 195px;
+    margin-left: 25px;
+    padding: 20px 15px;
+    border: 1px solid #dadce0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.class-details-page-right {
+    width: calc(100% - 225px);
+    margin-left: 25px;
+}
+
+.class-details-page-code-title {
+    color: #3c4043;
+    font-weight: 500;
+    font-size: 0.875rem;
+    /* 14px */
+    line-height: 1.25rem;
+    /* 20px */
+}
+
+.class-details-page-code-content {
+    font-size: 1.5rem;
+    /* 24px */
+    line-height: 2rem;
+    /* 32px */
+    color: #1967d2;
+}
+
+.class-details-page-left-code {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+
 @media screen and (max-width: 639.98px) {
     .class-details-page-container {
         padding: 25px 10px;
+    }
+
+    .class-details-page-right {
+        width: calc(100% - 25px);
+    }
+
+    .class-details-page-left {
+        display: none;
     }
 }

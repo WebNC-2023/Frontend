@@ -17,6 +17,14 @@ import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroom
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import LinkIcon from "@mui/icons-material/Link";
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
 const ClassDetailsPage = () => {
   const posts = useSelector((state) => state.classroomPost.posts);
   const successClassDetails = useSelector(
@@ -118,6 +126,14 @@ const ClassDetailsPage = () => {
     };
     checkLoggedIn();
   }, [dispatch, classId, navigate]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <>
       <HomePageHeader showSidebar={true} classRoom={true} />
@@ -132,11 +148,78 @@ const ClassDetailsPage = () => {
       ) : successClassDetails ? (
         <>
           <div className="class-details-page-container">
-            <ClassDetailsName />
-            <NotificationInClassroom />
-            {posts.slice(1).map((post, index) => (
-              <ClassroomPost key={index} post={post} />
-            ))}
+            <div className="class-details-page-flex">
+              <div className="class-details-page-left">
+                <div className="class-details-page-left-code">
+                  <div className="class-details-page-code-title">Mã lớp</div>
+                  <div className="class-details-page-code-content">qjvbhnk</div>
+                </div>
+                <IconButton size="large" onClick={handleClick}>
+                  <MoreVertIcon
+                    sx={{
+                      color: "#202020",
+                    }}
+                  />
+                </IconButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <MenuItem
+                    onClick={handleClose}
+                    sx={{
+                      display: "flex",
+                      columnGap: "30px",
+                    }}
+                  >
+                    <LinkIcon />
+                    <p>Sao chép đường liên kết mời tham gia lớp học</p>
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleClose}
+                    sx={{
+                      display: "flex",
+                      columnGap: "30px",
+                    }}
+                  >
+                    <ContentCopyRoundedIcon />
+                    <p>Sao chép mã lớp</p>
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleClose}
+                    sx={{
+                      display: "flex",
+                      columnGap: "30px",
+                    }}
+                  >
+                    <RestartAltIcon />
+                    <p>Đặt lại mã lớp</p>
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleClose}
+                    sx={{
+                      display: "flex",
+                      columnGap: "30px",
+                    }}
+                  >
+                    <CancelPresentationIcon />
+                    <p>Tắt</p>
+                  </MenuItem>
+                </Menu>
+              </div>
+              <div className="class-details-page-right">
+                <ClassDetailsName />
+                <NotificationInClassroom />
+                {posts.slice(1).map((post, index) => (
+                  <ClassroomPost key={index} post={post} />
+                ))}
+              </div>
+            </div>
           </div>
         </>
       ) : (
