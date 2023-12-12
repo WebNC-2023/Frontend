@@ -2,7 +2,7 @@ import * as classConstants from "../Constants/classConstants";
 import { ErrorsAction } from "../Protection";
 import * as classApi from "../APIs/classServices";
 
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 // create Class action
 export const createClassAction = (datas) => async (dispatch) => {

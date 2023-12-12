@@ -4,22 +4,28 @@ import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { Outlet, Navigate } from "react-router-dom";
 import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
-
-const ProtectedHome = () => {
+import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
+import { useParams } from "react-router-dom";
+const ProtectedAttendByLink = () => {
   const { setShowSidebar } = useContext(DataContext);
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
+  const { classId } = useParams();
   useEffect(() => {
     const checkLoggedIn = async () => {
+      dispatch(
+        updateClassroomDetailsPendingUrl({
+          pendingUrl: null,
+          success: false,
+        })
+      );
       setLoadingHomePage(true);
       setIsAuth(false);
 
       try {
         const res = await Axios.get("/auth/me");
-
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
-
         dispatch(
           update({
             fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
@@ -32,7 +38,12 @@ const ProtectedHome = () => {
                   }/files/${res.data.data.avatar}?${Date.now()}`,
           })
         );
-
+        dispatch(
+          updateClassroomDetailsPendingUrl({
+            pendingUrl: null,
+            success: false,
+          })
+        );
         setLoadingHomePage(false);
         setIsAuth(true);
         setShowSidebar(true);
@@ -47,6 +58,12 @@ const ProtectedHome = () => {
               avatar: "",
             })
           );
+          dispatch(
+            updateClassroomDetailsPendingUrl({
+              pendingUrl: `/classes/${classId}/attend`,
+              success: false,
+            })
+          );
 
           setLoadingHomePage(false);
           setIsAuth(false);
@@ -57,7 +74,7 @@ const ProtectedHome = () => {
     };
 
     checkLoggedIn();
-  }, [dispatch, setShowSidebar]);
+  }, [dispatch, setShowSidebar, classId]);
 
   if (loadingHomePage) {
     return (
@@ -73,8 +90,8 @@ const ProtectedHome = () => {
   return isAuth && localStorage.getItem("userInfo") ? (
     <Outlet />
   ) : (
-    <Navigate to="/" />
+    <Navigate to="/login" />
   );
 };
 
-export default ProtectedHome;
+export default ProtectedAttendByLink;

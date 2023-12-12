@@ -13,7 +13,7 @@ import EnhancedEncryptionIcon from "@mui/icons-material/EnhancedEncryption";
 import { useState} from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import Axios from "../../redux/APIs/Axios";
 import { useNavigate } from "react-router-dom";
 const ChangePassword = () => {
@@ -336,12 +336,6 @@ const ChangePassword = () => {
           )}
         </Paper>
       </Grid>
-      <ToastContainer
-        position="top-right"
-        pauseOnFocusLoss={false}
-        pauseOnHover={false}
-        autoClose={3000}
-      />
     </Grid>
   );
 };

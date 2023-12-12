@@ -13,7 +13,7 @@ import { useState } from "react";
 import Axios from "../../redux/APIs/Axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 const ClassroomEveryoneStudent = ({
   firstName,
@@ -174,12 +174,6 @@ const ClassroomEveryoneStudent = ({
           <></>
         )}
       </div>
-      <ToastContainer
-        position="top-right"
-        pauseOnFocusLoss={false}
-        pauseOnHover={false}
-        autoClose={3000}
-      />
     </>
   );
 };

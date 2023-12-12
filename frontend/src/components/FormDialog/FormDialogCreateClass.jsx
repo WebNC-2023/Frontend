@@ -13,7 +13,7 @@ import {
   editClassAction,
 } from "../../redux/Actions/classAction";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 export default function FormDialogCreateClass({
   open,

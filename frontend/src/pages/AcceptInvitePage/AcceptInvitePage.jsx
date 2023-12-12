@@ -12,7 +12,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import * as userApi from "../../redux/APIs/userServices";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 const AcceptInvitePage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -113,12 +113,6 @@ const AcceptInvitePage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <ToastContainer
-        position="top-right"
-        pauseOnFocusLoss={false}
-        pauseOnHover={false}
-        autoClose={3000}
-      />
     </>
   );
 };
