@@ -1,21 +1,29 @@
 import { Tabs, Tab } from "@mui/material";
 import "./ClassTabs.css";
-import { useNavigate, useParams } from "react-router-dom";
+//import { useNavigate, useParams } from "react-router-dom";
 
-const ClassTabs = ({ contentClassTab }) => {
-  const navigate = useNavigate();
-  const { classId } = useParams();
+const ClassTabs = ({ tab, setTab }) => {
+  // const navigate = useNavigate();
+  // const { classId } = useParams();
+  // const handleChange = (event, newValue) => {
+  //   if (newValue === "two") navigate(`/class-details/${classId}/exercises`);
+  //   else if (newValue === "one") {
+  //     navigate(`/class-details/${classId}`);
+  //   } else if (newValue === "three") {
+  //     navigate(`/class-details/${classId}/everyone`);
+  //   }
+  // };
   const handleChange = (event, newValue) => {
-    if (newValue === "two") navigate(`/class-details/${classId}/exercises`);
+    if (newValue === "two") setTab("two");
     else if (newValue === "one") {
-      navigate(`/class-details/${classId}`);
+      setTab("one");
     } else if (newValue === "three") {
-      navigate(`/class-details/${classId}/everyone`);
+      setTab("three");
     }
   };
   return (
     <Tabs
-      value={contentClassTab}
+      value={tab}
       onChange={handleChange}
       textColor="secondary"
       indicatorColor="secondary"
