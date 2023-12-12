@@ -21,6 +21,7 @@ const ProtectedClassroomExercises = () => {
         console.log(res.data);
         dispatch(
           updateClassroomDetailsInfo({
+            id: res.data.data.id,
             name: res.data.data.name,
             topic: res.data.data.topic,
             room: res.data.data.room,

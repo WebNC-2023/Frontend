@@ -37,6 +37,7 @@ const InviteStudentToClassroom = () => {
         const res = await Axios.get(`/classes/${classId}`);
         dispatch(
           updateClassroomDetailsInfo({
+            id: res.data.data.id,
             name: res.data.data.name,
             topic: res.data.data.topic,
             room: res.data.data.room,

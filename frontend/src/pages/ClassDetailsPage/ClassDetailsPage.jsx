@@ -64,6 +64,7 @@ const ClassDetailsPage = () => {
         );
         dispatch(
           updateClassroomDetailsInfo({
+            id: res.data.data.id,
             name: res.data.data.name,
             topic: res.data.data.topic,
             room: res.data.data.room,
@@ -167,7 +168,9 @@ const ClassDetailsPage = () => {
               >
                 <div className="class-details-page-left-code">
                   <div className="class-details-page-code-title">Mã lớp</div>
-                  <div className="class-details-page-code-content">qjvbhnk</div>
+                  <div className="class-details-page-code-content">
+                    {classId}
+                  </div>
                 </div>
                 <IconButton size="large" onClick={handleClick}>
                   <MoreVertIcon
@@ -204,16 +207,6 @@ const ClassDetailsPage = () => {
                   >
                     <ContentCopyRoundedIcon />
                     <p>Sao chép mã lớp</p>
-                  </MenuItem>
-                  <MenuItem
-                    onClick={handleClose}
-                    sx={{
-                      display: "flex",
-                      columnGap: "30px",
-                    }}
-                  >
-                    <RestartAltIcon />
-                    <p>Đặt lại mã lớp</p>
                   </MenuItem>
                   <MenuItem
                     onClick={handleClose}

@@ -12,6 +12,9 @@ import Slide from "@mui/material/Slide";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { Tooltip } from "@mui/material";
+import * as classApi from "../../redux/APIs/classServices";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -20,18 +23,25 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function FullScreenDialog({ open, handleClose }) {
   const [classCode, setClassCode] = React.useState("");
   const [classCodeError, setClassCodeError] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleClassCodeChange = (event) => {
     const inputValue = event.target.value;
     setClassCode(inputValue);
 
     // Check the condition for the class code
-    const isValidClassCode = /^[a-zA-Z0-9]{5,7}$/.test(inputValue);
+    const isValidClassCode = /^[a-zA-Z0-9]{7,12}$/.test(inputValue);
     setClassCodeError(!isValidClassCode);
   };
 
-  const handleJoinClick = () => {
-    console.log(classCode);
+  const handleJoinClick = async () => {
+    try {
+      await classApi.joinClass(classCode);
+      toast.success("Join class successfully!");
+      navigate("/class-details/" + classCode);
+    } catch (error) {
+      toast.error("Some things went wrong!");
+    }
   };
 
   return (
@@ -109,7 +119,7 @@ export default function FullScreenDialog({ open, handleClose }) {
               error={classCodeError}
               helperText={
                 classCodeError
-                  ? "The class code has 5-7 characters including letters and numbers, without spaces or symbols"
+                  ? "The class code has 7-12 characters including letters and numbers, without spaces or symbols"
                   : ""
               }
             />

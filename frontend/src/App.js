@@ -25,6 +25,7 @@ import AcceptInvitePage from "./pages/AcceptInvitePage/AcceptInvitePage";
 import SSOSuccess from "./pages/SSOSuccess";
 import ProtectedAcceptInvite from "./components/ProtectedAcceptInvite/ProtectedAcceptInvite";
 import NewClassDetailsPage from "./pages/NewClassDetailsPage/NewClassDetailsPage";
+import AttendByLink from "./pages/AttendByLink";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -107,6 +108,11 @@ function App() {
               </ProtectedAcceptInvite>
             }
           />
+
+          <Route element={<ProtectedHome />}>
+            <Route path="/classes/:classId/attend" element={<AttendByLink />} />
+          </Route>
+
           <Route path="*" element={<Error />} />
         </Routes>
       </Router>

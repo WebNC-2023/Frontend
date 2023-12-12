@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const ClassroomDetailsInfoSlice = createSlice({
   name: "classroomDetailsInfo",
   initialState: {
+    id: "",
     name: "",
     topic: "",
     room: "",
@@ -11,6 +12,7 @@ export const ClassroomDetailsInfoSlice = createSlice({
   },
   reducers: {
     updateClassroomDetailsInfo: (state, action) => {
+      state.id = action.payload.id;
       state.name = action.payload.name;
       state.topic = action.payload.topic;
       state.room = action.payload.room;

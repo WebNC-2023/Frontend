@@ -6,7 +6,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import LinkIcon from "@mui/icons-material/Link";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
 import ClassDetailsName from "../../components/ClassDetailsName/ClassDetailsName";
 import NotificationInClassroom from "../../components/NotificationInClassroom/NotificationInClassroom";
@@ -14,6 +13,7 @@ import ClassroomPost from "../../components/ClassroomPost/ClassroomPost";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import "./ClassDetailsPage.css";
+import { toast } from "react-toastify";
 const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -23,8 +23,20 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const people = useSelector((state) => state.classroomDetailsInfo.people);
+
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Copied to clipboard");
+    } catch (error) {
+      toast.error("Can not copy to clipboard");
+    }
+    handleClose();
+  };
+
   const posts = useSelector((state) => state.classroomPost.posts);
+  const classDetails = useSelector((state) => state.classroomDetailsInfo);
+
   return (
     <>
       {loadingClassDetails ? (
@@ -36,7 +48,7 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
               <div
                 className="class-details-page-left"
                 style={
-                  people.filter(
+                  classDetails.people.filter(
                     (element) =>
                       element.email ===
                         JSON.parse(localStorage.getItem("userInfo")).email &&
@@ -50,7 +62,9 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
               >
                 <div className="class-details-page-left-code">
                   <div className="class-details-page-code-title">Mã lớp</div>
-                  <div className="class-details-page-code-content">qjvbhnk</div>
+                  <div className="class-details-page-code-content">
+                    {classDetails.id}
+                  </div>
                 </div>
                 <IconButton size="large" onClick={handleClick}>
                   <MoreVertIcon
@@ -69,7 +83,11 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                   }}
                 >
                   <MenuItem
-                    onClick={handleClose}
+                    onClick={() =>
+                      copyToClipboard(
+                        `${process.env.REACT_APP_CLIENT_BASE_URL}/classes/${classDetails.id}/attend`
+                      )
+                    }
                     sx={{
                       display: "flex",
                       columnGap: "30px",
@@ -79,7 +97,7 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                     <p>Sao chép đường liên kết mời tham gia lớp học</p>
                   </MenuItem>
                   <MenuItem
-                    onClick={handleClose}
+                    onClick={() => copyToClipboard(classDetails.id)}
                     sx={{
                       display: "flex",
                       columnGap: "30px",
@@ -87,16 +105,6 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                   >
                     <ContentCopyRoundedIcon />
                     <p>Sao chép mã lớp</p>
-                  </MenuItem>
-                  <MenuItem
-                    onClick={handleClose}
-                    sx={{
-                      display: "flex",
-                      columnGap: "30px",
-                    }}
-                  >
-                    <RestartAltIcon />
-                    <p>Đặt lại mã lớp</p>
                   </MenuItem>
                   <MenuItem
                     onClick={handleClose}
@@ -113,7 +121,7 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
               <div
                 className="class-details-page-right"
                 style={
-                  people.filter(
+                  classDetails.people.filter(
                     (element) =>
                       element.email ===
                         JSON.parse(localStorage.getItem("userInfo")).email &&
