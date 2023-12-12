@@ -17,6 +17,8 @@ const JoinedClasses = ({ classData }) => {
   const [openDialogEditClass, setOpenDialogEditClass] = React.useState(false);
   const navigate = useNavigate();
 
+  console.log(classData);
+
   const handleClick = (event) => {
     setClassAnchorEl(event.currentTarget);
   };
@@ -36,6 +38,10 @@ const JoinedClasses = ({ classData }) => {
   const handleCopyLinkClick = () => {
     toast.success("Link copied");
     handleClassClose();
+  };
+
+  const handleUnSubscribe = () => {
+    console.log("huy dang ky");
   };
 
   const navgiateHandle = (e) => {
@@ -134,9 +140,17 @@ const JoinedClasses = ({ classData }) => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {" "}
-        <MenuItem onClick={handleCopyLinkClick}>Copy the invite link</MenuItem>
-        <MenuItem onClick={handleOpenDialogEdit}>Edit</MenuItem>
+        {classData.isOwner && [
+          <MenuItem key="copyLink" onClick={handleCopyLinkClick}>
+            Copy the invite link
+          </MenuItem>,
+          <MenuItem key="edit" onClick={handleOpenDialogEdit}>
+            Edit
+          </MenuItem>,
+        ]}
+        {!classData.isOwner && (
+          <MenuItem onClick={handleUnSubscribe}>Unsubscribe</MenuItem>
+        )}
       </Menu>
       <div className="joined__bottom">
         <IconButton aria-label="App" size="large" className="IconButton">
