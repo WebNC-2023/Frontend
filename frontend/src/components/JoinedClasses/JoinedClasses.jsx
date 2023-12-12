@@ -85,8 +85,6 @@ const JoinedClasses = ({ classData }) => {
     }
   };
 
-  console.log(classData);
-
   const urlImage = classData.avatar
     ? `https://webnc-2023.vercel.app/files/${classData.avatar}`
     : "https://gstatic.com/classroom/themes/Physics.jpg";
@@ -178,17 +176,19 @@ const JoinedClasses = ({ classData }) => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {classData.isOwner && [
+        {classData.role === "teacher" && [
           <MenuItem key="copyLink" onClick={handleCopyLinkClick}>
             Copy the invite link
           </MenuItem>,
           <MenuItem key="edit" onClick={handleOpenDialogEdit}>
             Edit
           </MenuItem>,
+        ]}
+        {classData.isOwner && (
           <MenuItem key="delete" onClick={handleDeleteClass}>
             Delete
-          </MenuItem>,
-        ]}
+          </MenuItem>
+        )}
         {!classData.isOwner && (
           <MenuItem onClick={handleUnSubscribe}>Unsubscribe</MenuItem>
         )}
