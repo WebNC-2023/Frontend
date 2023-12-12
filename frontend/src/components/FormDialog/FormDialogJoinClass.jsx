@@ -12,9 +12,10 @@ import Slide from "@mui/material/Slide";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { Tooltip } from "@mui/material";
-import * as classApi from "../../redux/APIs/classServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { joinClassCodeAction } from "../../redux/Actions/classAction";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -23,6 +24,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function FullScreenDialog({ open, handleClose }) {
   const [classCode, setClassCode] = React.useState("");
   const [classCodeError, setClassCodeError] = React.useState(false);
+
+  const dispatch = useDispatch();
+
+  const { isLoading, isError, isSuccess } = useSelector(
+    (state) => state.joinClassByCode
+  );
+
   const navigate = useNavigate();
 
   const handleClassCodeChange = (event) => {
@@ -34,15 +42,20 @@ export default function FullScreenDialog({ open, handleClose }) {
     setClassCodeError(!isValidClassCode);
   };
 
-  const handleJoinClick = async () => {
-    try {
-      await classApi.joinClass(classCode);
-      toast.success("Join class successfully!");
-      navigate("/class-details/" + classCode);
-    } catch (error) {
-      toast.error("Some things went wrong!");
-    }
+  const handleJoinClick = () => {
+    dispatch(joinClassCodeAction(classCode));
   };
+
+  React.useEffect(() => {
+    if (isError) {
+      toast.error(isError);
+      dispatch({ type: "JOIN_CLASS_BYCODE_RESET" });
+    }
+    if (isSuccess) {
+      navigate("/class-details/" + classCode);
+      dispatch({ type: "JOIN_CLASS_BYCODE_RESET" });
+    }
+  }, [dispatch, isError, classCode, isSuccess, navigate]);
 
   return (
     <Dialog
@@ -76,11 +89,11 @@ export default function FullScreenDialog({ open, handleClose }) {
           </Typography>
           <Button
             variant="contained"
-            disabled={classCodeError || !classCode.trim()}
+            disabled={classCodeError || !classCode.trim() || isLoading}
             sx={{ textTransform: "none", padding: "6px 22px" }}
             onClick={handleJoinClick}
           >
-            Join
+            {isLoading ? "Loading..." : "Join"}
           </Button>
         </Toolbar>
       </AppBar>
@@ -139,7 +152,7 @@ export default function FullScreenDialog({ open, handleClose }) {
           </Typography>
           <Typography>• Use a licensed account</Typography>
           <Typography>
-            • Use a class code of 5-7 letters or numbers, with no spaces or
+            • Use a class code of 7-12 letters or numbers, with no spaces or
             symbols
           </Typography>
         </Box>

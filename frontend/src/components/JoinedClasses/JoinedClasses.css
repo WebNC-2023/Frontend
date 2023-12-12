@@ -70,7 +70,7 @@ ol {
   color: white;
   font-family: "Roboto";
   text-decoration: none;
-  width: min-content;
+  width: auto;
 }
 .joined__title h2,
 h4 {
@@ -132,6 +132,7 @@ h4:hover {
 
   .joined__content {
     height: auto;
+    gap: 20px;
   }
 
   .joined__avatar {

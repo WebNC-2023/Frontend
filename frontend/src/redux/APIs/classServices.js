@@ -18,7 +18,22 @@ export const editClassService = async (id, classData) => {
   return data.data;
 };
 
+// JOIN class API call
 export const joinClass = async (id) => {
   const { data } = await Axios.post(`/classes/${id}/attend`);
+  return data.data;
+};
+
+// Unsub class API call
+
+export const unSubClass = async (id) => {
+  const { data } = await Axios.post(`/classes/${id}/leave`);
+  return data.data;
+};
+
+// delete Class API call
+
+export const deleteClass = async (id) => {
+  const { data } = await Axios.delete(`/classes/${id}`);
   return data.data;
 };
