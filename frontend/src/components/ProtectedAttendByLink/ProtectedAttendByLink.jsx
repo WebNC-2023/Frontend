@@ -1,17 +1,19 @@
 import { useEffect, useState, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
 import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 const ProtectedAttendByLink = () => {
   const { setShowSidebar } = useContext(DataContext);
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
   const { classId } = useParams();
+  const navigate = useNavigate();
   useEffect(() => {
     const checkLoggedIn = async () => {
       dispatch(
@@ -64,17 +66,17 @@ const ProtectedAttendByLink = () => {
               success: false,
             })
           );
-
+          navigate("/login");
+        } else {
+          toast.error(`${err}`);
           setLoadingHomePage(false);
           setIsAuth(false);
-        } else {
-          throw err;
         }
       }
     };
 
     checkLoggedIn();
-  }, [dispatch, setShowSidebar, classId]);
+  }, [dispatch, setShowSidebar, classId, navigate]);
 
   if (loadingHomePage) {
     return (
