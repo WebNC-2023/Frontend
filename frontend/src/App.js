@@ -17,16 +17,14 @@ import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage";
 import ProtectedResetPassword from "./components/ProtectedResetPassword/ProtectedResetPassword";
 import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import ProtectedVerifyEmail from "./components/ProtectedVerifyEmail/ProtectedVerifyEmail";
-import ClassDetailsPage from "./pages/ClassDetailsPage/ClassDetailsPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage/ChangePasswordPage";
 import ProtectedChangePassword from "./components/ProtectedChangePassword/ProtectedChangePassword";
 import ProtectedEditProfile from "./components/ProtectedEditProfile/ProtectedEditProfile";
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
-import ClassroomExercisesPage from "./pages/ClassroomExercisesPage/ClassroomExercisesPage";
-import ClassroomEveryonePage from "./pages/ClassroomEveryonePage/ClassroomEveryonePage";
 import AcceptInvitePage from "./pages/AcceptInvitePage/AcceptInvitePage";
 import SSOSuccess from "./pages/SSOSuccess";
 import ProtectedAcceptInvite from "./components/ProtectedAcceptInvite/ProtectedAcceptInvite";
+import NewClassDetailsPage from "./pages/NewClassDetailsPage/NewClassDetailsPage";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -99,19 +97,8 @@ function App() {
 
           <Route
             path="/class-details/:classId"
-            element={<ClassDetailsPage />}
+            element={<NewClassDetailsPage />}
           />
-
-          <Route
-            path="/class-details/:classId/exercises"
-            element={<ClassroomExercisesPage />}
-          />
-
-          <Route
-            path="/class-details/:classId/everyone"
-            element={<ClassroomEveryonePage />}
-          />
-
           <Route
             path="/accept-invite"
             element={
@@ -120,7 +107,6 @@ function App() {
               </ProtectedAcceptInvite>
             }
           />
-
           <Route path="*" element={<Error />} />
         </Routes>
       </Router>
