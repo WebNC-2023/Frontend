@@ -85,8 +85,10 @@ const JoinedClasses = ({ classData }) => {
     }
   };
 
+  console.log(classData);
+
   const urlImage = classData.avatar
-    ? classData.avatar
+    ? `https://webnc-2023.vercel.app/files/${classData.avatar}`
     : "https://gstatic.com/classroom/themes/Physics.jpg";
 
   const urlAvatarOwner = classData.owner.avatar
