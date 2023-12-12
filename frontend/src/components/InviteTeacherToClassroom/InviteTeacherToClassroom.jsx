@@ -95,14 +95,11 @@ const InviteTeacherToClassroom = () => {
           <Button
             onClick={handleSendInviteTeacher}
             disabled={
-              /^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,32}$/.test(
-                content
-              ) &&
-              !sending &&
-              people.filter((element1) => element1.email === content).length ===
-                0
-                ? false
-                : true
+              !(/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,32}$/.test(content)) || 
+              sending || 
+              people.filter((element1) => element1.email === content).length !== 0
+                ? true
+                : false
             }
           >
             {sending ? "Đang mời..." : "Mời"}
