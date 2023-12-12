@@ -36,9 +36,19 @@ export default function FormDialogCreateClass({
     part: "",
     topic: "",
     room: "",
+    avatar: null, // Thêm trường mới để giữ giá trị tệp tin
   });
 
   const [isDirty, setIsDirty] = React.useState(false);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prevData) => ({
+      ...prevData,
+      avatar: file, // Gán giá trị tệp tin vào avatar
+    }));
+    setIsDirty(true);
+  };
 
   React.useEffect(() => {
     // Update formData when edit or classData changes
@@ -78,6 +88,7 @@ export default function FormDialogCreateClass({
   const isCreateButtonDisabled = formData.name === "" || !isDirty;
 
   const handleSubmit = () => {
+    console.log(formData);
     if (edit) {
       dispatch(editClassAction(classData.id, formData));
     } else {
@@ -128,7 +139,6 @@ export default function FormDialogCreateClass({
           onChange={handleInputChange}
         />
         <TextField
-          autoFocus
           margin="dense"
           id="part"
           label="Part"
@@ -142,7 +152,6 @@ export default function FormDialogCreateClass({
           onChange={handleInputChange}
         />
         <TextField
-          autoFocus
           margin="dense"
           id="topic"
           label="Topic"
@@ -156,7 +165,6 @@ export default function FormDialogCreateClass({
           onChange={handleInputChange}
         />
         <TextField
-          autoFocus
           margin="dense"
           id="room"
           label="Room"
@@ -168,6 +176,20 @@ export default function FormDialogCreateClass({
           value={formData.room}
           onChange={handleInputChange}
         />
+        {edit && (
+          <TextField
+            autoFocus
+            margin="dense"
+            id="image"
+            label="Avatar"
+            type="file"
+            fullWidth
+            variant="standard"
+            inputProps={{ style: { fontSize: 18 } }}
+            InputLabelProps={{ style: { fontSize: 18 } }}
+            onChange={handleFileChange}
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleDialogClose} sx={{ color: "#868e96" }}>

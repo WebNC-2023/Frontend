@@ -14,7 +14,11 @@ export const getClassesService = async () => {
 
 // Edit class API call
 export const editClassService = async (id, classData) => {
-  const { data } = await Axios.patch(`/classes/${id}`, classData);
+  const { data } = await Axios.patch(`/classes/${id}`, classData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return data.data;
 };
 
