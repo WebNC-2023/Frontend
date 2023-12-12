@@ -134,6 +134,7 @@ const ClassDetailsPage = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const people = useSelector((state) => state.classroomDetailsInfo.people);
   return (
     <>
       <HomePageHeader showSidebar={true} classRoom={true} />
@@ -149,7 +150,21 @@ const ClassDetailsPage = () => {
         <>
           <div className="class-details-page-container">
             <div className="class-details-page-flex">
-              <div className="class-details-page-left">
+              <div
+                className="class-details-page-left"
+                style={
+                  people.filter(
+                    (element) =>
+                      element.email ===
+                        JSON.parse(localStorage.getItem("userInfo")).email &&
+                      element.role === "teacher"
+                  ).length === 0
+                    ? {
+                        display: "none",
+                      }
+                    : {}
+                }
+              >
                 <div className="class-details-page-left-code">
                   <div className="class-details-page-code-title">Mã lớp</div>
                   <div className="class-details-page-code-content">qjvbhnk</div>
@@ -212,7 +227,21 @@ const ClassDetailsPage = () => {
                   </MenuItem>
                 </Menu>
               </div>
-              <div className="class-details-page-right">
+              <div
+                className="class-details-page-right"
+                style={
+                  people.filter(
+                    (element) =>
+                      element.email ===
+                        JSON.parse(localStorage.getItem("userInfo")).email &&
+                      element.role === "teacher"
+                  ).length === 0
+                    ? {
+                        width: "calc(100% - 25px)",
+                      }
+                    : {}
+                }
+              >
                 <ClassDetailsName />
                 <NotificationInClassroom />
                 {posts.slice(1).map((post, index) => (
