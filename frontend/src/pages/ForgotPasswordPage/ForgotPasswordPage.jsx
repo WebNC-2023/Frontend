@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
 //import axios from "axios";
 import "./ForgotPasswordPage.css";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Axios from "../../redux/APIs/Axios";
 
@@ -94,7 +94,8 @@ const ForgotPasswordPage = () => {
             onChange={(e) => {
               setEmail(e.target.value);
               if (e.target.value !== "") {
-                const gmailRegex = /^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,32}$/;
+                const gmailRegex =
+                  /^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,32}$/;
                 if (gmailRegex.test(e.target.value)) {
                   setEmailErrorState(false);
                   setEmailErrorMsg("");
@@ -142,12 +143,6 @@ const ForgotPasswordPage = () => {
           </Grid>
         </Paper>
       </Grid>
-      <ToastContainer
-        position="top-center"
-        pauseOnFocusLoss={false}
-        pauseOnHover={false}
-        autoClose={3000}
-      />
     </Grid>
   );
 };

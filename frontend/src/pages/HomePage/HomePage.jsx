@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getClassesAction } from "./../../redux/Actions/classAction";
 import { useEffect } from "react";
 import Loader from "../../components/Notifications/Loader";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import StartClasses from "../../components/JoinedClasses/StartClasses";
 
 const HomePage = () => {

@@ -6,7 +6,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import Login from "./pages/LoginPage/Login";
 import Register from "./pages/RegisterPage/Register";
 import Error from "./pages/ErrorPage/Error";
-import ToastContainer from "./components/Notifications/ToastContainer";
+import ReactToastContainer from "./components/Notifications/ReactToastContainer";
 import React from "react";
 import { DataContext } from "./contexts/DataContext";
 import ProtectedLanding from "./components/ProtectedLanding/ProtectedLanding";
@@ -26,6 +26,7 @@ import SSOSuccess from "./pages/SSOSuccess";
 import ProtectedAcceptInvite from "./components/ProtectedAcceptInvite/ProtectedAcceptInvite";
 import NewClassDetailsPage from "./pages/NewClassDetailsPage/NewClassDetailsPage";
 import AttendByLink from "./pages/AttendByLink";
+import ProtectedAttendByLink from "./components/ProtectedAttendByLink/ProtectedAttendByLink";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -45,7 +46,7 @@ function App() {
       }}
     >
       <Router>
-        <ToastContainer />
+        <ReactToastContainer />
         <Routes>
           <Route element={<ProtectedLanding />}>
             <Route path="/" element={<LandingPage />} />
@@ -65,17 +66,8 @@ function App() {
 
           <Route element={<ProtectedSign />}>
             <Route path="/login" element={<Login />} />
-          </Route>
-
-          <Route element={<ProtectedSign />}>
             <Route path="/sso-success/" element={<SSOSuccess />} />
-          </Route>
-
-          <Route element={<ProtectedSign />}>
             <Route path="/register" element={<Register />} />
-          </Route>
-
-          <Route element={<ProtectedSign />}>
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           </Route>
 
@@ -108,8 +100,7 @@ function App() {
               </ProtectedAcceptInvite>
             }
           />
-
-          <Route element={<ProtectedHome />}>
+          <Route element={<ProtectedAttendByLink />}>
             <Route path="/classes/:classId/attend" element={<AttendByLink />} />
           </Route>
 

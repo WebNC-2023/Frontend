@@ -8,7 +8,7 @@ import "./JoinedClasses.css";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const JoinedClasses = ({ classData }) => {

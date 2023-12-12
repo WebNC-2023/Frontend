@@ -9,11 +9,11 @@ import {
 import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import AlarmIcon from "@mui/icons-material/Alarm";
-import { useState} from "react";
+import { useState } from "react";
 //import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update, updateStart } from "../../redux/Reducers/fullNameUserSlice";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Axios from "../../redux/APIs/Axios";
 import { useNavigate } from "react-router-dom";
 const EditProfile = () => {
@@ -71,9 +71,10 @@ const EditProfile = () => {
           dispatch(
             update({
               fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-              avatar: `${process.env.REACT_APP_SERVER_BASE_URL ?? "https://webnc-2023.vercel.app"}/files/${
-                res.data.data.avatar
-              }?${Date.now()}`,
+              avatar: `${
+                process.env.REACT_APP_SERVER_BASE_URL ??
+                "https://webnc-2023.vercel.app"
+              }/files/${res.data.data.avatar}?${Date.now()}`,
             })
           );
           toast.success("Your profile has been changed successful");
@@ -312,12 +313,6 @@ const EditProfile = () => {
           )}
         </Paper>
       </Grid>
-      <ToastContainer
-        position="top-right"
-        pauseOnFocusLoss={false}
-        pauseOnHover={false}
-        autoClose={3000}
-      />
     </Grid>
   );
 };

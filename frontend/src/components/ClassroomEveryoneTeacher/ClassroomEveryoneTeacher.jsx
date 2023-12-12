@@ -14,7 +14,7 @@ import Axios from "../../redux/APIs/Axios";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 const ClassroomEveryoneTeacher = ({
   firstName,
   lastName,
@@ -258,12 +258,6 @@ const ClassroomEveryoneTeacher = ({
           <></>
         )}
       </div>
-      <ToastContainer
-        position="top-right"
-        pauseOnFocusLoss={false}
-        pauseOnHover={false}
-        autoClose={3000}
-      />
     </>
   );
 };

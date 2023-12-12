@@ -10,7 +10,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { toast } from "react-hot-toast";
+import { toast } from "react-toastify";
 import { RegisterValidation } from "../../components/Validation/userValidation";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
