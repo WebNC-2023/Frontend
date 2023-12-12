@@ -139,10 +139,10 @@ const JoinedClasses = ({ classData }) => {
         <MenuItem onClick={handleOpenDialogEdit}>Edit</MenuItem>
       </Menu>
       <div className="joined__bottom">
-        <IconButton aria-label="App" size="large">
+        <IconButton aria-label="App" size="large" className="IconButton">
           <PermContactCalendarIcon fontSize="inherit" />
         </IconButton>
-        <IconButton aria-label="App" size="large">
+        <IconButton aria-label="App" size="large" className="IconButton">
           <FolderOpenIcon fontSize="inherit" />
         </IconButton>
       </div>
