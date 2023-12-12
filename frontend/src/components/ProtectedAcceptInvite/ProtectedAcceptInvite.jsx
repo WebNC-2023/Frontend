@@ -5,7 +5,7 @@ import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import Axios from "../../redux/APIs/Axios";
 import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
 import { updateClassroomName } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
-
+import { toast } from "react-toastify";
 const ProtectedAcceptInvite = ({ children }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -57,12 +57,13 @@ const ProtectedAcceptInvite = ({ children }) => {
               success: false,
             })
           );
-          setLoadingAcceptInvitePage(false);
-          setIsAuth(false);
+          navigate("/login");
         } else if (err?.response?.data?.message === "Class not found") {
           navigate("/404*");
         } else {
-          throw err;
+          toast.error(`${err}`);
+          setLoadingAcceptInvitePage(false);
+          setIsAuth(false);
         }
       }
     };

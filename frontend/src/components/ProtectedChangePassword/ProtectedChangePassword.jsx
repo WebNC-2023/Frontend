@@ -4,6 +4,7 @@ import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { Outlet, Navigate } from "react-router-dom";
 import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
+import { toast } from "react-toastify";
 
 const ProtectedChangePassword = () => {
   const {setShowSidebar} = useContext(DataContext);
@@ -47,7 +48,7 @@ const ProtectedChangePassword = () => {
           setLoadingHomePage(false);
           setIsAuth(false);
         } else {
-          throw err;
+          toast.error(`${err}`);
         }
       }
     };

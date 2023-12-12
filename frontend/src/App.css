@@ -24,3 +24,7 @@ img {
   -o-user-drag: none;
 }
 
+.MuiBackdrop-root {
+  opacity: 0 !important;
+}
+
