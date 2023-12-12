@@ -38,6 +38,7 @@ const InviteTeacherToClassroom = () => {
         const res = await Axios.get(`/classes/${classId}`);
         dispatch(
           updateClassroomDetailsInfo({
+            id: res.data.data.id,
             name: res.data.data.name,
             topic: res.data.data.topic,
             room: res.data.data.room,
@@ -95,9 +96,12 @@ const InviteTeacherToClassroom = () => {
           <Button
             onClick={handleSendInviteTeacher}
             disabled={
-              !(/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,32}$/.test(content)) || 
-              sending || 
-              people.filter((element1) => element1.email === content).length !== 0
+              !/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,32}$/.test(
+                content
+              ) ||
+              sending ||
+              people.filter((element1) => element1.email === content).length !==
+                0
                 ? true
                 : false
             }

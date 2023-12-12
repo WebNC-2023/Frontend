@@ -17,3 +17,8 @@ export const editClassService = async (id, classData) => {
   const { data } = await Axios.patch(`/classes/${id}`, classData);
   return data.data;
 };
+
+export const joinClass = async (id) => {
+  const { data } = await Axios.post(`/classes/${id}/attend`);
+  return data.data;
+};
