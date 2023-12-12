@@ -115,3 +115,41 @@ h4:hover {
   top: 0;
   right: 5px;
 }
+
+@media screen and (max-width: 768px) {
+  .joined {
+    margin-left: 0;
+  }
+
+  .joined__list {
+    width: 100%;
+  }
+
+  .joined__imgWrapper,
+  .joined__image {
+    height: 150px;
+  }
+
+  .joined__content {
+    height: auto;
+  }
+
+  .joined__avatar {
+    float: none;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .joined__bottom {
+    margin-top: 0;
+    justify-content: center;
+  }
+
+  .joined__bottom .IconButton {
+    color: white;
+  }
+
+  .joined__bottom > * {
+    margin-right: 10px;
+  }
+}
