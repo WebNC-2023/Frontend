@@ -41,7 +41,11 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import InputIcon from "@mui/icons-material/Input";
 import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
 import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
+import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
+import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
 import * as userApi from "../../redux/APIs/userServices";
+import { DataContext } from "../../contexts/DataContext";
+import { useContext } from "react";
 
 const HomePageHeader = ({ showSidebar, classRoom }) => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
@@ -54,6 +58,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
   const [openDialogJoinClass, setOpenDialogJoinClass] = useState(false);
   const openMenuClass = Boolean(classAnchorEl);
   const open = Boolean(anchorEl);
+  const { classes } = useContext(DataContext);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -98,13 +103,20 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
     ) {
       return;
     }
-    if (open === false) setOpen1(false);
+    if (open === false) {
+      setOpen1(false);
+      setOpen2(false);
+    }
     setState({ ...state, [anchor]: open });
   };
   const [open1, setOpen1] = useState(true);
+  const [open2, setOpen2] = useState(true);
 
   const handleClick1 = () => {
     setOpen1(!open1);
+  };
+  const handleClick2 = () => {
+    setOpen2(!open2);
   };
   // Handle create & join Class
 
@@ -122,7 +134,10 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
   const handleCloseDialogJoin = () => {
     setOpenDialogJoinClass(false);
   };
-
+  const handleClickSidebarClass = (anchor, classroomID) => {
+    setState({ ...state, [anchor]: false });
+    navigate(`/class-details/${classroomID}?tab=1`);
+  };
   const list = (anchor) => (
     <Box
       sx={{ width: 250 }}
@@ -141,29 +156,130 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
           </ListItem>
         ))}
       </List>
-      <Divider />
-      <List>
-        <ListItemButton onClick={handleClick1}>
-          <ListItemIcon>
-            <SchoolOutlinedIcon />
-          </ListItemIcon>
-          <ListItemText primary="Đã đăng ký" />
-          {open1 ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
-        </ListItemButton>
-        <Collapse in={open1} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton
-              sx={{ pl: 2 }}
-              onClick={toggleDrawer(anchor, false)}
-            >
+      {classes.filter((element) => element.role === "teacher").length > 0 ? (
+        <>
+          <Divider />
+          <List>
+            <ListItemButton onClick={handleClick2}>
               <ListItemIcon>
-                <FactCheckOutlinedIcon />
+                <SupervisorAccountOutlinedIcon />
               </ListItemIcon>
-              <ListItemText primary="Việc cần làm" />
+              <ListItemText primary="Giảng dạy" />
+              {open2 ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
             </ListItemButton>
+            <Collapse in={open2} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton
+                  sx={{ pl: 2 }}
+                  onClick={toggleDrawer(anchor, false)}
+                >
+                  <ListItemIcon>
+                    <SourceOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Cần xem xét" />
+                </ListItemButton>
+                {classes
+                  .filter((element) => element.role === "teacher")
+                  .map((classroom) => (
+                    <ListItemButton
+                      key={classroom.id}
+                      sx={{ pl: 2 }}
+                      onClick={() =>
+                        handleClickSidebarClass("left", classroom.id)
+                      }
+                    >
+                      <ListItemIcon>
+                        <Avatar
+                          src={
+                            classroom.avatar === null
+                              ? ""
+                              : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${classroom.avatar}`
+                          }
+                          sx={
+                            classroom.avatar === null
+                              ? {
+                                  backgroundColor: "#1967d2",
+                                }
+                              : {}
+                          }
+                        >
+                          {classroom.avatar === null
+                            ? `${classroom.name.toUpperCase()[0]}`
+                            : ""}
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText primary={classroom.name} />
+                    </ListItemButton>
+                  ))}
+              </List>
+            </Collapse>
           </List>
-        </Collapse>
-      </List>
+        </>
+      ) : (
+        <></>
+      )}
+      {classes.filter((element) => element.role === "student").length > 0 ? (
+        <>
+          <Divider />
+          <List>
+            <ListItemButton onClick={handleClick1}>
+              <ListItemIcon>
+                <SchoolOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Đã đăng ký" />
+              {open1 ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+            </ListItemButton>
+            <Collapse in={open1} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton
+                  sx={{ pl: 2 }}
+                  onClick={toggleDrawer(anchor, false)}
+                >
+                  <ListItemIcon>
+                    <FactCheckOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Việc cần làm" />
+                </ListItemButton>
+                {classes
+                  .filter((element) => element.role === "student")
+                  .map((classroom) => (
+                    <ListItemButton
+                      key={classroom.id}
+                      sx={{ pl: 2 }}
+                      onClick={() =>
+                        handleClickSidebarClass("left", classroom.id)
+                      }
+                    >
+                      <ListItemIcon>
+                        <Avatar
+                          src={
+                            classroom.avatar === null
+                              ? ""
+                              : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${classroom.avatar}`
+                          }
+                          sx={
+                            classroom.avatar === null
+                              ? {
+                                  backgroundColor: "#1967d2",
+                                }
+                              : {}
+                          }
+                        >
+                          {classroom.avatar === null
+                            ? `${classroom.name.toUpperCase()[0]}`
+                            : ""}
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText primary={classroom.name} />
+                    </ListItemButton>
+                  ))}
+              </List>
+            </Collapse>
+          </List>
+        </>
+      ) : (
+        <></>
+      )}
       <Divider />
       <List>
         {["Lớp học đã lưu trữ", "Cài đặt"].map((text, index) => (

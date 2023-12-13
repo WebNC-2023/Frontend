@@ -32,6 +32,7 @@ function App() {
   const [showContent, setShowContent] = useState("Home");
   const [showSidebar, setShowSidebar] = useState(true);
   const [contentClassTab, setContentClassTab] = useState();
+  const [classes, setClasses] = useState([]);
   return (
     <DataContext.Provider
       value={{
@@ -43,6 +44,8 @@ function App() {
         setShowSidebar,
         contentClassTab,
         setContentClassTab,
+        classes,
+        setClasses
       }}
     >
       <Router>
