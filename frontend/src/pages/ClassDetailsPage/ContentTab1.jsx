@@ -85,7 +85,7 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                   <MenuItem
                     onClick={() =>
                       copyToClipboard(
-                        `${process.env.REACT_APP_CLIENT_BASE_URL}/classes/${classDetails.id}/attend`
+                        `${window.location.origin}/classes/${classDetails.id}/attend`
                       )
                     }
                     sx={{

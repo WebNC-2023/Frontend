@@ -34,10 +34,9 @@ const ProtectedAttendByLink = () => {
             avatar:
               res.data.data.avatar === null
                 ? null
-                : `${
-                    process.env.REACT_APP_SERVER_BASE_URL ??
-                    "https://webnc-2023.vercel.app"
-                  }/files/${res.data.data.avatar}?${Date.now()}`,
+                : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+                    res.data.data.avatar
+                  }?${Date.now()}`,
           })
         );
         dispatch(

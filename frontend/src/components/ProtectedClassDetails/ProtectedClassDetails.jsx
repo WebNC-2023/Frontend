@@ -30,6 +30,7 @@ const ProtectedClassDetails = () => {
             isOwner: res.data.data.isOwner,
             people: res.data.data.people,
             owner: res.data.data.owner,
+            classroomAvatar: res.data.data.avatar,
           })
         );
         dispatch(
@@ -70,7 +71,7 @@ const ProtectedClassDetails = () => {
           );
           dispatch(
             updateClassroomDetailsPendingUrl({
-              pendingUrl: `/class-details/${classId}`,
+              pendingUrl: `/class-details/${classId}?tab=1`,
               success: false,
             })
           );

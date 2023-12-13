@@ -43,10 +43,7 @@ const ClassroomPost = ({ post }) => {
         dateSubmitted: `${present.getDate()} thg ${
           present.getMonth() + 1
         }, ${present.getFullYear()}`,
-        avatar: `${
-          process.env.REACT_APP_SERVER_BASE_URL ??
-          "https://webnc-2023.vercel.app"
-        }/files/${
+        avatar: `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
           JSON.parse(localStorage.getItem("userInfo")).avatar
         }?${Date.now()}`,
         commentContent: content,

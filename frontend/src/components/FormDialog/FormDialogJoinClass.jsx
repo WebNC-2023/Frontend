@@ -52,7 +52,7 @@ export default function FullScreenDialog({ open, handleClose }) {
       dispatch({ type: "JOIN_CLASS_BYCODE_RESET" });
     }
     if (isSuccess) {
-      navigate("/class-details/" + classCode);
+      navigate("/class-details/" + classCode + "?tab=1");
       dispatch({ type: "JOIN_CLASS_BYCODE_RESET" });
     }
   }, [dispatch, isError, classCode, isSuccess, navigate]);

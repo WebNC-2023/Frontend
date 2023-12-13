@@ -56,7 +56,7 @@ const JoinedClasses = ({ classData }) => {
   };
 
   const handleCopyLinkClick = async () => {
-    const classLink = `/class-details/${classData.id}`;
+    const classLink = `/class-details/${classData.id}?tab=1`;
     const currentURL = window.location.origin + classLink;
 
     try {
@@ -81,7 +81,7 @@ const JoinedClasses = ({ classData }) => {
 
   const navgiateHandle = (e) => {
     if (e.target.classList.contains("joined__content")) {
-      navigate(`/class-details/${classData.id}`);
+      navigate(`/class-details/${classData.id}?tab=1`);
     }
   };
 
@@ -107,7 +107,7 @@ const JoinedClasses = ({ classData }) => {
           <div className="joined__content" onClick={navgiateHandle}>
             <Link
               className="joined__title"
-              to={`/class-details/${classData.id}`}
+              to={`/class-details/${classData.id}?tab=1`}
             >
               <h2>{classData.name}</h2>
               <h4>{classData.part}</h4>

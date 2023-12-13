@@ -1,10 +1,10 @@
 import { Tabs, Tab } from "@mui/material";
 import "./ClassTabs.css";
-//import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ClassTabs = ({ tab, setTab }) => {
-  // const navigate = useNavigate();
-  // const { classId } = useParams();
+  const navigate = useNavigate();
+  const { classId } = useParams();
   // const handleChange = (event, newValue) => {
   //   if (newValue === "two") navigate(`/class-details/${classId}/exercises`);
   //   else if (newValue === "one") {
@@ -14,11 +14,15 @@ const ClassTabs = ({ tab, setTab }) => {
   //   }
   // };
   const handleChange = (event, newValue) => {
-    if (newValue === "two") setTab("two");
-    else if (newValue === "one") {
+    if (newValue === "two") {
+      setTab("two");
+      navigate(`/class-details/${classId}?tab=2`);
+    } else if (newValue === "one") {
       setTab("one");
+      navigate(`/class-details/${classId}?tab=1`);
     } else if (newValue === "three") {
       setTab("three");
+      navigate(`/class-details/${classId}?tab=3`);
     }
   };
   return (

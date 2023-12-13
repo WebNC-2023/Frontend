@@ -44,6 +44,7 @@ const InviteStudentToClassroom = () => {
             isOwner: res.data.data.isOwner,
             people: res.data.data.people,
             owner: res.data.data.owner,
+            classroomAvatar: res.data.data.avatar,
           })
         );
         setSending(false);
