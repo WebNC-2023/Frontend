@@ -230,7 +230,7 @@ const ClassroomEveryoneTeacher = ({
               onClose={handleCloseOptionRemove}
               fullWidth
             >
-              <Button onClick={handleOpenRemoveDialog}>Xoá</Button>
+              <Button onClick={handleOpenRemoveDialog}>Xoá giáo viên</Button>
             </Dialog>
             <Dialog open={openRemoveDialog} fullWidth>
               <DialogTitle>Xoá giáo viên?</DialogTitle>
