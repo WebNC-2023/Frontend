@@ -75,6 +75,7 @@ const ClassroomEveryoneTeacher = ({
             isOwner: res2.data.data.isOwner,
             people: res2.data.data.people,
             owner: res2.data.data.owner,
+            classroomAvatar: res2.data.data.avatar,
           })
         );
         setOpenRemoveDialog(false);

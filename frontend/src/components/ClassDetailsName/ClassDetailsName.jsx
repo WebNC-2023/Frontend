@@ -23,10 +23,22 @@ const ClassDetailsName = () => {
                 borderBottomRightRadius: "none",
                 borderTopLeftRadius: "10px",
                 borderTopRightRadius: "10px",
+                backgroundImage:
+                  classroomDetailsInfo.classroomAvatar === null
+                    ? "url('https://www.gstatic.com/classroom/themes/Physics.jpg')"
+                    : `url("${process.env.REACT_APP_SERVER_BASE_URL}/files/${classroomDetailsInfo.classroomAvatar}")`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
               }
             : {
                 borderRadius: "10px",
                 marginBottom: "25px",
+                backgroundImage:
+                  classroomDetailsInfo.classroomAvatar === null
+                    ? "url('https://www.gstatic.com/classroom/themes/Physics.jpg')"
+                    : `url("${process.env.REACT_APP_SERVER_BASE_URL}/files/${classroomDetailsInfo.classroomAvatar}")`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
               }
         }
       >

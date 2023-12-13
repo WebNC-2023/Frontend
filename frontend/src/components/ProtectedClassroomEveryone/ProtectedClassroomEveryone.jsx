@@ -28,6 +28,7 @@ const ProtectedClassroomEveryone = () => {
             isOwner: res.data.data.isOwner,
             people: res.data.data.people,
             owner: res.data.data.owner,
+            classroomAvatar: res.data.data.avatar,
           })
         );
         dispatch(
@@ -44,10 +45,7 @@ const ProtectedClassroomEveryone = () => {
             avatar:
               JSON.parse(localStorage.getItem("userInfo")).avatar === null
                 ? null
-                : `${
-                    process.env.REACT_APP_SERVER_BASE_URL ??
-                    "https://webnc-2023.vercel.app"
-                  }/files/${
+                : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
                     JSON.parse(localStorage.getItem("userInfo")).avatar
                   }?${Date.now()}`,
           })
@@ -71,7 +69,7 @@ const ProtectedClassroomEveryone = () => {
           setIsAuth(false);
           dispatch(
             updateClassroomDetailsPendingUrl({
-              pendingUrl: `/class-details/${classId}/everyone`,
+              pendingUrl: `/class-details/${classId}?tab=3`,
               success: false,
             })
           );
@@ -84,10 +82,7 @@ const ProtectedClassroomEveryone = () => {
               avatar:
                 JSON.parse(localStorage.getItem("userInfo")).avatar === null
                   ? null
-                  : `${
-                      process.env.REACT_APP_SERVER_BASE_URL ??
-                      "https://webnc-2023.vercel.app"
-                    }/files/${
+                  : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
                       JSON.parse(localStorage.getItem("userInfo")).avatar
                     }?${Date.now()}`,
             })

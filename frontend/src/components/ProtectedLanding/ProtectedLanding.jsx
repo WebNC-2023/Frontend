@@ -23,7 +23,9 @@ const ProtectedLanding = () => {
         dispatch(
           update({
             fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-            avatar: `${process.env.REACT_APP_SERVER_BASE_URL ?? "https://webnc-2023.vercel.app"}/files/${res.data.data.avatar}?${Date.now()}`,
+            avatar: `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+              res.data.data.avatar
+            }?${Date.now()}`,
           })
         );
         setLoadingLandingPage(false);

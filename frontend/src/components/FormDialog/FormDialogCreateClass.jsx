@@ -106,7 +106,7 @@ export default function FormDialogCreateClass({
     if (isSuccess) {
       dispatch({ type: "CREATE_CLASS_RESET" });
 
-      navigate(`/class-details/${classInfo?.id}`);
+      navigate(`/class-details/${classInfo?.id}?tab=1`);
     }
   }, [classInfo?.id, dispatch, isError, isSuccess, navigate, isErrorEdit]);
 
