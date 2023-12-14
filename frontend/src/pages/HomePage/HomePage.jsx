@@ -35,7 +35,6 @@ const HomePage = () => {
   return (
     <div className="home-page-container">
       <HomePageHeader showSidebar={showSidebar} />
-
       {isLoading || isUnSubriceLoading || isDeleteLoading ? (
         <Loader />
       ) : classes?.length > 0 ? (

@@ -44,8 +44,6 @@ import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
 import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
 import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
 import * as userApi from "../../redux/APIs/userServices";
-import { DataContext } from "../../contexts/DataContext";
-import { useContext } from "react";
 
 const HomePageHeader = ({ showSidebar, classRoom }) => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
@@ -58,7 +56,6 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
   const [openDialogJoinClass, setOpenDialogJoinClass] = useState(false);
   const openMenuClass = Boolean(classAnchorEl);
   const open = Boolean(anchorEl);
-  const { classes } = useContext(DataContext);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -138,6 +135,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
     setState({ ...state, [anchor]: false });
     navigate(`/class-details/${classroomID}?tab=1`);
   };
+  const classes = useSelector((state) => state.classes.classes);
   const list = (anchor) => (
     <Box
       sx={{ width: 250 }}
@@ -156,7 +154,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
           </ListItem>
         ))}
       </List>
-      {classes.filter((element) => element.role === "teacher").length > 0 ? (
+      {classes !== undefined && classes.filter((element) => element.role === "teacher").length > 0 ? (
         <>
           <Divider />
           <List>
@@ -218,7 +216,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
       ) : (
         <></>
       )}
-      {classes.filter((element) => element.role === "student").length > 0 ? (
+      {classes !== undefined && classes.filter((element) => element.role === "student").length > 0 ? (
         <>
           <Divider />
           <List>
