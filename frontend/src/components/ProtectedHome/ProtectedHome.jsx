@@ -6,7 +6,7 @@ import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
 
 const ProtectedHome = () => {
-  const { setShowSidebar, setClasses } = useContext(DataContext);
+  const { setShowSidebar } = useContext(DataContext);
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
@@ -17,7 +17,6 @@ const ProtectedHome = () => {
 
       try {
         const res = await Axios.get("/auth/me");
-        const res1 = await Axios.get("/classes");
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
         dispatch(
           update({
@@ -30,7 +29,6 @@ const ProtectedHome = () => {
                   }?${Date.now()}`,
           })
         );
-        setClasses(res1.data.data);
         setLoadingHomePage(false);
         setIsAuth(true);
         setShowSidebar(true);
@@ -55,7 +53,7 @@ const ProtectedHome = () => {
     };
 
     checkLoggedIn();
-  }, [dispatch, setShowSidebar, setClasses]);
+  }, [dispatch, setShowSidebar]);
 
   if (loadingHomePage) {
     return (

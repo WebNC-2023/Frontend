@@ -29,6 +29,7 @@ const ClassDetailsName = () => {
                     : `url("${process.env.REACT_APP_SERVER_BASE_URL}/files/${classroomDetailsInfo.classroomAvatar}")`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
+                backgroundSize: "100% 100%",
               }
             : {
                 borderRadius: "10px",
@@ -39,6 +40,7 @@ const ClassDetailsName = () => {
                     : `url("${process.env.REACT_APP_SERVER_BASE_URL}/files/${classroomDetailsInfo.classroomAvatar}")`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
+                backgroundSize: "100% 100%",
               }
         }
       >
