@@ -2,3 +2,14 @@
     padding-top: 65px;
     border-bottom: 1px solid #dadce0;
 }
+
+.css-11yukd5-MuiTabs-indicator {
+    background-color: #1967d2 !important;
+    height: 4px !important;
+    border-top-right-radius: 100px;
+    border-top-left-radius: 100px;
+}
+
+.css-1a4cg4j-MuiButtonBase-root-MuiTab-root.Mui-selected {
+    color: #1967d2 !important;
+}

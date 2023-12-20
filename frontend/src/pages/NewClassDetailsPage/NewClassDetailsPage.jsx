@@ -30,7 +30,6 @@ const NewClassDetailsPage = () => {
       setLoadingClassDetails(true);
       try {
         const res = await Axios.get(`/classes/${classId}`);
-        console.log(res.data);
         dispatch(
           update({
             fullName: `${
