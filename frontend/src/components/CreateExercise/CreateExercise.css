@@ -1,0 +1,13 @@
+.createExercise-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.createExercise-flex {
+    display: flex;
+    padding-bottom: 40px;
+    border-bottom: 2px solid #e0e0e0;
+}
+

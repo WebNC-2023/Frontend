@@ -37,9 +37,33 @@ const ClassTabs = ({ tab, setTab }) => {
       scrollButtons="auto"
       allowScrollButtonsMobile
     >
-      <Tab value="one" label="Bảng tin" />
-      <Tab value="two" label="Bài tập trên lớp" />
-      <Tab value="three" label="Mọi người" />
+      <Tab
+        style={{
+          textTransform: "none",
+          color: "#5f6368",
+          fontSize: "1rem",
+        }}
+        value="one"
+        label="Bảng tin"
+      />
+      <Tab
+        style={{
+          textTransform: "none",
+          color: "#5f6368",
+          fontSize: "1rem",
+        }}
+        value="two"
+        label="Bài tập trên lớp"
+      />
+      <Tab
+        style={{
+          textTransform: "none",
+          color: "#5f6368",
+          fontSize: "1rem",
+        }}
+        value="three"
+        label="Mọi người"
+      />
     </Tabs>
   );
 };

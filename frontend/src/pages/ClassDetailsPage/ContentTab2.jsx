@@ -1,12 +1,25 @@
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
+import CreateExercise from "../../components/CreateExercise/CreateExercise";
+import { useSelector } from "react-redux";
+import SeeExercise from "../../components/SeeExercise/SeeExercise";
 const ContentTab2 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
+  const people = useSelector((state) => state.classroomDetailsInfo.people);
   return (
     <>
       {loadingClassDetails ? (
         <></>
       ) : ClassDetailsSuccess ? (
-        <></>
+        people.find(
+          (element) =>
+            element.email ===
+              JSON.parse(localStorage.getItem("userInfo")).email &&
+            element.role === "teacher"
+        ) !== undefined ? (
+          <CreateExercise />
+        ) : (
+          <SeeExercise />
+        )
       ) : (
         <div
           style={{
