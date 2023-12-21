@@ -39,7 +39,8 @@
 }
 
 .classroom-post-content {
-    margin-top: 10px;
+
+    padding: 8px 16px;
     font-size: 0.875rem;
     /* 14px */
     line-height: 1.25rem;
@@ -98,6 +99,11 @@
 .numbers-of-comment-classroom:hover {
     background-color: #f9f9f9;
     color: #202124;
+}
+
+ul {
+    list-style-type: disc;
+    list-style-position: inside;
 }
 
 @media screen and (max-width: 639.98px) {

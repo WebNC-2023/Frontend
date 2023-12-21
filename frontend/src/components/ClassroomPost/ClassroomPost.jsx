@@ -17,12 +17,19 @@ import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import ClassroomComment from "../ClassroomComment/ClassroomComment";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/ClassroomCommentSlice";
+import { useRef } from "react";
+import { useEffect } from "react";
 const ClassroomPost = ({ post }) => {
+  const myRef = useRef(null);
   const [formats, setFormats] = useState(() => []);
   const [focusForm, setFocusForm] = useState(false);
   const [content, setContent] = useState("");
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const comments = useSelector((state) => state.classroomComment.comments);
+  useEffect(() => {
+    console.log(post.postContent);
+    myRef.current.innerHTML = post.postContent;
+  }, [post.postContent]);
   const handleFormat = (event, newFormats) => {
     setFormats(newFormats);
   };
@@ -72,16 +79,7 @@ const ClassroomPost = ({ post }) => {
           </div>
           <MoreVertIcon />
         </div>
-        <div
-          className="classroom-post-content"
-          style={{
-            fontWeight: post.boldStyle ? "bold" : "normal",
-            fontStyle: post.italicStyle ? "italic" : "normal",
-            textDecoration: post.underlineStyle ? "underline" : "none",
-          }}
-        >
-          {post.postContent}
-        </div>
+        <div className="classroom-post-content" ref={myRef}></div>
       </div>
       <div className="comment-classroom-post-container">
         <div className="numbers-of-comment-classroom">
