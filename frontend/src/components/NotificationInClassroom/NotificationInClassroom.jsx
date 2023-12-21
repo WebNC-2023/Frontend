@@ -1,16 +1,22 @@
 import { Avatar } from "@mui/material";
 import "./NotificationInClassroom.css";
 import { useState } from "react";
-import TextField from "@mui/material/TextField";
-import { Grid, Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+//import TextField from "@mui/material/TextField";
+import { Grid, Button } from "@mui/material";
+// import FormatBoldIcon from "@mui/icons-material/FormatBold";
+// import FormatItalicIcon from "@mui/icons-material/FormatItalic";
+// import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/ClassroomPostSlice";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 const NotificationInClassroom = () => {
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const [showWriteNotification, setShowWriteNotification] = useState(false);
+  const toolbarOptions = [
+    ["bold", "italic", "underline"], // toggled buttons
+    [{ list: "bullet" }], // dropdowns with defaults from theme
+  ];
   const [content, setContent] = useState("");
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.classroomPost.posts);
@@ -18,12 +24,8 @@ const NotificationInClassroom = () => {
     setShowWriteNotification(true);
   };
   const handleClickCancel = () => {
+    setContent("");
     setShowWriteNotification(false);
-  };
-  const [formats, setFormats] = useState(() => []);
-
-  const handleFormat = (event, newFormats) => {
-    setFormats(newFormats);
   };
   const handleClickPostNotification = () => {
     let present = new Date();
@@ -34,23 +36,23 @@ const NotificationInClassroom = () => {
         dateSubmitted: `${present.getDate()} thg ${
           present.getMonth() + 1
         }, ${present.getFullYear()}`,
-        avatar: `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
-          JSON.parse(localStorage.getItem("userInfo")).avatar
-        }?${Date.now()}`,
+        avatar:
+          JSON.parse(localStorage.getItem("userInfo")).avatar === null
+            ? ""
+            : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+                JSON.parse(localStorage.getItem("userInfo")).avatar
+              }?${Date.now()}`,
         postContent: content,
-        boldStyle: formats.includes("bold"),
-        italicStyle: formats.includes("italic"),
-        underlineStyle: formats.includes("underlined"),
       })
     );
+    setContent("");
     setShowWriteNotification(false);
-    setFormats([]);
   };
   return (
     <>
       {showWriteNotification ? (
         <div className="write-notification-for-classroom">
-          <ToggleButtonGroup value={formats} onChange={handleFormat}>
+          {/* <ToggleButtonGroup value={formats} onChange={handleFormat}>
             <ToggleButton value="bold" aria-label="bold">
               <FormatBoldIcon />
             </ToggleButton>
@@ -82,12 +84,24 @@ const NotificationInClassroom = () => {
               },
               spellCheck: "false",
             }}
+          /> */}
+          <ReactQuill
+            style={{
+              width: "100%",
+              color: "black",
+            }}
+            theme="snow"
+            value={content}
+            onChange={(e) => setContent(e)}
+            modules={{ toolbar: toolbarOptions }}
+            placeholder="Thông báo nội dung nào đó cho
+            lớp học của bạn"
           />
           <Grid
             container
             display={"flex"}
             justifyContent={"flex-end"}
-            sx={{ marginTop: "30px" }}
+            sx={{ marginTop: "20px" }}
           >
             <Grid item>
               <Button onClick={handleClickCancel} variant="text">
@@ -97,7 +111,9 @@ const NotificationInClassroom = () => {
             <Grid item>
               <Button
                 variant="contained"
-                disabled={content === "" ? true : false}
+                disabled={
+                  content === "" || content === "<p><br></p>" ? true : false
+                }
                 onClick={handleClickPostNotification}
               >
                 Đăng

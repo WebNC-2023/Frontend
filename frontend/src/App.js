@@ -103,7 +103,6 @@ function App() {
           <Route element={<ProtectedAttendByLink />}>
             <Route path="/classes/:classId/attend" element={<AttendByLink />} />
           </Route>
-
           <Route path="*" element={<Error />} />
         </Routes>
       </Router>
