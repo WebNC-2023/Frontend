@@ -15,6 +15,51 @@ import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetail
 import { useNavigate, useParams } from "react-router-dom";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { toast } from "react-toastify";
+import { styled, alpha } from "@mui/material/styles";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
 const ClassroomEveryoneTeacher = ({
   firstName,
   lastName,
@@ -25,25 +70,18 @@ const ClassroomEveryoneTeacher = ({
   const navigate = useNavigate();
   const owner = useSelector((state) => state.classroomDetailsInfo.owner);
   const dispatch = useDispatch();
-  const [openOptionRemove, setOpenOptionRemove] = useState(false);
-  const [openOptionLeave, setOpenOptionLeave] = useState(false);
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
   const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const { classId } = useParams();
-  // const [sending, setSending] = useState(false);
-  const handleOpenOptionRemove = () => {
-    setOpenOptionRemove(true);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+  const handleClickOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
   };
-  const handleCloseOptionRemove = () => {
-    setOpenOptionRemove(false);
-  };
-  const handleOpenOptionLeave = () => {
-    setOpenOptionLeave(true);
-  };
-  const handleCloseOptionLeave = () => {
-    setOpenOptionLeave(false);
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
   };
   const handleCloseRemoveDialog = () => {
     setOpenRemoveDialog(false);
@@ -52,11 +90,11 @@ const ClassroomEveryoneTeacher = ({
     setOpenLeaveDialog(false);
   };
   const handleOpenRemoveDialog = () => {
-    setOpenOptionRemove(false);
+    setAnchorEl(null);
     setOpenRemoveDialog(true);
   };
   const handleOpenLeaveDialog = () => {
-    setOpenOptionLeave(false);
+    setAnchorEl(null);
     setOpenLeaveDialog(true);
   };
   const handleRemoveTeacher = () => {
@@ -182,16 +220,29 @@ const ClassroomEveryoneTeacher = ({
             <></>
           ) : (
             <>
-              <IconButton onClick={handleOpenOptionLeave}>
+              <IconButton onClick={handleClickOpenMenu}>
                 <MoreVertIcon />
               </IconButton>
-              <Dialog
-                open={openOptionLeave}
-                onClose={handleCloseOptionLeave}
-                fullWidth
+              <StyledMenu
+                id="demo-customized-menu"
+                MenuListProps={{
+                  "aria-labelledby": "demo-customized-button",
+                }}
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={handleCloseMenu}
               >
-                <Button onClick={handleOpenLeaveDialog}>Rời lớp học</Button>
-              </Dialog>
+                <MenuItem
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "black",
+                  }}
+                  onClick={handleOpenLeaveDialog}
+                  disableRipple
+                >
+                  Rời lớp học
+                </MenuItem>
+              </StyledMenu>
               <Dialog open={openLeaveDialog} fullWidth>
                 <DialogTitle>Rời khỏi lớp học?</DialogTitle>
                 <DialogContent>
@@ -222,16 +273,29 @@ const ClassroomEveryoneTeacher = ({
             owner.email &&
           (firstName !== null || lastName !== null) ? (
           <>
-            <IconButton onClick={handleOpenOptionRemove}>
+            <IconButton onClick={handleClickOpenMenu}>
               <MoreVertIcon />
             </IconButton>
-            <Dialog
-              open={openOptionRemove}
-              onClose={handleCloseOptionRemove}
-              fullWidth
+            <StyledMenu
+              id="demo-customized-menu"
+              MenuListProps={{
+                "aria-labelledby": "demo-customized-button",
+              }}
+              anchorEl={anchorEl}
+              open={openMenu}
+              onClose={handleCloseMenu}
             >
-              <Button onClick={handleOpenRemoveDialog}>Xoá giáo viên</Button>
-            </Dialog>
+              <MenuItem
+                style={{
+                  fontSize: "0.875rem",
+                  color: "black",
+                }}
+                onClick={handleOpenRemoveDialog}
+                disableRipple
+              >
+                Xóa giáo viên
+              </MenuItem>
+            </StyledMenu>
             <Dialog open={openRemoveDialog} fullWidth>
               <DialogTitle>Xoá giáo viên?</DialogTitle>
               <DialogContent>

@@ -21,7 +21,7 @@
 .classroom-everyone-student-header {
     padding: 20px;
     user-select: none;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #1967d2;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;

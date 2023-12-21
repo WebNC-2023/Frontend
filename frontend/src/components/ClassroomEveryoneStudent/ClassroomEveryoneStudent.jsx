@@ -15,6 +15,53 @@ import { useNavigate, useParams } from "react-router-dom";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import { toast } from "react-toastify";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
+import { styled, alpha } from "@mui/material/styles";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
+
 const ClassroomEveryoneStudent = ({
   firstName,
   lastName,
@@ -23,25 +70,24 @@ const ClassroomEveryoneStudent = ({
   userId,
 }) => {
   const people = useSelector((state) => state.classroomDetailsInfo.people);
-  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
   const { classId } = useParams();
   const dispatch = useDispatch();
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
   };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleClickOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
   };
-
   const handleCloseRemoveDialog = () => {
     setOpenRemoveDialog(false);
   };
   const handleOpenRemoveDialog = () => {
-    setOpen(false);
+    setAnchorEl(null);
     setOpenRemoveDialog(true);
   };
   const handleRemoveStudent = () => {
@@ -142,12 +188,29 @@ const ClassroomEveryoneStudent = ({
           <></>
         ) : firstName !== null || lastName !== null ? (
           <>
-            <IconButton onClick={handleClickOpen}>
+            <IconButton onClick={handleClickOpenMenu}>
               <MoreVertIcon />
             </IconButton>
-            <Dialog open={open} onClose={handleClose} fullWidth>
-              <Button onClick={handleOpenRemoveDialog}>Xoá học sinh</Button>
-            </Dialog>
+            <StyledMenu
+              id="demo-customized-menu"
+              MenuListProps={{
+                "aria-labelledby": "demo-customized-button",
+              }}
+              anchorEl={anchorEl}
+              open={openMenu}
+              onClose={handleCloseMenu}
+            >
+              <MenuItem
+                style={{
+                  fontSize: "0.875rem",
+                  color: "black",
+                }}
+                onClick={handleOpenRemoveDialog}
+                disableRipple
+              >
+                Xóa học sinh
+              </MenuItem>
+            </StyledMenu>
             <Dialog open={openRemoveDialog} fullWidth>
               <DialogTitle>Xoá học sinh?</DialogTitle>
               <DialogContent>
