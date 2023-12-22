@@ -154,7 +154,8 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
           </ListItem>
         ))}
       </List>
-      {classes !== undefined && classes.filter((element) => element.role === "teacher").length > 0 ? (
+      {classes !== undefined &&
+      classes.filter((element) => element.role === "teacher").length > 0 ? (
         <>
           <Divider />
           <List>
@@ -216,7 +217,8 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
       ) : (
         <></>
       )}
-      {classes !== undefined && classes.filter((element) => element.role === "student").length > 0 ? (
+      {classes !== undefined &&
+      classes.filter((element) => element.role === "student").length > 0 ? (
         <>
           <Divider />
           <List>
@@ -348,7 +350,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
             )}
 
             <Link
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: "10px", textDecoration: "none" }}
               to={`${classRoom ? "/home-page" : "/"}`}
               className="home-page-logo"
             >
