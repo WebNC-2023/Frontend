@@ -22,6 +22,65 @@ img {
   -o-user-drag: none;
 }
 
-/* .MuiBackdrop-root {
-  opacity: 0 !important;
-} */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #5f6368;
+  pointer-events: none;
+  height: 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+
+.tiptap ul,
+.tiptap ol {
+  padding: 0 1rem;
+  list-style-type: disc;
+}
+
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  line-height: 1.1;
+}
+
+.tiptap code {
+  background-color: #cfcfcf;
+  color: #616161;
+}
+
+.tiptap pre {
+  background: #0D0D0D;
+  color: #FFF;
+  font-family: 'JetBrainsMono', monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.tiptap pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+
+
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+}
+
+.tiptap blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid #9c9c9c;
+}
+
+.tiptap hr {
+  border: none;
+  border-top: 2px solid #9c9c9c;
+  margin: 2rem 0;
+}

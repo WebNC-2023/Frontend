@@ -27,6 +27,7 @@ import ProtectedAcceptInvite from "./components/ProtectedAcceptInvite/ProtectedA
 import NewClassDetailsPage from "./pages/NewClassDetailsPage/NewClassDetailsPage";
 import AttendByLink from "./pages/AttendByLink";
 import ProtectedAttendByLink from "./components/ProtectedAttendByLink/ProtectedAttendByLink";
+import TipTap from "./components/TipTap/TipTap";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -100,6 +101,7 @@ function App() {
               </ProtectedAcceptInvite>
             }
           />
+          <Route path="/tip-tap" element={<TipTap />} />
           <Route element={<ProtectedAttendByLink />}>
             <Route path="/classes/:classId/attend" element={<AttendByLink />} />
           </Route>
