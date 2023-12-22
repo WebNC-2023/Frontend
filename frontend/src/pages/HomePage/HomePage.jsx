@@ -1,6 +1,4 @@
 import "./HomePage.css";
-import { useContext } from "react";
-import { DataContext } from "../../contexts/DataContext";
 import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
 import JoinedClasses from "../../components/JoinedClasses/JoinedClasses";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,10 +29,9 @@ const HomePage = () => {
     }
   }, [dispatch, isError]);
 
-  const { showSidebar } = useContext(DataContext);
   return (
     <div className="home-page-container">
-      <HomePageHeader showSidebar={showSidebar} />
+      <HomePageHeader showSidebar={true} />
       {isLoading || isUnSubriceLoading || isDeleteLoading ? (
         <Loader />
       ) : classes?.length > 0 ? (

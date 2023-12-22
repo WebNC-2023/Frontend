@@ -18,16 +18,13 @@ import ProtectedResetPassword from "./components/ProtectedResetPassword/Protecte
 import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import ProtectedVerifyEmail from "./components/ProtectedVerifyEmail/ProtectedVerifyEmail";
 import ChangePasswordPage from "./pages/ChangePasswordPage/ChangePasswordPage";
-import ProtectedChangePassword from "./components/ProtectedChangePassword/ProtectedChangePassword";
-import ProtectedEditProfile from "./components/ProtectedEditProfile/ProtectedEditProfile";
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
 import AcceptInvitePage from "./pages/AcceptInvitePage/AcceptInvitePage";
 import SSOSuccess from "./pages/SSOSuccess";
 import ProtectedAcceptInvite from "./components/ProtectedAcceptInvite/ProtectedAcceptInvite";
-import NewClassDetailsPage from "./pages/NewClassDetailsPage/NewClassDetailsPage";
 import AttendByLink from "./pages/AttendByLink";
 import ProtectedAttendByLink from "./components/ProtectedAttendByLink/ProtectedAttendByLink";
-import TipTap from "./components/TipTap/TipTap";
+import ClassDetailsPage from "./pages/ClassDetailsPage/ClassDetailsPage";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -55,14 +52,8 @@ function App() {
 
           <Route element={<ProtectedHome />}>
             <Route path="/home-page" element={<HomePage />} />
-          </Route>
-
-          <Route element={<ProtectedChangePassword />}>
-            <Route element={<ChangePasswordPage />} path="/change-password" />
-          </Route>
-
-          <Route element={<ProtectedEditProfile />}>
             <Route element={<EditProfilePage />} path="/edit-profile" />
+            <Route element={<ChangePasswordPage />} path="/change-password" />
           </Route>
 
           <Route element={<ProtectedSign />}>
@@ -91,7 +82,7 @@ function App() {
 
           <Route
             path="/class-details/:classId"
-            element={<NewClassDetailsPage />}
+            element={<ClassDetailsPage/>}
           />
           <Route
             path="/accept-invite"
@@ -101,7 +92,6 @@ function App() {
               </ProtectedAcceptInvite>
             }
           />
-          <Route path="/tip-tap" element={<TipTap />} />
           <Route element={<ProtectedAttendByLink />}>
             <Route path="/classes/:classId/attend" element={<AttendByLink />} />
           </Route>
