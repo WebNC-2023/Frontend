@@ -82,7 +82,7 @@ function App() {
 
           <Route
             path="/class-details/:classId"
-            element={<ClassDetailsPage/>}
+            element={<ClassDetailsPage />}
           />
           <Route
             path="/accept-invite"

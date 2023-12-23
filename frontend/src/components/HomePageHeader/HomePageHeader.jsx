@@ -135,6 +135,12 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
     setState({ ...state, [anchor]: false });
     navigate(`/class-details/${classroomID}?tab=1`);
   };
+  const handleClickList1 = (anchor, text) => {
+    if (text === "Màn hình chính") {
+      setState({ ...state, [anchor]: false });
+      navigate("/home-page");
+    } else setState({ ...state, [anchor]: false });
+  };
   const classes = useSelector((state) => state.classes.classes);
   const list = (anchor) => (
     <Box
@@ -144,8 +150,12 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
     >
       <List>
         {["Màn hình chính", "Lịch"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton onClick={toggleDrawer(anchor, false)}>
+          <ListItem
+            key={text}
+            disablePadding
+            onClick={() => handleClickList1("left", text)}
+          >
+            <ListItemButton>
               <ListItemIcon>
                 {index === 0 ? <HomeIcon /> : <CalendarTodayIcon />}
               </ListItemIcon>

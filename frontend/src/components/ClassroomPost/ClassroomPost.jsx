@@ -2,7 +2,6 @@ import { Avatar, Tooltip, IconButton } from "@mui/material";
 import "./ClassroomPost.css";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SendIcon from "@mui/icons-material/Send";
-
 import { useState } from "react";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import ClassroomComment from "../ClassroomComment/ClassroomComment";
@@ -10,11 +9,70 @@ import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/ClassroomCommentSlice";
 import parser from "html-react-parser";
 import TipTap from "../TipTap/TipTap";
+import * as React from "react";
+import { styled, alpha } from "@mui/material/styles";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
+
 const ClassroomPost = ({ post }) => {
   const [contentMsg, setContentMsg] = useState("");
+  const [toggleComments, setToggleComments] = useState(false);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const comments = useSelector((state) => state.classroomComment.comments);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
   const dispatch = useDispatch();
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleToggleComments = () => {
+    setToggleComments((prev) => !prev);
+  };
   const handleClickSendComment = () => {
     let present = new Date();
     let gmt7Time = new Date(present.getTime() + 7 * 60 * 60 * 1000);
@@ -62,7 +120,31 @@ const ClassroomPost = ({ post }) => {
               <div className="classroom-post-date">{post.dateSubmitted}</div>
             </div>
           </div>
-          <MoreVertIcon />
+          <IconButton
+            onClick={handleClick}
+            style={
+              open ? { backgroundColor: "#d7d7d7" } : { cursor: "pointer" }
+            }
+          >
+            <MoreVertIcon />
+          </IconButton>
+          <StyledMenu
+            id="demo-customized-menu"
+            MenuListProps={{
+              "aria-labelledby": "demo-customized-button",
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem
+              sx={{ color: "#222222", fontSize: "0.875rem" }}
+              onClick={handleClose}
+              disableRipple
+            >
+              Xóa
+            </MenuItem>
+          </StyledMenu>
         </div>
         <div className="classroom-post-content">{parser(post.postContent)}</div>
       </div>
@@ -72,7 +154,7 @@ const ClassroomPost = ({ post }) => {
             .length === 0 ? (
             <></>
           ) : (
-            <>
+            <div className="total-comments-btn" onClick={handleToggleComments}>
               <GroupOutlinedIcon />
               <p>
                 {
@@ -81,14 +163,18 @@ const ClassroomPost = ({ post }) => {
                 }{" "}
                 nhận xét về lớp học
               </p>
-            </>
+            </div>
           )}
         </div>
-        {comments
-          .filter((comment) => comment.postId === post.postId)
-          .map((comment, index) => (
-            <ClassroomComment key={index} comment={comment} />
-          ))}
+        {toggleComments ? (
+          comments
+            .filter((comment) => comment.postId === post.postId)
+            .map((comment, index) => (
+              <ClassroomComment key={index} comment={comment} />
+            ))
+        ) : (
+          <></>
+        )}
         <div className="comment-classroom-post">
           <Avatar
             sx={{
