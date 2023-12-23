@@ -35,7 +35,7 @@ const HomePage = () => {
       {isLoading || isUnSubriceLoading || isDeleteLoading ? (
         <Loader />
       ) : classes?.length > 0 ? (
-        <ol className="joined" style={{ marginTop: "65px" }}>
+        <ol className="joined" style={{ paddingTop: "105px" }}>
           {classes?.map((item) => (
             <JoinedClasses classData={item} key={item.id} />
           ))}
