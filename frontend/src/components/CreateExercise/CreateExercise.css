@@ -11,3 +11,25 @@
     border-bottom: 2px solid #e0e0e0;
 }
 
+.createExercise-flex-direction-column {
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.upload-exercise-section {
+    border-radius: 10px;
+    border: 1px solid #dadce0;
+    padding: 16px;
+    margin-top: 16px;
+    font-size: 0.875rem;
+    /* 14px */
+    line-height: 1.25rem;
+    /* 20px */
+    font-weight: 500;
+}
+
+.upload-exercise-section p {
+    color: #5f6368;
+    padding-bottom: 16px;
+}

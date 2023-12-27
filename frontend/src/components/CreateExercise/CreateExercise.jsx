@@ -2,60 +2,88 @@ import "./CreateExercise.css";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import * as React from "react";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
-import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
-import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
-import ClassOutlinedIcon from "@mui/icons-material/ClassOutlined";
-import RepeatOutlinedIcon from "@mui/icons-material/RepeatOutlined";
-import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
+import Dialog from "@mui/material/Dialog";
+// import ListItemText from "@mui/material/ListItemText";
+// import ListItem from "@mui/material/ListItem";
+// import List from "@mui/material/List";
+// import Divider from "@mui/material/Divider";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
+import Slide from "@mui/material/Slide";
+import DialogContent from "@mui/material/DialogContent";
+import TipTap from "../TipTap/TipTap";
+import TextField from "@mui/material/TextField";
+// import { MuiFileInput } from "mui-file-input";
+import { useDispatch, useSelector } from "react-redux";
+import { addAssignment } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import AssignmentCardForTeacher from "../AssignmentCard/AssignmentCardForTeacher";
+// import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
+// import ClassOutlinedIcon from "@mui/icons-material/ClassOutlined";
+// import RepeatOutlinedIcon from "@mui/icons-material/RepeatOutlined";
+// import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const CreateExercise = () => {
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+  const [openForm, setOpenForm] = React.useState(false);
+  const [scroll, setScroll] = React.useState("paper");
+  const [contentMsg, setContentMsg] = React.useState("");
+  //const [valueFile, setValueFile] = React.useState(null);
+  const [titleContent, setTitleContent] = React.useState("");
+  const [score, setScore] = React.useState(100);
+  const dispatch = useDispatch();
+  const assignments = useSelector(
+    (state) => state.classroomDetailsInfo.assignments
+  );
+  // const handleChange = (newValue) => {
+  //   setValueFile(newValue);
+  // };
+  const handleClickOpenForm = (scrollType) => {
+    setOpenForm(true);
+    setScroll(scrollType);
   };
-
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
-
-    setOpen(false);
+  const handleCloseForm = () => {
+    setTitleContent("");
+    setOpenForm(false);
   };
-
-  function handleListKeyDown(event) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen(false);
-    } else if (event.key === "Escape") {
-      setOpen(false);
-    }
-  }
-
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
-    }
-
-    prevOpen.current = open;
-  }, [open]);
+  const handleGiveAssignment = () => {
+    let present = new Date();
+    let gmt7Time = new Date(present.getTime() + 7 * 60 * 60 * 1000);
+    dispatch(
+      addAssignment({
+        assignment_title: titleContent,
+        assignment_instruction: contentMsg,
+        assignment_score: score,
+        assignment_published: `${
+          gmt7Time.getUTCHours().toString().length === 1
+            ? "0" + gmt7Time.getUTCHours().toString()
+            : gmt7Time.getUTCHours().toString()
+        }:${
+          gmt7Time.getUTCMinutes().toString().length === 1
+            ? "0" + gmt7Time.getUTCMinutes().toString()
+            : gmt7Time.getUTCMinutes().toString()
+        }:${
+          gmt7Time.getUTCSeconds().toString().length === 1
+            ? "0" + gmt7Time.getUTCSeconds().toString()
+            : gmt7Time.getUTCSeconds().toString()
+        } ${gmt7Time.getUTCDate()} thg ${
+          gmt7Time.getUTCMonth() + 1
+        }, ${gmt7Time.getUTCFullYear()}`,
+      })
+    );
+    setTitleContent("");
+    setOpenForm(false);
+  };
   return (
     <>
       <div className="createExercise-container">
         <div className="createExercise-flex">
           <Button
-            ref={anchorRef}
-            id="composition-button"
-            aria-controls={open ? "composition-menu" : undefined}
-            aria-expanded={open ? "true" : undefined}
-            aria-haspopup="true"
             style={{
               borderRadius: "30px",
               textTransform: "none",
@@ -70,134 +98,127 @@ const CreateExercise = () => {
                 }}
               />
             }
-            onClick={handleToggle}
+            onClick={() => handleClickOpenForm("paper")}
           >
             Tạo
           </Button>
-          <Popper
-            open={open}
-            anchorEl={anchorRef.current}
-            role={undefined}
-            placement="bottom-start"
-            transition
-            disablePortal
-            style={{ paddingTop: "10px" }}
+          <Dialog
+            fullScreen
+            open={openForm}
+            TransitionComponent={Transition}
+            scroll={scroll}
           >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
+            <AppBar sx={{ position: "relative" }}>
+              <Toolbar>
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  onClick={handleCloseForm}
+                  aria-label="close"
+                >
+                  <CloseIcon />
+                </IconButton>
+                <Typography
+                  sx={{ ml: 2, flex: 1 }}
+                  variant="h6"
+                  component="div"
+                >
+                  Bài tập
+                </Typography>
+                <Button
+                  autoFocus
+                  color="inherit"
+                  onClick={handleGiveAssignment}
+                  disabled={titleContent === "" ? true : false}
+                >
+                  Giao bài
+                </Button>
+              </Toolbar>
+            </AppBar>
+            <DialogContent dividers={scroll === "paper"}>
+              <TextField
+                autoComplete="off"
+                label="Tiêu đề"
+                variant="filled"
+                fullWidth
+                sx={{ paddingBottom: "16px" }}
+                value={titleContent}
+                onChange={(e) => setTitleContent(e.target.value)}
+              />
+              <TipTap
+                setContentMsg={setContentMsg}
+                placeholderTipTap="Hướng dẫn (Không bắt buộc)"
+              />
+              {/* <div className="upload-exercise-section">
+                            <p>Đính kèm</p>
+                            <MuiFileInput
+                              value={valueFile}
+                              placeholder="Tải tệp lên"
+                              color="primary"
+                              onChange={handleChange}
+                              clearIconButtonProps={{
+                                title: "Xóa",
+                                children: <CloseIcon fontSize="small" />,
+                              }}
+                            />
+                          </div> */}
+              <div
                 style={{
-                  transformOrigin:
-                    placement === "bottom-start" ? "left top" : "left bottom",
+                  border: "1px solid #dadce0",
+                  marginTop: "16px",
+                  padding: "16px",
+                  borderRadius: "10px",
                 }}
               >
-                <Paper>
-                  <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList
-                      autoFocusItem={open}
-                      id="composition-menu"
-                      aria-labelledby="composition-button"
-                      onKeyDown={handleListKeyDown}
-                    >
-                      <MenuItem
-                        onClick={handleClose}
-                        style={{
-                          columnGap: "35px",
-                          paddingTop: "8px",
-                          paddingBottom: "16px",
-                        }}
-                      >
-                        <AssignmentOutlinedIcon
-                          style={{
-                            color: "#1863ca",
-                          }}
-                        />
-                        Bài tập
-                      </MenuItem>
-                      <MenuItem
-                        onClick={handleClose}
-                        style={{
-                          columnGap: "35px",
-                          paddingTop: "8px",
-                          paddingBottom: "16px",
-                        }}
-                      >
-                        <AssignmentOutlinedIcon
-                          style={{
-                            color: "#1863ca",
-                          }}
-                        />
-                        Bài kiểm tra
-                      </MenuItem>
-                      <MenuItem
-                        onClick={handleClose}
-                        style={{
-                          columnGap: "35px",
-                          paddingTop: "8px",
-                          paddingBottom: "16px",
-                        }}
-                      >
-                        <LiveHelpOutlinedIcon
-                          style={{
-                            color: "#1863ca",
-                          }}
-                        />
-                        Câu hỏi
-                      </MenuItem>
-                      <MenuItem
-                        onClick={handleClose}
-                        style={{
-                          columnGap: "35px",
-                          paddingTop: "8px",
-                          paddingBottom: "16px",
-                        }}
-                      >
-                        <ClassOutlinedIcon
-                          style={{
-                            color: "#1863ca",
-                          }}
-                        />
-                        Tài liệu
-                      </MenuItem>
-                      <MenuItem
-                        onClick={handleClose}
-                        style={{
-                          columnGap: "35px",
-                          paddingTop: "8px",
-                          paddingBottom: "16px",
-                          borderBottom: "1px solid #e0e0e0",
-                          marginBottom: "8px",
-                        }}
-                      >
-                        <RepeatOutlinedIcon
-                          style={{
-                            color: "#1863ca",
-                          }}
-                        />
-                        Sử dụng lại bài đăng
-                      </MenuItem>
-                      <MenuItem
-                        onClick={handleClose}
-                        style={{
-                          columnGap: "35px",
-                          paddingTop: "8px",
-                          paddingBottom: "16px",
-                          marginTop: "8px",
-                        }}
-                      >
-                        <ViewListOutlinedIcon
-                          style={{
-                            color: "#1863ca",
-                          }}
-                        />
-                        Chủ đề
-                      </MenuItem>
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper>
+                <p
+                  style={{
+                    fontSize: "0.875rem",
+                    lineHeight: "1.25rem",
+                    fontWeight: "500",
+                    color: "#5f6368",
+                    paddingBottom: "16px",
+                  }}
+                >
+                  Điểm
+                </p>
+                <TextField
+                  type="number"
+                  autoComplete="off"
+                  variant="filled"
+                  value={score}
+                  onChange={(e) => setScore(Number(e.target.value))}
+                />
+                <p
+                  style={{
+                    fontSize: "0.875rem",
+                    lineHeight: "1.25rem",
+                    fontWeight: "500",
+                    color: "#5f6368",
+                    padding: "16px 0px",
+                  }}
+                >
+                  Dành cho
+                </p>
+                <TextField
+                  autoComplete="off"
+                  variant="filled"
+                  value={"Tất cả học viên"}
+                  disabled
+                />
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div className="createExercise-flex-direction-column">
+          {assignments.map((assignment, index) => (
+            <AssignmentCardForTeacher
+              key={index}
+              assignment_title={assignment.assignment_title}
+              assignment_published={assignment.assignment_published}
+              assignment_instruction={assignment.assignment_instruction}
+              assignment_score={assignment.assignment_score}
+            />
+          ))}
         </div>
       </div>
     </>
