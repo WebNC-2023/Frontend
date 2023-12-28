@@ -24,6 +24,10 @@ const ClassTabs = ({ tab, setTab }) => {
       setTab("three");
       navigate(`/class-details/${classId}?tab=3`);
     }
+    else if (newValue === "four") {
+      setTab("four");
+      navigate(`/class-details/${classId}?tab=4`);
+    }
   };
   return (
     <Tabs
@@ -63,6 +67,15 @@ const ClassTabs = ({ tab, setTab }) => {
         }}
         value="three"
         label="Mọi người"
+      />
+      <Tab
+        style={{
+          textTransform: "none",
+          color: "#5f6368",
+          fontSize: "1rem",
+        }}
+        value="four"
+        label="Điểm"
       />
     </Tabs>
   );

@@ -25,6 +25,7 @@ import ProtectedAcceptInvite from "./components/ProtectedAcceptInvite/ProtectedA
 import AttendByLink from "./pages/AttendByLink";
 import ProtectedAttendByLink from "./components/ProtectedAttendByLink/ProtectedAttendByLink";
 import ClassDetailsPage from "./pages/ClassDetailsPage/ClassDetailsPage";
+import AssignmentDetailsPage from "./pages/AssignmentDetailsPage/AssignmentDetailsPage";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -84,6 +85,12 @@ function App() {
             path="/class-details/:classId"
             element={<ClassDetailsPage />}
           />
+
+          <Route
+            path="/assignment-details/:assignmentId"
+            element={<AssignmentDetailsPage />}
+          />
+
           <Route
             path="/accept-invite"
             element={
