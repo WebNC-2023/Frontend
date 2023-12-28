@@ -8,3 +8,9 @@
 .seeExercise-flex {
     display: flex;
 }
+
+.seeExercise-flex-direction-col {
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+}

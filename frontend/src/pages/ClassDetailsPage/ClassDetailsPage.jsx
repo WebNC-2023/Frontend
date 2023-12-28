@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
+import ContentTab4 from "./ContentTab4";
 const ClassDetailsPage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -138,6 +139,11 @@ const ClassDetailsPage = () => {
         />
       ) : Number(Tab) === 3 ? (
         <ContentTab3
+          loadingClassDetails={loadingClassDetails}
+          ClassDetailsSuccess={ClassDetailsSuccess}
+        />
+      ) : Number(Tab) === 4 ? (
+        <ContentTab4
           loadingClassDetails={loadingClassDetails}
           ClassDetailsSuccess={ClassDetailsSuccess}
         />

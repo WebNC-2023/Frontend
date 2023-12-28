@@ -80,6 +80,7 @@ const AssignmentCardForTeacher = ({
               padding: "24px 0px",
               fontSize: "0.875rem",
               lineHeight: "1.25rem",
+              wordBreak: "break-word"
             }}
             className="assignment-card-for-teacher-instruction"
           >
