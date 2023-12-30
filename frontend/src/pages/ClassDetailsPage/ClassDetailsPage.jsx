@@ -116,6 +116,7 @@ const ClassDetailsPage = () => {
     if (Number(Tab) === 1) return "one";
     else if (Number(Tab) === 2) return "two";
     else if (Number(Tab) === 3) return "three";
+    else if (Number(Tab) === 4) return "four";
     else return "error";
   });
   return (
