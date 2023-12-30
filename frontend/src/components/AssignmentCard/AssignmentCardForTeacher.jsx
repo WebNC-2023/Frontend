@@ -40,6 +40,7 @@ const AssignmentCardForTeacher = ({
               lineHeight: "1.25rem",
               fontWeight: "500",
               wordBreak: "break-word",
+              userSelect: "none"
             }}
           >
             {assignment_title}
@@ -52,6 +53,7 @@ const AssignmentCardForTeacher = ({
               lineHeight: "1rem",
               color: "#737373",
               paddingRight: "16px",
+              userSelect: "none"
             }}
           >
             Đã đăng vào {assignment_published}

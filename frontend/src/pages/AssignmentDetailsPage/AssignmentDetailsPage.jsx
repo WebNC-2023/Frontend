@@ -7,8 +7,10 @@ import Button from "@mui/material/Button";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import IconButton from "@mui/material/IconButton";
 import parser from "html-react-parser";
+import TipTap from "../../components/TipTap/TipTap";
 const AssignmentDetailsPage = () => {
   const [valueFile, setValueFile] = useState(null);
+  const [contentMsg, setContentMsg] = useState("");
   const handleChange = (newValue) => {
     setValueFile(newValue);
   };
@@ -72,12 +74,17 @@ const AssignmentDetailsPage = () => {
                   lineHeight: "1.25rem",
                   borderBottom: "2px solid #e8eaed",
                   color: "#3c4043",
+                  marginBottom: "24px",
                 }}
               >
                 {parser(
                   "<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo repellendus est dolorum omnis aliquam error amet cumque repellat laudantium fugiat, veniam incidunt qui suscipit deleniti assumenda nulla fugit! Perferendis, enim!</p><ul><li>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officiis dolorum voluptatibus cum impedit quam minima nihil nisi voluptatum suscipit laborum assumenda adipisci, reprehenderit aliquid. Voluptatum aliquam sint illo molestiae enim.</li></ul>"
                 )}
               </div>
+              <TipTap
+                setContentMsg={setContentMsg}
+                placeholderTipTap="Viết bình luận..."
+              />
             </div>
           </div>
           <div className="assignment-details-content-right">

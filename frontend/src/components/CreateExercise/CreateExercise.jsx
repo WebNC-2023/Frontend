@@ -35,7 +35,6 @@ const CreateExercise = () => {
   const [contentMsg, setContentMsg] = React.useState("");
   //const [valueFile, setValueFile] = React.useState(null);
   const [titleContent, setTitleContent] = React.useState("");
-  const [score, setScore] = React.useState(100);
   const dispatch = useDispatch();
   const assignments = useSelector(
     (state) => state.classroomDetailsInfo.assignments
@@ -58,7 +57,7 @@ const CreateExercise = () => {
       addAssignment({
         assignment_title: titleContent,
         assignment_instruction: contentMsg,
-        assignment_score: score,
+        assignment_score: 100,
         assignment_published: `${
           gmt7Time.getUTCHours().toString().length === 1
             ? "0" + gmt7Time.getUTCHours().toString()
@@ -185,8 +184,8 @@ const CreateExercise = () => {
                   type="number"
                   autoComplete="off"
                   variant="filled"
-                  value={score}
-                  onChange={(e) => setScore(Number(e.target.value))}
+                  value={100}
+                  disabled
                 />
                 <p
                   style={{
