@@ -3,23 +3,26 @@ import ReviewsOutlinedIcon from "@mui/icons-material/ReviewsOutlined";
 import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
 import TipTap from "../TipTap/TipTap";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import { Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { isNaN } from "formik";
+import Comment from "../Comment/Comment";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 const ReviewRequirement = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [contentMsg, setContentMsg] = useState("");
   const [grade, setGrade] = useState(0);
-  const [value, setValue] = useState("no");
+  const [open, setOpen] = useState(false);
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
   return (
     <>
@@ -29,7 +32,14 @@ const ReviewRequirement = () => {
             ? "review-requirement-container"
             : "review-requirement-container-showDetails"
         }
-        onClick={() => setShowDetails(!showDetails)}
+        onClick={() =>
+          setShowDetails((prev) => {
+            if (!prev) {
+              setContentMsg("");
+            }
+            return !prev;
+          })
+        }
       >
         <IconButton
           sx={{
@@ -205,78 +215,60 @@ const ReviewRequirement = () => {
               đề thi khó, không đủ thời gian làm bài
             </p>
           </div>
-          <div>
-            <FormControl>
-              <FormLabel
-                id="demo-radio-buttons-group-label"
-                sx={{
-                  fontSize: "0.875rem",
-                  lineHeight: "1.5rem",
-                  color: "#1967d2",
-                  fontWeight: "500",
-                }}
+          <Button
+            variant="contained"
+            sx={{
+              fontSize: "0.875rem",
+              lineHeight: "1.25rem",
+              textTransform: "none",
+              margin: "16px 0px",
+            }}
+            onClick={handleClickOpen}
+          >
+            Cập nhật điểm
+          </Button>
+          <Dialog open={open} fullWidth>
+            <DialogTitle>Cập nhật điểm số</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Nhập điểm số mới"
+                type="number"
+                autoComplete="off"
+                fullWidth
+                variant="standard"
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Hủy</Button>
+              <Button
+                onClick={handleClose}
+                disabled={
+                  isNaN(parseFloat(grade))
+                    ? true
+                    : Number(grade) >= 0 && Number(grade) <= 100
+                    ? false
+                    : true
+                }
               >
-                Quyết định thay đổi điểm số?
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="female"
-                name="radio-buttons-group"
-                value={value}
-                onChange={handleChange}
-              >
-                <FormControlLabel
-                  value="yes"
-                  control={<Radio size="small" />}
-                  label={
-                    <Typography
-                      sx={{ fontSize: "0.875rem", lineHeight: "1.5rem" }}
-                    >
-                      Có
-                    </Typography>
-                  }
-                />
-                <FormControlLabel
-                  value="no"
-                  control={<Radio size="small" />}
-                  label={
-                    <Typography
-                      sx={{ fontSize: "0.875rem", lineHeight: "1.5rem" }}
-                    >
-                      Không
-                    </Typography>
-                  }
-                />
-              </RadioGroup>
-            </FormControl>
-          </div>
-          {value === "yes" && (
-            <TextField
-              id="standard-basic"
-              type="number"
-              value={grade}
-              onChange={(e) => {
-                setGrade(e.target.value);
-              }}
-              label={
-                <Typography sx={{ fontSize: "0.875rem", lineHeight: "1.5rem" }}>
-                  Nhập điểm mới
-                </Typography>
-              }
-              variant="standard"
-              sx={{
-                paddingBottom: "16px",
-                fontSize: "0.875rem",
-                lineHeight: "1.5rem",
-              }}
-            />
-          )}
+                Cập nhật
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Comment commentBackgroundColor={"#ffffff"} />
+          <Comment commentBackgroundColor={"#e7f0ff"} />
           <TipTap
             setContentMsg={setContentMsg}
-            placeholderTipTap="Viết nhận xét"
+            placeholderTipTap="Nhập bình luận..."
           />
           <Button
-            disabled={value === "no" ? false : isNaN(parseFloat(grade)) ? true : false}
+            disabled={
+              contentMsg === "" || contentMsg === "<p></p>" ? true : false
+            }
             sx={{ marginTop: "16px" }}
             variant="contained"
           >

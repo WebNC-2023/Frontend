@@ -43,3 +43,11 @@
 .review-requirement-container:hover {
     background-color: #e8f0fe;
 }
+
+@media screen and (max-width: 639.98px) {
+    .review-requirement-container-details,
+    .review-requirement-container,
+    .review-requirement-container-showDetails {
+        padding: 8px;
+    }
+}
