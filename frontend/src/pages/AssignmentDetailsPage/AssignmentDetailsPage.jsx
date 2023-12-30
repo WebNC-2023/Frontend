@@ -8,12 +8,26 @@ import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import IconButton from "@mui/material/IconButton";
 import parser from "html-react-parser";
 import TipTap from "../../components/TipTap/TipTap";
+import MessageIcon from "@mui/icons-material/Message";
+import Comment from "../../components/Comment/Comment";
+import SendIcon from "@mui/icons-material/Send";
 const AssignmentDetailsPage = () => {
   const [valueFile, setValueFile] = useState(null);
   const [contentMsg, setContentMsg] = useState("");
+  const [show, setShow] = useState(false);
   const handleChange = (newValue) => {
     setValueFile(newValue);
   };
+
+  const handleShow = () => {
+    setShow(prev => {
+      if (!prev) {
+        setContentMsg("");
+      }
+      return !prev;
+    })
+  }
+  console.log(contentMsg);
   return (
     <>
       <HomePageHeader showSidebar={true} classRoom={true} />
@@ -74,20 +88,62 @@ const AssignmentDetailsPage = () => {
                   lineHeight: "1.25rem",
                   borderBottom: "2px solid #e8eaed",
                   color: "#3c4043",
-                  marginBottom: "24px",
+                  marginBottom: "16px",
                 }}
               >
                 {parser(
                   "<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo repellendus est dolorum omnis aliquam error amet cumque repellat laudantium fugiat, veniam incidunt qui suscipit deleniti assumenda nulla fugit! Perferendis, enim!</p><ul><li>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officiis dolorum voluptatibus cum impedit quam minima nihil nisi voluptatum suscipit laborum assumenda adipisci, reprehenderit aliquid. Voluptatum aliquam sint illo molestiae enim.</li></ul>"
                 )}
               </div>
-              <TipTap
-                setContentMsg={setContentMsg}
-                placeholderTipTap="Viết bình luận..."
-              />
+              <div className="student-chat-with-teachers">
+                <div
+                  className={
+                    !show
+                      ? "student-chat-with-teachers-btn"
+                      : "student-chat-with-teachers-btn-show"
+                  }
+                  onClick={handleShow}
+                >
+                  <MessageIcon />
+                  <p
+                    style={{
+                      fontSize: "0.875rem",
+                      lineHeight: "1.25rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {!show ? "Hiện cuộc hội thoại" : "Ẩn cuộc hội thoại"}
+                  </p>
+                </div>
+              </div>
+              {show && (
+                <>
+                  <Comment commentBackgroundColor={"#e7f0ff"} />
+                  <Comment commentBackgroundColor={"#ffffff"} />
+                  <Comment commentBackgroundColor={"#e7f0ff"} />
+                </>
+              )}
+              {show && (
+                <TipTap
+                  setContentMsg={setContentMsg}
+                  placeholderTipTap="Viết bình luận..."
+                />
+              )}
+              {show && (
+                <Button
+                  disabled={
+                    contentMsg === "" || contentMsg === "<p></p>" ? true : false
+                  }
+                  sx={{ marginTop: "8px", textTransform: "none" }}
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                >
+                  Gửi
+                </Button>
+              )}
             </div>
           </div>
-          <div className="assignment-details-content-right">
+          {/* <div className="assignment-details-content-right">
             <div className="assignment-details-content-yourAssignment">
               <div className="assignment-details-content-yourAssignment-section1">
                 <p style={{ color: "#3c4043", fontSize: "1.25rem" }}>
@@ -125,7 +181,7 @@ const AssignmentDetailsPage = () => {
                 </Button>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
