@@ -1,9 +1,10 @@
 import "./AssignmentCardForTeacher.css";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import IconButton from "@mui/material/IconButton";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+//import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
 import parser from "html-react-parser";
+import { useNavigate } from "react-router-dom";
 const AssignmentCardForTeacher = ({
   assignment_title,
   assignment_published,
@@ -11,7 +12,10 @@ const AssignmentCardForTeacher = ({
   assignment_score,
 }) => {
   const [show, setShow] = useState(false);
-
+  const navigate = useNavigate();
+  const handleClickViewInstruction = () => {
+    navigate("/assignment-details/sadsadsad");
+  };
   return (
     <div style={{ paddingBottom: "8px" }}>
       <div
@@ -40,7 +44,7 @@ const AssignmentCardForTeacher = ({
               lineHeight: "1.25rem",
               fontWeight: "500",
               wordBreak: "break-word",
-              userSelect: "none"
+              userSelect: "none",
             }}
           >
             {assignment_title}
@@ -53,14 +57,14 @@ const AssignmentCardForTeacher = ({
               lineHeight: "1rem",
               color: "#737373",
               paddingRight: "16px",
-              userSelect: "none"
+              userSelect: "none",
             }}
           >
             Đã đăng vào {assignment_published}
           </span>
-          <IconButton sx={{}}>
+          {/* <IconButton sx={{}}>
             <MoreVertIcon />
-          </IconButton>
+          </IconButton> */}
         </div>
       </div>
       {show && (
@@ -71,7 +75,7 @@ const AssignmentCardForTeacher = ({
               lineHeight: "1.25rem",
               color: "#3c4043",
               fontWeight: "500",
-              textDecoration: "underline"
+              textDecoration: "underline",
             }}
           >
             {assignment_score} điểm
@@ -82,11 +86,19 @@ const AssignmentCardForTeacher = ({
               padding: "24px 0px",
               fontSize: "0.875rem",
               lineHeight: "1.25rem",
-              wordBreak: "break-word"
+              wordBreak: "break-word",
             }}
             className="assignment-card-for-teacher-instruction"
           >
             {parser(assignment_instruction)}
+          </div>
+          <div style={{ display: "flex" }}>
+            <p
+              className="teacher-view-instruction"
+              onClick={handleClickViewInstruction}
+            >
+              Xem hướng dẫn
+            </p>
           </div>
         </div>
       )}
