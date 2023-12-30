@@ -11,23 +11,24 @@ import TipTap from "../../components/TipTap/TipTap";
 import MessageIcon from "@mui/icons-material/Message";
 import Comment from "../../components/Comment/Comment";
 import SendIcon from "@mui/icons-material/Send";
+import { useSelector } from "react-redux";
 const AssignmentDetailsPage = () => {
   const [valueFile, setValueFile] = useState(null);
   const [contentMsg, setContentMsg] = useState("");
   const [show, setShow] = useState(false);
+  const people = useSelector((state) => state.classroomDetailsInfo.people);
   const handleChange = (newValue) => {
     setValueFile(newValue);
   };
 
   const handleShow = () => {
-    setShow(prev => {
+    setShow((prev) => {
       if (!prev) {
         setContentMsg("");
       }
       return !prev;
-    })
-  }
-  console.log(contentMsg);
+    });
+  };
   return (
     <>
       <HomePageHeader showSidebar={true} classRoom={true} />
@@ -76,9 +77,17 @@ const AssignmentDetailsPage = () => {
                   lineHeight: "1.25rem",
                   paddingBottom: "16px",
                   borderBottom: "1px solid #4285f4",
+                  fontWeight: "500",
                 }}
               >
-                2/100
+                {people.find(
+                  (element) =>
+                    element.email ===
+                      JSON.parse(localStorage.getItem("userInfo")).email &&
+                    element.role === "teacher"
+                )
+                  ? "100 điểm"
+                  : "50/100"}
               </p>
               <div
                 className="assignment-details-content-instruction"
