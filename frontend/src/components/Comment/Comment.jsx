@@ -23,6 +23,7 @@ const Comment = ({ commentBackgroundColor }) => {
             lineHeight: "1.25rem",
             color: "#3c4043",
             fontWeight: "500",
+            wordBreak: "break-word",
           }}
         >
           Hữu Thiện
@@ -33,6 +34,7 @@ const Comment = ({ commentBackgroundColor }) => {
             lineHeight: "1.25rem",
             color: "#5f6368",
             paddingLeft: "8px",
+            wordBreak: "break-word"
           }}
         >
           16:56:00 30 thg 12, 2023
@@ -42,6 +44,7 @@ const Comment = ({ commentBackgroundColor }) => {
             fontSize: "0.875rem",
             lineHeight: "1.25rem",
             color: "#3c4043",
+            wordBreak: "break-word"
           }}
         >
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur
