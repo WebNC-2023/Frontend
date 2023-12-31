@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./ContentTab4.css";
 import ReviewRequirement from "../../components/ReviewRequirement/ReviewRequirement";
 import { useSelector } from "react-redux";
+import ReviewRequirementByStudent from "../../components/ReviewRequirementByStudent/ReviewRequirementByStudent";
 const ContentTab4 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
   const people = useSelector((state) => state.classroomDetailsInfo.people);
   return (
@@ -25,9 +26,12 @@ const ContentTab4 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                 <ReviewRequirement />
               </>
             ) : (
-              <div className="classroom-details-show-grade-compositions-title">
-                Yêu cầu xem xét điểm sinh viên
-              </div>
+              <>
+                <div className="classroom-details-show-grade-compositions-title">
+                  Điểm thành phần
+                </div>
+                <ReviewRequirementByStudent />
+              </>
             )}
           </div>
         </div>
