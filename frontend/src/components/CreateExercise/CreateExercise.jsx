@@ -148,19 +148,6 @@ const CreateExercise = () => {
                 setContentMsg={setContentMsg}
                 placeholderTipTap="Hướng dẫn (Không bắt buộc)"
               />
-              {/* <div className="upload-exercise-section">
-                            <p>Đính kèm</p>
-                            <MuiFileInput
-                              value={valueFile}
-                              placeholder="Tải tệp lên"
-                              color="primary"
-                              onChange={handleChange}
-                              clearIconButtonProps={{
-                                title: "Xóa",
-                                children: <CloseIcon fontSize="small" />,
-                              }}
-                            />
-                          </div> */}
               <div
                 style={{
                   border: "1px solid #dadce0",
