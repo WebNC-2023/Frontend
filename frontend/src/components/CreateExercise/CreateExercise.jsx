@@ -20,10 +20,12 @@ import TextField from "@mui/material/TextField";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import AssignmentCardForTeacher from "../AssignmentCard/AssignmentCardForTeacher";
+import Axios from "../../redux/APIs/Axios";
 // import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 // import ClassOutlinedIcon from "@mui/icons-material/ClassOutlined";
 // import RepeatOutlinedIcon from "@mui/icons-material/RepeatOutlined";
 // import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
+import { toast } from "react-toastify";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,6 +41,8 @@ const CreateExercise = () => {
   const assignments = useSelector(
     (state) => state.classroomDetailsInfo.assignments
   );
+  const classId = useSelector((state) => state.classroomDetailsInfo.id);
+  const people = useSelector((state) => state.classroomDetailsInfo.people);
   // const handleChange = (newValue) => {
   //   setValueFile(newValue);
   // };
@@ -51,32 +55,84 @@ const CreateExercise = () => {
     setOpenForm(false);
   };
   const handleGiveAssignment = () => {
-    let present = new Date();
-    let gmt7Time = new Date(present.getTime() + 7 * 60 * 60 * 1000);
-    dispatch(
-      addAssignment({
-        assignment_title: titleContent,
-        assignment_instruction: contentMsg,
-        assignment_score: 100,
-        assignment_published: `${
-          gmt7Time.getUTCHours().toString().length === 1
-            ? "0" + gmt7Time.getUTCHours().toString()
-            : gmt7Time.getUTCHours().toString()
-        }:${
-          gmt7Time.getUTCMinutes().toString().length === 1
-            ? "0" + gmt7Time.getUTCMinutes().toString()
-            : gmt7Time.getUTCMinutes().toString()
-        }:${
-          gmt7Time.getUTCSeconds().toString().length === 1
-            ? "0" + gmt7Time.getUTCSeconds().toString()
-            : gmt7Time.getUTCSeconds().toString()
-        } ${gmt7Time.getUTCDate()} thg ${
-          gmt7Time.getUTCMonth() + 1
-        }, ${gmt7Time.getUTCFullYear()}`,
-      })
-    );
-    setTitleContent("");
-    setOpenForm(false);
+    async function CreateAssignment() {
+      try {
+        let present = new Date();
+        const res = await Axios({
+          url: "/assignments",
+          method: "POST",
+          data: {
+            classId,
+            title: titleContent,
+            description: contentMsg,
+            type: "exam",
+            dateCreated: present.toISOString(),
+          },
+        });
+        await Axios({
+          url: "/assignments/bulk",
+          method: "PATCH",
+          data: {
+            classId,
+            assignments: [
+              ...assignments,
+              {
+                id: res.data.data.id,
+                title: res.data.data.title,
+                description: res.data.data.description,
+                type: res.data.data.type,
+                dateCreated: res.data.data.dateCreated,
+                scores: people
+                  .filter((element) => element.role === "student")
+                  .map((student) => {
+                    return {
+                      score: 50,
+                      studentId: student.id,
+                      isReturned: true,
+                    };
+                  }),
+              },
+            ],
+          },
+        });
+        dispatch(
+          addAssignment({
+            id: res.data.data.id,
+            title: res.data.data.title,
+            description: res.data.data.description,
+            type: res.data.data.type,
+            dateCreated: res.data.data.dateCreated,
+            scores: people
+              .filter((element) => element.role === "student")
+              .map((student) => {
+                return {
+                  score: 50,
+                  studentId: student.id,
+                  isReturned: true,
+                };
+              }),
+          })
+        );
+        setTitleContent("");
+        setOpenForm(false);
+        toast.success(`${res.data.message}`, {
+          autoClose: 3000,
+        });
+      } catch (error) {
+        if (error.response.status === 403)
+          toast.error(`${error.response.message}`, { autoClose: 3000 });
+        else toast.error(`${error}`, { autoClose: 3000 });
+      }
+    }
+    CreateAssignment();
+    // dispatch(
+    //   addAssignment({
+    //     assignment_title: titleContent,
+    //     assignment_instruction: contentMsg,
+    //     assignment_score: 100,
+    //     assignment_published: present.toISOString(),
+    //   })
+    // );
   };
   return (
     <>
@@ -128,7 +184,7 @@ const CreateExercise = () => {
                   autoFocus
                   color="inherit"
                   onClick={handleGiveAssignment}
-                  disabled={titleContent === "" ? true : false}
+                  disabled={titleContent === "" ? true : titleContent.length > 255 || contentMsg.length > 255 ? true : false}
                 >
                   Giao bài
                 </Button>
@@ -212,10 +268,11 @@ const CreateExercise = () => {
           {assignments.map((assignment, index) => (
             <AssignmentCardForTeacher
               key={index}
-              assignment_title={assignment.assignment_title}
-              assignment_published={assignment.assignment_published}
-              assignment_instruction={assignment.assignment_instruction}
-              assignment_score={assignment.assignment_score}
+              assignment_title={assignment.title}
+              assignment_published={assignment.dateCreated}
+              assignment_instruction={assignment.description}
+              assignment_score={assignment.score ?? 100}
+              assignment_id={assignment.id}
             />
           ))}
         </div>

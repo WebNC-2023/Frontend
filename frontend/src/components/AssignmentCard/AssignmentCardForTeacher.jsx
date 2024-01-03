@@ -2,7 +2,7 @@ import "./AssignmentCardForTeacher.css";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import IconButton from "@mui/material/IconButton";
 //import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import parser from "html-react-parser";
 import { useNavigate } from "react-router-dom";
 const AssignmentCardForTeacher = ({
@@ -10,12 +10,31 @@ const AssignmentCardForTeacher = ({
   assignment_published,
   assignment_instruction,
   assignment_score,
+  assignment_id
 }) => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const handleClickViewInstruction = () => {
-    navigate("/assignment-details/sadsadsad");
+    navigate(`/assignment-details/${assignment_id}`);
   };
+  const dateCreated = useMemo(() => {
+    function convertTime(old) {
+      let newTime = new Date(old);
+      newTime.setHours(newTime.getHours() + 7);
+      let hour = newTime.getUTCHours();
+      let minute = newTime.getUTCMinutes();
+      let sec = newTime.getUTCSeconds();
+      let day = newTime.getUTCDate();
+      let month = newTime.getUTCMonth() + 1;
+      let year = newTime.getUTCFullYear();
+      return `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
+        .toString()
+        .padStart(2, "0")} thg ${month.toString().padStart(2, "0")}, ${year}`;
+    }
+    return convertTime(assignment_published);
+  }, [assignment_published]);
   return (
     <div style={{ paddingBottom: "8px" }}>
       <div
@@ -60,7 +79,7 @@ const AssignmentCardForTeacher = ({
               userSelect: "none",
             }}
           >
-            Đã đăng vào {assignment_published}
+            Đã đăng vào {dateCreated}
           </span>
           {/* <IconButton sx={{}}>
             <MoreVertIcon />

@@ -1,6 +1,33 @@
 import { Avatar } from "@mui/material";
 import "./Comment.css";
-const Comment = ({ commentBackgroundColor }) => {
+import parser from "html-react-parser";
+import { useMemo } from "react";
+const Comment = ({
+  commentBackgroundColor,
+  firstName,
+  lastName,
+  avatar,
+  comment,
+  dateCreated,
+}) => {
+  const timeCreated = useMemo(() => {
+    function convertTime(old) {
+      let newTime = new Date(old);
+      newTime.setHours(newTime.getHours() + 7);
+      let hour = newTime.getUTCHours();
+      let minute = newTime.getUTCMinutes();
+      let sec = newTime.getUTCSeconds();
+      let day = newTime.getUTCDate();
+      let month = newTime.getUTCMonth() + 1;
+      let year = newTime.getUTCFullYear();
+      return `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
+        .toString()
+        .padStart(2, "0")} thg ${month.toString().padStart(2, "0")}, ${year}`;
+    }
+    return convertTime(dateCreated);
+  }, [dateCreated]);
   return (
     <div
       className="comment-container"
@@ -15,6 +42,11 @@ const Comment = ({ commentBackgroundColor }) => {
           height: 35,
           color: "#4374e0",
         }}
+        src={
+          avatar !== null
+            ? `${process.env.REACT_APP_SERVER_BASE_URL}/files/${avatar}`
+            : ""
+        }
       />
       <div>
         <span
@@ -26,7 +58,11 @@ const Comment = ({ commentBackgroundColor }) => {
             wordBreak: "break-word",
           }}
         >
-          Hữu Thiện
+          {firstName !== null && lastName !== null
+            ? `${firstName} ${lastName}`
+            : firstName === null
+            ? `${lastName}`
+            : `${firstName}`}
         </span>
         <span
           style={{
@@ -34,24 +70,22 @@ const Comment = ({ commentBackgroundColor }) => {
             lineHeight: "1.25rem",
             color: "#5f6368",
             paddingLeft: "8px",
-            wordBreak: "break-word"
+            wordBreak: "break-word",
           }}
         >
-          16:56:00 30 thg 12, 2023
+          {timeCreated}
         </span>
-        <p
+        <div
           style={{
             fontSize: "0.875rem",
             lineHeight: "1.25rem",
             color: "#3c4043",
-            wordBreak: "break-word"
+            wordBreak: "break-word",
           }}
+          className="content-comment-in-review-request"
         >
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur
-          excepturi dignissimos tempore architecto, ullam eligendi nesciunt
-          atque id molestiae repellendus minus soluta quae aliquam porro odio
-          laborum amet est rerum!
-        </p>
+          {parser(comment)}
+        </div>
       </div>
     </div>
   );

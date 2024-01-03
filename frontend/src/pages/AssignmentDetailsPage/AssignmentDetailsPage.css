@@ -1,5 +1,4 @@
 .assignment-details-page {
-    height: 20px;
     padding: 89px 24px 24px 24px;
     width: 100%;
     max-width: 1280px;
@@ -9,23 +8,16 @@
 .assignment-details-page-container {
     display: flex;
     flex-wrap: wrap;
-    margin-left: -24px;
     align-items: flex-start;
     row-gap: 24px;
     padding-bottom: 24px;
 }
 
 .assignment-details-content-left {
-    width: calc(100% - 24px);
-    margin-left: 24px;
+    width: 100%;
     display: flex;
     column-gap: 16px;
     align-items: flex-start;
-}
-
-.assignment-details-content-right {
-    width: 300px;
-    margin-left: 24px;
 }
 
 .assignment-details-content-yourAssignment {
@@ -84,19 +76,26 @@
     background-color: #f9f9f9;
 }
 
+.assignment-details-content-main {
+    flex: 1;
+}
+
 @media screen and (max-width: 767.98px) {
     .assignment-details-content-icon {
         display: none;
     }
 
-    .assignment-details-content-right,
     .assignment-details-content-left {
-        width: calc(100% - 24px);
+        width: 100%;
     }
 
     .assignment-details-content-yourAssignment {
         margin-bottom: 24px;
     }
+    .assignment-details-page {
+        padding: 89px 8px 8px 8px;
+    }
+
 }
 
 

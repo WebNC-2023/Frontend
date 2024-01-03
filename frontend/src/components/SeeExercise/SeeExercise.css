@@ -14,3 +14,9 @@
     display: flex;
     flex-direction: column;
 }
+
+@media screen and (max-width: 639.98px) {
+    .seeExercise-container {
+        padding: 8px;
+    }
+}

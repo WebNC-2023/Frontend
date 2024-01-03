@@ -1,7 +1,7 @@
 import "./AssignmentCardForTeacher.css";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import IconButton from "@mui/material/IconButton";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Button from "@mui/material/Button";
 import parser from "html-react-parser";
 import { useNavigate } from "react-router-dom";
@@ -10,12 +10,31 @@ const AssignmentCardForStudent = ({
   assignment_published,
   assignment_instruction,
   assignment_score,
+  assignment_id,
 }) => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
-    const handleClickInstruction = () => {
-        navigate("/assignment-details/123213432424");
+  const handleClickInstruction = () => {
+    navigate(`/assignment-details/${assignment_id}`);
+  };
+  const dateCreated = useMemo(() => {
+    function convertTime(old) {
+      let newTime = new Date(old);
+      newTime.setHours(newTime.getHours() + 7);
+      let hour = newTime.getUTCHours();
+      let minute = newTime.getUTCMinutes();
+      let sec = newTime.getUTCSeconds();
+      let day = newTime.getUTCDate();
+      let month = newTime.getUTCMonth() + 1;
+      let year = newTime.getUTCFullYear();
+      return `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
+        .toString()
+        .padStart(2, "0")} thg ${month.toString().padStart(2, "0")}, ${year}`;
     }
+    return convertTime(assignment_published);
+  }, [assignment_published]);
   return (
     <div style={{ paddingBottom: "8px" }}>
       <div
@@ -60,7 +79,7 @@ const AssignmentCardForStudent = ({
               userSelect: "none",
             }}
           >
-            Đã đăng vào {assignment_published}
+            Đã đăng vào {dateCreated}
           </span>
         </div>
       </div>
@@ -119,10 +138,16 @@ const AssignmentCardForStudent = ({
               borderBottomLeftRadius: "10px",
               borderBottomRightRadius: "10px",
               clipPath: "inset(0px -10px -10px -10px)",
-              border: "none"
+              border: "none",
             }}
           >
-            <Button variant="text" sx={{color: "#1967d2", textTransform: "none"}} onClick={handleClickInstruction}>Xem hướng dẫn</Button>
+            <Button
+              variant="text"
+              sx={{ color: "#1967d2", textTransform: "none" }}
+              onClick={handleClickInstruction}
+            >
+              Xem hướng dẫn
+            </Button>
           </div>
         </>
       )}
