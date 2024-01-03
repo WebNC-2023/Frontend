@@ -6,3 +6,8 @@
     border-radius: 8px;
     padding: 8px;
 }
+
+.content-comment-in-review-request ul {
+    list-style-type: disc;
+    padding-left: 16px;
+}

@@ -47,6 +47,8 @@ const ClassroomExercisesPage = () => {
             people: res.data.data.people,
             owner: res.data.data.owner,
             classroomAvatar: res.data.data.avatar,
+            assignments: res.data.data.assignments,
+            reviews: res.data.data.reviews,
           })
         );
         dispatch(

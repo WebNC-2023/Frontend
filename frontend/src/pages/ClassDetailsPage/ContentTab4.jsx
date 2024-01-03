@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import "./ContentTab4.css";
 import ReviewRequirement from "../../components/ReviewRequirement/ReviewRequirement";
 import { useSelector } from "react-redux";
-import ReviewRequirementByStudent from "../../components/ReviewRequirementByStudent/ReviewRequirementByStudent";
 const ContentTab4 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
   const people = useSelector((state) => state.classroomDetailsInfo.people);
+  const reviews = useSelector((state) => state.classroomDetailsInfo.reviews);
   return (
     <>
       {loadingClassDetails ? (
@@ -23,14 +23,28 @@ const ContentTab4 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                 <div className="classroom-details-grade-requirement-title">
                   Yêu cầu xem xét điểm sinh viên
                 </div>
-                <ReviewRequirement />
+                {reviews !== undefined ? (
+                  reviews.map((review, index) => (
+                    <ReviewRequirement
+                      key={index}
+                      firstName={review.student.firstName}
+                      lastName={review.student.lastName}
+                      assignmentTitle={review.assignmentTitle}
+                      currentScore={review.score}
+                      expectScore={review.expectScore}
+                      explanation={review.explanation}
+                      reviewId={review.reviewId}
+                    />
+                  ))
+                ) : (
+                  <></>
+                )}
               </>
             ) : (
               <>
                 <div className="classroom-details-show-grade-compositions-title">
                   Điểm thành phần
                 </div>
-                <ReviewRequirementByStudent />
               </>
             )}
           </div>

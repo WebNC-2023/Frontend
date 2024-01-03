@@ -26,6 +26,9 @@ import AttendByLink from "./pages/AttendByLink";
 import ProtectedAttendByLink from "./components/ProtectedAttendByLink/ProtectedAttendByLink";
 import ClassDetailsPage from "./pages/ClassDetailsPage/ClassDetailsPage";
 import AssignmentDetailsPage from "./pages/AssignmentDetailsPage/AssignmentDetailsPage";
+import ProtectedAssignmentDetails from "./components/ProtectedAssignmentDetails/ProtectedAssignmentDetails";
+import ReviewDetailsPage from "./pages/ReviewDetailsPage/ReviewDetailsPage";
+import ProtectedReviewDetails from "./components/ProtectedReviewDetails/ProtectedReviewDetails";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -88,7 +91,20 @@ function App() {
 
           <Route
             path="/assignment-details/:assignmentId"
-            element={<AssignmentDetailsPage />}
+            element={
+              <ProtectedAssignmentDetails>
+                <AssignmentDetailsPage />
+              </ProtectedAssignmentDetails>
+            }
+          />
+
+          <Route
+            path="/review-details/:reviewId"
+            element={
+              <ProtectedReviewDetails>
+                <ReviewDetailsPage />
+              </ProtectedReviewDetails>
+            }
           />
 
           <Route

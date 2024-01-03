@@ -1,34 +1,33 @@
-import { useState } from "react";
+import { useMemo } from "react";
 import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
 import "./AssignmentDetailsPage.css";
-import { MuiFileInput } from "mui-file-input";
-import CloseIcon from "@mui/icons-material/Close";
-import Button from "@mui/material/Button";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import IconButton from "@mui/material/IconButton";
 import parser from "html-react-parser";
-import TipTap from "../../components/TipTap/TipTap";
-import MessageIcon from "@mui/icons-material/Message";
-import Comment from "../../components/Comment/Comment";
-import SendIcon from "@mui/icons-material/Send";
 import { useSelector } from "react-redux";
+import ReviewRequirementByStudent from "../../components/ReviewRequirementByStudent/ReviewRequirementByStudent";
 const AssignmentDetailsPage = () => {
-  const [valueFile, setValueFile] = useState(null);
-  const [contentMsg, setContentMsg] = useState("");
-  const [show, setShow] = useState(false);
-  const people = useSelector((state) => state.classroomDetailsInfo.people);
-  const handleChange = (newValue) => {
-    setValueFile(newValue);
-  };
-
-  const handleShow = () => {
-    setShow((prev) => {
-      if (!prev) {
-        setContentMsg("");
-      }
-      return !prev;
-    });
-  };
+  const assignmentDetail = useSelector(
+    (state) => state.classroomDetailsInfo.assignmentDetail
+  );
+  const dateCreated = useMemo(() => {
+    function convertTime(old) {
+      let newTime = new Date(old);
+      newTime.setHours(newTime.getHours() + 7);
+      let hour = newTime.getUTCHours();
+      let minute = newTime.getUTCMinutes();
+      let sec = newTime.getUTCSeconds();
+      let day = newTime.getUTCDate();
+      let month = newTime.getUTCMonth() + 1;
+      let year = newTime.getUTCFullYear();
+      return `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
+        .toString()
+        .padStart(2, "0")} thg ${month.toString().padStart(2, "0")}, ${year}`;
+    }
+    return convertTime(assignmentDetail.assignmentDateCreated);
+  }, [assignmentDetail.assignmentDateCreated]);
   return (
     <>
       <HomePageHeader showSidebar={true} classRoom={true} />
@@ -55,10 +54,7 @@ const AssignmentDetailsPage = () => {
                   paddingBottom: "16px",
                 }}
               >
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
-                repudiandae temporibus deleniti obcaecati! Explicabo alias velit
-                fugit inventore ut eius, quam nemo dignissimos temporibus, atque
-                quia, quod harum delectus excepturi!
+                {assignmentDetail.assignmentTitle}
               </p>
               <p
                 style={{
@@ -68,7 +64,7 @@ const AssignmentDetailsPage = () => {
                   paddingBottom: "16px",
                 }}
               >
-                Nguyen Van A - 16:50:00 28 thg 12, 2023
+                {dateCreated}
               </p>
               <p
                 style={{
@@ -80,14 +76,12 @@ const AssignmentDetailsPage = () => {
                   fontWeight: "500",
                 }}
               >
-                {people.find(
-                  (element) =>
-                    element.email ===
-                      JSON.parse(localStorage.getItem("userInfo")).email &&
-                    element.role === "teacher"
-                )
+                {assignmentDetail.score === undefined
                   ? "100 điểm"
-                  : "50/100"}
+                  : `${assignmentDetail.score}/100`}
+                {assignmentDetail.reviewId !== undefined
+                  ? " (Đã gửi yêu cầu xem lại điểm)"
+                  : ""}
               </p>
               <div
                 className="assignment-details-content-instruction"
@@ -100,55 +94,12 @@ const AssignmentDetailsPage = () => {
                   marginBottom: "16px",
                 }}
               >
-                {parser(
-                  "<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo repellendus est dolorum omnis aliquam error amet cumque repellat laudantium fugiat, veniam incidunt qui suscipit deleniti assumenda nulla fugit! Perferendis, enim!</p><ul><li>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officiis dolorum voluptatibus cum impedit quam minima nihil nisi voluptatum suscipit laborum assumenda adipisci, reprehenderit aliquid. Voluptatum aliquam sint illo molestiae enim.</li></ul>"
-                )}
+                {parser(assignmentDetail.assignmentDescription)}
               </div>
-              <div className="student-chat-with-teachers">
-                <div
-                  className={
-                    !show
-                      ? "student-chat-with-teachers-btn"
-                      : "student-chat-with-teachers-btn-show"
-                  }
-                  onClick={handleShow}
-                >
-                  <MessageIcon />
-                  <p
-                    style={{
-                      fontSize: "0.875rem",
-                      lineHeight: "1.25rem",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {!show ? "Hiện cuộc hội thoại" : "Ẩn cuộc hội thoại"}
-                  </p>
-                </div>
-              </div>
-              {show && (
-                <>
-                  <Comment commentBackgroundColor={"#e7f0ff"} />
-                  <Comment commentBackgroundColor={"#ffffff"} />
-                  <Comment commentBackgroundColor={"#e7f0ff"} />
-                </>
-              )}
-              {show && (
-                <TipTap
-                  setContentMsg={setContentMsg}
-                  placeholderTipTap="Viết bình luận..."
-                />
-              )}
-              {show && (
-                <Button
-                  disabled={
-                    contentMsg === "" || contentMsg === "<p></p>" ? true : false
-                  }
-                  sx={{ marginTop: "8px", textTransform: "none" }}
-                  variant="contained"
-                  endIcon={<SendIcon />}
-                >
-                  Gửi
-                </Button>
+              {assignmentDetail.score !== undefined ? (
+                <ReviewRequirementByStudent />
+              ) : (
+                <></>
               )}
             </div>
           </div>

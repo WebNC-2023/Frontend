@@ -1,7 +1,7 @@
 import "./ReviewRequirementByStudent.css";
-import AssignmentIcon from "@mui/icons-material/Assignment";
+//import AssignmentIcon from "@mui/icons-material/Assignment";
 import { Button } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
+// import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
 import PreviewIcon from "@mui/icons-material/Preview";
 import TipTap from "../TipTap/TipTap";
@@ -14,14 +14,24 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { isNaN } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import Axios from "../../redux/APIs/Axios";
+import { toast } from "react-toastify";
+import { updateAssignmentDetails } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import { useParams } from "react-router-dom";
 const ReviewRequirementByStudent = () => {
-  const [show, setShow] = useState(false);
   const [contentMsg, setContentMsg] = useState("");
   const [showMsg, setShowMsg] = useState(false);
   const [open, setOpen] = useState(false);
-  const [expectationGrade, setExpectationGrade] = useState(0);
+  const [expectationGrade, setExpectationGrade] = useState(100);
   const [explanationMsg, setExplanationMsg] = useState("");
+  const [sendingReviewRequest, setSendingReviewRequest] = useState(false);
+  const [sendingComment, setSendingComment] = useState(false);
+  const { assignmentId } = useParams();
+  const dispatch = useDispatch();
+  const assignmentDetail = useSelector(
+    (state) => state.classroomDetailsInfo.assignmentDetail
+  );
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -29,114 +39,147 @@ const ReviewRequirementByStudent = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleSendReviewRequest = () => {
+    async function sendReviewRequest() {
+      setSendingReviewRequest(true);
+      try {
+        const res = await Axios({
+          method: "POST",
+          url: `/scores/${assignmentDetail.scoreId}/request-review`,
+          data: {
+            expectScore: Number(expectationGrade),
+            explanation: explanationMsg,
+          },
+        });
+        console.log(res.data);
+        setSendingReviewRequest(false);
+        setOpen(false);
+        window.location.reload();
+      } catch (error) {
+        setSendingReviewRequest(false);
+        setOpen(false);
+        toast.error(`${error}`, { autoClose: 3000 });
+      }
+    }
+    sendReviewRequest();
+  };
+  const handleSendComment = () => {
+    async function sendComment() {
+      setSendingComment(true);
+      try {
+        await Axios({
+          url: `/scores/reviews/${assignmentDetail.reviewId}/comments`,
+          method: "POST",
+          data: {
+            comment: contentMsg,
+          },
+        });
+        const res1 = await Axios({
+          method: "GET",
+          url: `/assignments/${assignmentId}`,
+        });
+        dispatch(updateAssignmentDetails(res1.data.data));
+        setSendingComment(false);
+      } catch (error) {
+        console.log(error);
+        setSendingComment(false);
+        toast.error(`${error}`, { autoClose: 3000 });
+      }
+    }
+    sendComment();
+  };
   return (
     <>
-      <div
-        className={
-          show
-            ? "review-requirement-by-student-show"
-            : "review-requirement-by-student"
-        }
-        onClick={() => setShow(!show)}
-      >
-        <div className="review-requirement-by-student-title">
-          <IconButton
-            sx={{
-              backgroundColor: "#4285f4",
-              color: "#ffffff",
-              "&:hover": { backgroundColor: "#4285f4" },
-            }}
-          >
-            <AssignmentIcon />
-          </IconButton>
-
-          <p
-            style={{
-              color: "#3c4043",
-              fontSize: "0.875rem",
-              lineHeight: "1.25rem",
-              fontWeight: "500",
-            }}
-          >
-            Bài tập 1
-          </p>
-        </div>
-        <div className="review-requirement-by-student-score">50/100</div>
-      </div>
-      {show && (
-        <div className="review-requirement-by-student-details">
-          <Button
-            startIcon={<PreviewIcon />}
-            sx={{
-              fontSize: "0.875rem",
-              lineHeight: "1.25rem",
-              textTransform: "none",
-            }}
-            onClick={handleClickOpen}
-          >
-            Yêu cầu xem lại điểm
-          </Button>
-          <Dialog open={open} fullWidth>
-            <DialogTitle>Yêu cầu xem lại điểm</DialogTitle>
-            <DialogContent>
-              <TextField
-                id="filled-read-only-input"
-                label="Điểm hiện tại"
-                defaultValue="50/100"
-                InputProps={{
-                  readOnly: true,
-                }}
-                variant="filled"
-                fullWidth
-                autoComplete="off"
-              />
-              <TextField
-                sx={{ marginTop: "16px" }}
-                id="filled-number"
-                label="Điểm mong muốn"
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="filled"
-                fullWidth
-                autoComplete="off"
-                value={expectationGrade}
-                onChange={(e) => setExpectationGrade(e.target.value)}
-              />
-              <TextField
-                sx={{ marginTop: "16px" }}
-                id="filled-text"
-                label="Lí do"
-                type="text"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="filled"
-                fullWidth
-                autoComplete="off"
-                spellCheck="false"
-                value={explanationMsg}
-                onChange={(e) => setExplanationMsg(e.target.value)}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Hủy</Button>
-              <Button
-                disabled={
-                  explanationMsg !== "" &&
-                  !isNaN(parseFloat(expectationGrade)) &&
-                  parseFloat(expectationGrade) >= 0 &&
-                  parseFloat(expectationGrade) <= 100
-                    ? false
-                    : true
+      <div className="review-requirement-by-student-details">
+        <Button
+          startIcon={<PreviewIcon />}
+          sx={
+            assignmentDetail.reviewId !== undefined
+              ? {
+                  fontSize: "0.875rem",
+                  lineHeight: "1.25rem",
+                  textTransform: "none",
+                  pointerEvents: "none",
+                  color: "gray",
                 }
-                onClick={handleClose}
-              >
-                Gửi yêu cầu
-              </Button>
-            </DialogActions>
-          </Dialog>
+              : {
+                  fontSize: "0.875rem",
+                  lineHeight: "1.25rem",
+                  textTransform: "none",
+                }
+          }
+          onClick={handleClickOpen}
+        >
+          Yêu cầu xem lại điểm
+        </Button>
+        <Dialog open={open} fullWidth>
+          <DialogTitle>Yêu cầu xem lại điểm</DialogTitle>
+          <DialogContent>
+            <TextField
+              id="filled-read-only-input"
+              label="Điểm hiện tại"
+              defaultValue={`${assignmentDetail.score}/100`}
+              InputProps={{
+                readOnly: true,
+              }}
+              variant="filled"
+              fullWidth
+              autoComplete="off"
+            />
+            <TextField
+              required
+              sx={{ marginTop: "16px" }}
+              id="filled-number"
+              label="Điểm mong muốn"
+              type="number"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="filled"
+              fullWidth
+              autoComplete="off"
+              value={Number(expectationGrade)}
+              onChange={(e) => setExpectationGrade(e.target.value)}
+              disabled={sendingReviewRequest ? true : false}
+            />
+            <TextField
+              required
+              sx={{ marginTop: "16px" }}
+              id="filled-text"
+              label="Lí do"
+              type="text"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="filled"
+              fullWidth
+              autoComplete="off"
+              spellCheck="false"
+              value={explanationMsg}
+              onChange={(e) => setExplanationMsg(e.target.value)}
+              disabled={sendingReviewRequest ? true : false}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Hủy</Button>
+            <Button
+              disabled={
+                assignmentDetail.reviewId === undefined &&
+                explanationMsg !== "" &&
+                !sendingReviewRequest &&
+                Number.isInteger(Number(expectationGrade)) &&
+                Number(expectationGrade) >= 0 &&
+                Number(expectationGrade) <= 100
+                  ? false
+                  : true
+              }
+              onClick={handleSendReviewRequest}
+            >
+              {sendingReviewRequest ? "Đang gửi..." : "Gửi yêu cầu"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {assignmentDetail.reviewId !== undefined ? (
           <div>
             <Button
               startIcon={showMsg ? <VisibilityOffIcon /> : <CommentIcon />}
@@ -157,28 +200,64 @@ const ReviewRequirementByStudent = () => {
               {showMsg ? "Ẩn cuộc hội thoại" : "Hiện cuộc hội thoại"}
             </Button>
           </div>
-          {showMsg && (
-            <>
-              <Comment commentBackgroundColor={"#ffffff"} />
-              <Comment commentBackgroundColor={"#e7f0ff"} />
-              <TipTap
-                setContentMsg={setContentMsg}
-                placeholderTipTap="Viết bình luận..."
-              />
-              <Button
-                sx={{ marginTop: "16px" }}
-                variant="contained"
-                endIcon={<SendIcon />}
-                disabled={
-                  contentMsg === "<p></p>" || contentMsg === "" ? true : false
-                }
-              >
-                Gửi
-              </Button>
-            </>
-          )}
-        </div>
-      )}
+        ) : (
+          <></>
+        )}
+        {showMsg && assignmentDetail.reviewId && (
+          <>
+            {assignmentDetail.comments !== undefined ? (
+              assignmentDetail.comments.map((cmt, index) => (
+                <Comment
+                  key={index}
+                  firstName={
+                    cmt.userId ===
+                    JSON.parse(localStorage.getItem("userInfo")).id
+                      ? "Tôi"
+                      : cmt.user.firstName
+                  }
+                  lastName={
+                    cmt.userId ===
+                    JSON.parse(localStorage.getItem("userInfo")).id
+                      ? null
+                      : cmt.user.lastName
+                  }
+                  avatar={cmt.user.avatar}
+                  comment={cmt.comment}
+                  dateCreated={cmt.dateCreated}
+                  commentBackgroundColor={
+                    cmt.userId ===
+                    JSON.parse(localStorage.getItem("userInfo")).id
+                      ? "#cfffd1"
+                      : "#e7f0ff"
+                  }
+                />
+              ))
+            ) : (
+              <></>
+            )}
+            <TipTap
+              setContentMsg={setContentMsg}
+              placeholderTipTap="Viết bình luận..."
+            />
+            <Button
+              sx={{ marginTop: "16px" }}
+              variant="contained"
+              endIcon={<SendIcon />}
+              disabled={
+                contentMsg === "<p></p>" ||
+                contentMsg === "" ||
+                contentMsg.length > 255 ||
+                sendingComment
+                  ? true
+                  : false
+              }
+              onClick={handleSendComment}
+            >
+              Gửi
+            </Button>
+          </>
+        )}
+      </div>
     </>
   );
 };

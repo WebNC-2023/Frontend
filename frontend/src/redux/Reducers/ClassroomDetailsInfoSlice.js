@@ -10,7 +10,12 @@ export const ClassroomDetailsInfoSlice = createSlice({
     people: [],
     owner: null,
     classroomAvatar: null,
-    assignments: []
+    assignments: [],
+    assignmentDetail: {
+      comments: [],
+    },
+    reviews: null,
+    reviewDetails: null,
   },
   reducers: {
     updateClassroomDetailsInfo: (state, action) => {
@@ -21,16 +26,29 @@ export const ClassroomDetailsInfoSlice = createSlice({
       state.isOwner = action.payload.isOwner;
       state.people = action.payload.people;
       state.owner = action.payload.owner;
-      state.classroomAvatar = action.payload.classroomAvatar
+      state.classroomAvatar = action.payload.classroomAvatar;
+      state.assignments = action.payload.assignments;
+      state.reviews = action.payload.reviews;
     },
     updateClassroomName: (state, action) => {
       state.name = action.payload.name;
     },
     addAssignment: (state, action) => {
       state.assignments = [...state.assignments, action.payload];
-    }
+    },
+    updateAssignmentDetails: (state, action) => {
+      state.assignmentDetail = action.payload;
+    },
+    updateReviewDetails: (state, action) => {
+      state.reviewDetails = action.payload;
+    },
   },
 });
-export const { updateClassroomDetailsInfo, updateClassroomName, addAssignment } =
-  ClassroomDetailsInfoSlice.actions;
+export const {
+  updateClassroomDetailsInfo,
+  updateClassroomName,
+  addAssignment,
+  updateAssignmentDetails,
+  updateReviewDetails,
+} = ClassroomDetailsInfoSlice.actions;
 export default ClassroomDetailsInfoSlice.reducer;

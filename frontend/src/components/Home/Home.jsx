@@ -38,7 +38,7 @@ const Home = () => {
           <img
             onClick={(e) => e.preventDefault()}
             // src="http://localhost:3000/LOGO1.PNG"
-            src="https://webnc-2023-midterm.vercel.app/LOGO1.PNG"
+            src={`${process.env.REACT_APP_CLIENT_BASE_URL}/LOGO1.PNG`}
             alt="Learners-img"
           />
         </div>

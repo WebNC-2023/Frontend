@@ -2,9 +2,11 @@ import "./SeeExercise.css";
 import Button from "@mui/material/Button";
 import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
 import AssignmentCardForStudent from "../AssignmentCard/AssignmentCardForStudent";
-import { useState } from "react";
+import { useSelector } from "react-redux";
 const SeeExercise = () => {
-  const [show, setShow] = useState(false);
+  const assignments = useSelector(
+    (state) => state.classroomDetailsInfo.assignments
+  );
   return (
     <>
       <div className="seeExercise-container">
@@ -17,21 +19,22 @@ const SeeExercise = () => {
               padding: "8px",
             }}
             startIcon={<AssignmentIndOutlinedIcon />}
-            onClick={() => setShow(!show)}
           >
-            {!show ? "Xem tất cả bài tập của bạn" : "Ẩn tất cả bài tập của bạn"}
+            Xem tất cả bài tập của bạn
           </Button>
         </div>
-        {show && (
-          <div className="seeExercise-flex-direction-col">
+        <div className="seeExercise-flex-direction-col">
+          {assignments.map((assignment, index) => (
             <AssignmentCardForStudent
-              assignment_title="Bài tập 1"
-              assignment_published="Đã đăng vào 13:44:00 28 thg 12, 2023"
-              assignment_instruction="<p>CC</p>"
-              assignment_score={5}
+              key={index}
+              assignment_title={assignment.title}
+              assignment_published={assignment.dateCreated}
+              assignment_instruction={assignment.description}
+              assignment_score={assignment.score ?? 100}
+              assignment_id={assignment.id}
             />
-          </div>
-        )}
+          ))}
+        </div>
       </div>
     </>
   );

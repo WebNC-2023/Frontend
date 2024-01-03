@@ -32,6 +32,7 @@ const ClassDetailsPage = () => {
       setLoadingClassDetails(true);
       try {
         const res = await Axios.get(`/classes/${classId}`);
+        console.log('class details', res.data);
         dispatch(
           update({
             fullName: `${
@@ -55,6 +56,17 @@ const ClassDetailsPage = () => {
             people: res.data.data.people,
             owner: res.data.data.owner,
             classroomAvatar: res.data.data.avatar,
+            assignments: res.data.data.assignments.map((element) => {
+              return {
+                id: element.id,
+                title: element.title,
+                description: element.description,
+                type: element.type,
+                dateCreated: element.dateCreated,
+                scores: element.scores,
+              };
+            }),
+            reviews: res.data.data.reviews,
           })
         );
         dispatch(

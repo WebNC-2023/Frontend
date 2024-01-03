@@ -30,13 +30,6 @@
     user-select: none;
 }
 
-.review-requirement-by-student-details {
-    padding: 16px 24px;
-    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    clip-path: inset(0px -10px -10px -10px);
-}
 
 .review-requirement-by-student-show {
     padding: 16px 24px;
