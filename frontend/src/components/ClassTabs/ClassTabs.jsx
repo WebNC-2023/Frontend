@@ -11,7 +11,7 @@ const ClassTabs = ({ tab, setTab }) => {
   const Info = JSON.parse(userInfo);
 
   const isUserTeacher = !!people.find(
-    (person) => person.id === Info.id && person.role === "teacher"
+    (person) => person?.id === Info?.id && person.role === "teacher"
   );
 
   const navigate = useNavigate();
