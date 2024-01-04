@@ -3,7 +3,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import AppBar from "@mui/material/AppBar";
@@ -13,7 +12,7 @@ import Slide from "@mui/material/Slide";
 import DialogContent from "@mui/material/DialogContent";
 import TipTap from "../TipTap/TipTap";
 import TextField from "@mui/material/TextField";
-import { Tooltip, Stack, Menu, MenuItem } from "@mui/material";
+import { Tooltip, Stack } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -24,62 +23,39 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import DialogActions from "@mui/material/DialogActions";
-import DialogTitle from "@mui/material/DialogTitle";
-
 import { Draggable } from "react-beautiful-dnd";
+import TableScoreStudent from "./TableScoreStudent";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function Row(props) {
-  const { row, index } = props;
+  const { row, index, handleRemoveRow, handleEditRow, handleEditScore } = props;
   const [open, setOpen] = useState(false);
 
-  const [classAnchorEl, setClassAnchorEl] = React.useState(null);
-  const openMenuClass = Boolean(classAnchorEl);
-
-  const handleClick = (event) => {
-    setClassAnchorEl(event.currentTarget);
-  };
-
-  const handleClassClose = () => {
-    setClassAnchorEl(null);
-  };
   const [openForm, setOpenForm] = React.useState(false);
   const [scroll, setScroll] = React.useState("paper");
-  const [contentMsg, setContentMsg] = React.useState(row.content);
-  const [titleContent, setTitleContent] = React.useState(row.name);
+  const [contentMsg, setContentMsg] = React.useState(row.description);
+  const [titleContent, setTitleContent] = React.useState(row.title);
 
   const handleClickOpenForm = (scrollType) => {
     setOpenForm(true);
     setScroll(scrollType);
   };
   const handleCloseForm = () => {
-    setTitleContent("");
+    setTitleContent(row.title);
     setOpenForm(false);
   };
 
   const handleEditSubmit = () => {
-    console.log("cap nhat thanh cong");
+    handleEditRow(row.id, titleContent, contentMsg);
     setOpenForm(false);
-  };
-
-  const [grade, setGrade] = useState(0);
-  const [openEditScore, setOpenEditScore] = useState(false);
-
-  const handleClickOpenEditScore = () => {
-    setOpenEditScore(true);
-  };
-
-  const handleCloseEditScore = () => {
-    setOpenEditScore(false);
   };
 
   return (
     <React.Fragment>
-      <Draggable draggableId={row.name} index={index}>
+      <Draggable draggableId={row.title} index={index}>
         {(provided) => (
           <TableRow
             sx={{ "& > *": { borderBottom: "unset" } }}
@@ -97,11 +73,11 @@ export default function Row(props) {
               </IconButton>
             </TableCell>
             <TableCell component="th" scope="row">
-              {row.name}
+              {row.title}
             </TableCell>
-            <TableCell align="right">{row.gradeScale}</TableCell>
-            <TableCell align="right">{row.classAvgScore}</TableCell>
-            <TableCell align="right">{row.ExpirTime}</TableCell>
+            <TableCell align="right">100</TableCell>
+            <TableCell align="right">{row.classAvgScore || null}</TableCell>
+            <TableCell align="right">{row.deadline || null}</TableCell>
 
             <TableCell align="right">
               <Stack
@@ -125,6 +101,7 @@ export default function Row(props) {
                     aria-label="Remove"
                     sx={{ color: "#BF3131" }}
                     size="medium"
+                    onClick={() => handleRemoveRow(row.id)}
                   >
                     <DeleteIcon fontSize="inherit" />
                   </IconButton>
@@ -156,93 +133,19 @@ export default function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.people.map((peopleRow) => (
-                    <TableRow
-                      key={peopleRow.id}
-                      onMouseEnter={() => (peopleRow.hovered = true)}
-                      onMouseLeave={() => (peopleRow.hovered = false)}
-                    >
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        style={{ padding: "16px" }}
-                      >
-                        {peopleRow.id}
-                      </TableCell>
-                      <TableCell style={{ padding: "16px" }}>
-                        {peopleRow.studentName}
-                      </TableCell>
-                      <TableCell align="right" style={{ padding: "16px" }}>
-                        {peopleRow.grade}
-                      </TableCell>
-                      <TableCell
-                        style={{ padding: "16px", textAlign: "right" }}
-                      >
-                        <IconButton
-                          aria-label="App"
-                          sx={{ color: "#5175e0" }}
-                          size="medium"
-                          onClick={handleClick}
-                        >
-                          <MoreVertIcon fontSize="inherit" />
-                        </IconButton>
-                        {/* Menu Class */}
-                        <Menu
-                          anchorEl={classAnchorEl}
-                          id="class-menu"
-                          open={openMenuClass}
-                          onClose={handleClassClose}
-                          onClick={handleClassClose}
-                          PaperProps={{
-                            elevation: 0,
-                            sx: {
-                              overflow: "visible",
-                              filter:
-                                "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                              mt: 0.5,
-                              "& .MuiAvatar-root": {
-                                width: 20,
-                                height: 20,
-                                ml: -0.5,
-                                mr: 1.5,
-                              },
-                              "&:before": {
-                                content: '""',
-                                display: "block",
-                                position: "absolute",
-                                top: 0,
-                                right: 20,
-                                width: 10,
-                                height: 10,
-                                bgcolor: "background.paper",
-                                transform: "translateY(-50%) rotate(45deg)",
-                                zIndex: 0,
-                              },
-                            },
-                          }}
-                          transformOrigin={{
-                            horizontal: "right",
-                            vertical: "top",
-                          }}
-                          anchorOrigin={{
-                            horizontal: "right",
-                            vertical: "bottom",
-                          }}
-                        >
-                          <MenuItem
-                            key="updateGrade"
-                            onClick={handleClickOpenEditScore}
-                          >
-                            Update grade
-                          </MenuItem>
-                          <MenuItem key="returnTheLesson">
-                            Return the lesson
-                          </MenuItem>
-                          <MenuItem key="view">View assignment</MenuItem>
-                        </Menu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {row?.scores?.map((peopleRow) => {
+                    // Create a new object with the same properties
+                    const updatedPeopleRow = { ...peopleRow, hovered: false };
+
+                    return (
+                      <TableScoreStudent
+                        updatedPeopleRow={updatedPeopleRow}
+                        key={peopleRow.id}
+                        peopleRow={peopleRow}
+                        handleEditScore={handleEditScore}
+                      />
+                    );
+                  })}
                 </TableBody>
               </Table>
             </Box>
@@ -292,6 +195,7 @@ export default function Row(props) {
           <TipTap
             setContentMsg={setContentMsg}
             placeholderTipTap="Hướng dẫn (Không bắt buộc)"
+            content={contentMsg}
           />
           <div
             style={{
@@ -338,39 +242,6 @@ export default function Row(props) {
             />
           </div>
         </DialogContent>
-      </Dialog>
-      {/* Edit score */}
-      <Dialog open={openEditScore} fullWidth>
-        <DialogTitle>Cập nhật điểm số</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Nhập điểm số mới"
-            type="number"
-            autoComplete="off"
-            fullWidth
-            variant="standard"
-            value={grade}
-            onChange={(e) => setGrade(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseEditScore}>Hủy</Button>
-          <Button
-            onClick={handleCloseEditScore}
-            disabled={
-              isNaN(parseFloat(grade))
-                ? true
-                : Number(grade) >= 0 && Number(grade) <= 100
-                ? false
-                : true
-            }
-          >
-            Cập nhật
-          </Button>
-        </DialogActions>
       </Dialog>
     </React.Fragment>
   );

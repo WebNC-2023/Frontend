@@ -97,3 +97,20 @@ export const deleteClassReducer = (state = {}, action) => {
       return state;
   }
 };
+
+// BULK asm
+
+export const editAsmReducer = (state = {}, action) => {
+  switch (action.type) {
+    case classConstants.EDIT_ASM_REQUEST:
+      return { isLoading: true };
+    case classConstants.EDIT_ASM_SUCCESS:
+      return { isLoading: false, isSuccess: true };
+    case classConstants.EDIT_ASM_FAIL:
+      return { isLoading: false, isError: action.payload };
+    case classConstants.EDIT_ASM_RESET:
+      return {};
+    default:
+      return state;
+  }
+};

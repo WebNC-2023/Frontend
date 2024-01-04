@@ -22,6 +22,7 @@ const rootReducer = combineReducers({
   joinClassByCode: Class.classJoinByCodeReducer,
   unSubClass: Class.unSubClassReducer,
   deleteClass: Class.deleteClassReducer,
+  editAsm: Class.editAsmReducer,
 });
 
 // get userInfo from localStorage
