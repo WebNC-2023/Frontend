@@ -59,6 +59,7 @@ const NotificationInClassroom = () => {
           <TipTap
             setContentMsg={setContentMsg}
             placeholderTipTap="Thông báo nội dung nào đó cho lớp học của bạn"
+            content={contentMsg}
           />
           <Grid
             container

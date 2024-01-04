@@ -64,7 +64,7 @@ const AssignmentDetailsPage = () => {
                   paddingBottom: "16px",
                 }}
               >
-                {dateCreated}
+                {`Bài tập được tạo vào lúc ${dateCreated}`}
               </p>
               <p
                 style={{
@@ -80,7 +80,7 @@ const AssignmentDetailsPage = () => {
                   ? "100 điểm"
                   : `${assignmentDetail.score}/100`}
                 {assignmentDetail.reviewId !== undefined
-                  ? " (Đã gửi yêu cầu xem lại điểm)"
+                  ? " (Đã gửi yêu cầu xem xét lại điểm)"
                   : ""}
               </p>
               <div

@@ -20,6 +20,7 @@ const ReviewRequirement = ({
   expectScore,
   explanation,
   reviewId,
+  scoreAgain,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const navigate = useNavigate();
@@ -60,8 +61,8 @@ const ReviewRequirement = ({
   //   sendCommentByTeacher();
   // };
   const handleClickViewDetails = () => {
-    navigate(`/review-details/${reviewId}`)
-  }
+    navigate(`/review-details/${reviewId}`);
+  };
   return (
     <>
       <div
@@ -73,11 +74,19 @@ const ReviewRequirement = ({
         onClick={() => setShowDetails(!showDetails)}
       >
         <IconButton
-          sx={{
-            backgroundColor: "#4285f4",
-            color: "#ffffff",
-            "&:hover": { backgroundColor: "#4285f4" },
-          }}
+          sx={
+            scoreAgain === null
+              ? {
+                  backgroundColor: "#4285f4",
+                  color: "#ffffff",
+                  "&:hover": { backgroundColor: "#4285f4" },
+                }
+              : {
+                  backgroundColor: "#727272",
+                  color: "#ffffff",
+                  "&:hover": { backgroundColor: "#727272" },
+                }
+          }
         >
           <ReviewsOutlinedIcon
             sx={{ fontSize: { xs: 16, sm: 20, md: 24, lg: 28 } }}
@@ -94,10 +103,10 @@ const ReviewRequirement = ({
             }}
           >
             {firstName !== null && lastName !== null
-              ? `${firstName} ${lastName} đã đăng một yêu cầu xem lại điểm cho bài tập: ${assignmentTitle}`
+              ? `${firstName} ${lastName} đã đăng một yêu cầu xem xét lại điểm cho bài tập: ${assignmentTitle}`
               : firstName === null
-              ? `${lastName} đã đăng một yêu cầu xem lại điểm cho bài tập: ${assignmentTitle}`
-              : `${firstName} đã đăng một yêu cầu xem lại điểm cho bài tập: ${assignmentTitle}`}
+              ? `${lastName} đã đăng một yêu cầu xem xét lại điểm cho bài tập: ${assignmentTitle}`
+              : `${firstName} đã đăng một yêu cầu xem xét lại điểm cho bài tập: ${assignmentTitle}`}
           </p>
         </div>
       </div>
