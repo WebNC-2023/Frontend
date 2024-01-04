@@ -16,6 +16,7 @@ export const ClassroomDetailsInfoSlice = createSlice({
     },
     reviews: null,
     reviewDetails: null,
+    reload: false,
   },
   reducers: {
     updateClassroomDetailsInfo: (state, action) => {
@@ -42,6 +43,9 @@ export const ClassroomDetailsInfoSlice = createSlice({
     updateReviewDetails: (state, action) => {
       state.reviewDetails = action.payload;
     },
+    updateReload: (state, action) => {
+      state.reload = action.payload;
+    },
   },
 });
 export const {
@@ -50,5 +54,6 @@ export const {
   addAssignment,
   updateAssignmentDetails,
   updateReviewDetails,
+  updateReload,
 } = ClassroomDetailsInfoSlice.actions;
 export default ClassroomDetailsInfoSlice.reducer;

@@ -24,18 +24,38 @@ const ContentTab4 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                   Yêu cầu xem xét điểm sinh viên
                 </div>
                 {reviews !== undefined ? (
-                  reviews.map((review, index) => (
-                    <ReviewRequirement
-                      key={index}
-                      firstName={review.student.firstName}
-                      lastName={review.student.lastName}
-                      assignmentTitle={review.assignmentTitle}
-                      currentScore={review.score}
-                      expectScore={review.expectScore}
-                      explanation={review.explanation}
-                      reviewId={review.reviewId}
-                    />
-                  ))
+                  <>
+                    {reviews
+                      .filter((x) => x.scoreAgain === null)
+                      .map((review, index) => (
+                        <ReviewRequirement
+                          key={index}
+                          firstName={review.student.firstName}
+                          lastName={review.student.lastName}
+                          assignmentTitle={review.assignmentTitle}
+                          currentScore={review.score}
+                          expectScore={review.expectScore}
+                          explanation={review.explanation}
+                          reviewId={review.reviewId}
+                          scoreAgain={review.scoreAgain}
+                        />
+                      ))}
+                    {reviews
+                      .filter((x) => x.scoreAgain !== null)
+                      .map((review, index) => (
+                        <ReviewRequirement
+                          key={index}
+                          firstName={review.student.firstName}
+                          lastName={review.student.lastName}
+                          assignmentTitle={review.assignmentTitle}
+                          currentScore={review.score}
+                          expectScore={review.expectScore}
+                          explanation={review.explanation}
+                          reviewId={review.reviewId}
+                          scoreAgain={review.scoreAgain}
+                        />
+                      ))}
+                  </>
                 ) : (
                   <></>
                 )}

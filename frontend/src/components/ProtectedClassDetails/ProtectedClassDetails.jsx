@@ -20,7 +20,7 @@ const ProtectedClassDetails = () => {
       setIsAuth(false);
       try {
         const res = await Axios.get(`/classes/${classId}`);
-        console.log(res.data);
+        console.log('class-details',res.data);
         dispatch(
           updateClassroomDetailsInfo({
             id: res.data.data.id,

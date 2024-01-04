@@ -106,7 +106,8 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-const TipTap = ({ setContentMsg, placeholderTipTap }) => {
+const TipTap = ({content, setContentMsg, placeholderTipTap }) => {
+  
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -116,12 +117,18 @@ const TipTap = ({ setContentMsg, placeholderTipTap }) => {
       }),
     ],
     autofocus: true,
-    content: ``,
+    content,
     onUpdate: ({ editor }) => {
       const data = editor.getHTML();
       setContentMsg(data);
     },
+  
   });
+  React.useEffect(()=>{
+    if (content === "") {
+      editor?.commands?.clearContent();
+    }
+  }, [content])
   return (
     <div className="TipTap-container">
       <EditorContent spellCheck="false" autoComplete="off" editor={editor} />

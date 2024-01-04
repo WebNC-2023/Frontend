@@ -114,6 +114,7 @@ const CreateExercise = () => {
           })
         );
         setTitleContent("");
+        setContentMsg("");
         setOpenForm(false);
         toast.success(`${res.data.message}`, {
           autoClose: 3000,
@@ -203,6 +204,7 @@ const CreateExercise = () => {
               <TipTap
                 setContentMsg={setContentMsg}
                 placeholderTipTap="Hướng dẫn (Không bắt buộc)"
+                content={contentMsg}
               />
               {/* <div className="upload-exercise-section">
                             <p>Đính kèm</p>

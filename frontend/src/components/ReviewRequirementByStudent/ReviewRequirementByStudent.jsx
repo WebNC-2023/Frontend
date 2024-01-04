@@ -17,11 +17,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch, useSelector } from "react-redux";
 import Axios from "../../redux/APIs/Axios";
 import { toast } from "react-toastify";
-import { updateAssignmentDetails } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import {
+  updateAssignmentDetails,
+  updateReload,
+} from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import { useParams } from "react-router-dom";
 const ReviewRequirementByStudent = () => {
   const [contentMsg, setContentMsg] = useState("");
-  const [showMsg, setShowMsg] = useState(false);
+  const [showMsg, setShowMsg] = useState(true);
   const [open, setOpen] = useState(false);
   const [expectationGrade, setExpectationGrade] = useState(100);
   const [explanationMsg, setExplanationMsg] = useState("");
@@ -39,6 +42,7 @@ const ReviewRequirementByStudent = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const reload = useSelector((state) => state.classroomDetailsInfo.reload);
   const handleSendReviewRequest = () => {
     async function sendReviewRequest() {
       setSendingReviewRequest(true);
@@ -51,10 +55,10 @@ const ReviewRequirementByStudent = () => {
             explanation: explanationMsg,
           },
         });
-        console.log(res.data);
         setSendingReviewRequest(false);
         setOpen(false);
-        window.location.reload();
+        toast.success(`${res.data.message}`, { autoClose: 3000 });
+        dispatch(updateReload(!reload));
       } catch (error) {
         setSendingReviewRequest(false);
         setOpen(false);
@@ -80,8 +84,8 @@ const ReviewRequirementByStudent = () => {
         });
         dispatch(updateAssignmentDetails(res1.data.data));
         setSendingComment(false);
+        setContentMsg("");
       } catch (error) {
-        console.log(error);
         setSendingComment(false);
         toast.error(`${error}`, { autoClose: 3000 });
       }
@@ -110,10 +114,10 @@ const ReviewRequirementByStudent = () => {
           }
           onClick={handleClickOpen}
         >
-          Yêu cầu xem lại điểm
+          Yêu cầu xem xét lại điểm
         </Button>
         <Dialog open={open} fullWidth>
-          <DialogTitle>Yêu cầu xem lại điểm</DialogTitle>
+          <DialogTitle>Yêu cầu xem xét lại điểm</DialogTitle>
           <DialogContent>
             <TextField
               id="filled-read-only-input"
@@ -238,6 +242,7 @@ const ReviewRequirementByStudent = () => {
             <TipTap
               setContentMsg={setContentMsg}
               placeholderTipTap="Viết bình luận..."
+              content={contentMsg}
             />
             <Button
               sx={{ marginTop: "16px" }}

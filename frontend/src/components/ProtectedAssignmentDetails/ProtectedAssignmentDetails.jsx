@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Axios from "../../redux/APIs/Axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
 import { updateAssignmentDetails } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
@@ -12,6 +12,7 @@ const ProtectedAssignmentDetails = ({ children }) => {
   const [verified, setVerified] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const reload = useSelector((state)=>state.classroomDetailsInfo.reload);
   useEffect(() => {
     async function assignmentDetails() {
       dispatch(
@@ -63,7 +64,7 @@ const ProtectedAssignmentDetails = ({ children }) => {
       }
     }
     assignmentDetails();
-  }, [assignmentId, navigate, dispatch]);
+  }, [assignmentId, navigate, dispatch, reload]);
   if (loading) {
     return (
       <div className="lds-ellipsis">

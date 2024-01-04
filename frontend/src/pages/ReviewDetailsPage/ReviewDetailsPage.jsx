@@ -29,7 +29,7 @@ const ReviewDetailsPage = () => {
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const [showChat, setShowChat] = useState(false);
+  const [showChat, setShowChat] = useState(true);
   const dispatch = useDispatch();
   const handleClickOpen = () => {
     setOpen(true);
@@ -70,6 +70,7 @@ const ReviewDetailsPage = () => {
           method: "GET",
           url: `/scores/reviews/${reviewDetails.reviewId}`,
         });
+        setContentMsg("");
         dispatch(updateReviewDetails(res.data.data));
         setSending(false);
       } catch (error) {
@@ -143,7 +144,7 @@ const ReviewDetailsPage = () => {
                 wordBreak: "break-word",
               }}
             >
-              {dateCreated}
+              {`Bài tập được tạo vào lúc ${dateCreated}`}
             </p>
             <div
               className="assignment-details-content-instruction"
@@ -186,6 +187,15 @@ const ReviewDetailsPage = () => {
             >
               Lí do: {reviewDetails.explanation}
             </p>
+            {reviewDetails.scoreAgain && <p
+              style={{
+                fontWeight: "500",
+                color: "#4285f4",
+                wordBreak: "break-word",
+              }}
+            >
+              Điểm đã chấm lại: {reviewDetails.scoreAgain}
+            </p>}
             <Button
               variant="contained"
               sx={{
@@ -287,6 +297,7 @@ const ReviewDetailsPage = () => {
               <TipTap
                 setContentMsg={setContentMsg}
                 placeholderTipTap="Nhập bình luận..."
+                content={contentMsg}
               />
             )}
             {showChat && (
