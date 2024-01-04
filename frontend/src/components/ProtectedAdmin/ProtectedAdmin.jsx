@@ -5,7 +5,8 @@ import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import Axios from "../../redux/APIs/Axios";
 import { toast } from "react-toastify";
 import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
-const ProtectedHome = () => {
+import { updateClassrooms, updateData } from "../../redux/Reducers/AdminSlice";
+const ProtectedAdmin = () => {
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
@@ -22,9 +23,13 @@ const ProtectedHome = () => {
       );
       try {
         const res = await Axios.get("/auth/me");
-        if (res.data.data.email === "learners.admin@gmail.com") {
-          navigate("/admin?tab=1");
+        const res1 = await Axios.get("/users");
+        const res2 = await Axios.get("/classes");
+        if (res.data.data.email !== "learners.admin@gmail.com") {
+          navigate("/home-page");
         }
+        dispatch(updateData(res1.data.data));
+        dispatch(updateClassrooms(res2.data.data));
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
         dispatch(
           update({
@@ -43,10 +48,8 @@ const ProtectedHome = () => {
             success: true,
           })
         );
-        
-          setLoadingHomePage(false);
-          setIsAuth(true);
-        
+        setLoadingHomePage(false);
+        setIsAuth(true);
       } catch (err) {
         console.error(err.response);
         if (err?.response?.data === "Unauthorized") {
@@ -93,4 +96,4 @@ const ProtectedHome = () => {
   );
 };
 
-export default ProtectedHome;
+export default ProtectedAdmin;
