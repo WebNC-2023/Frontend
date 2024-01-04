@@ -29,6 +29,8 @@ import AssignmentDetailsPage from "./pages/AssignmentDetailsPage/AssignmentDetai
 import ProtectedAssignmentDetails from "./components/ProtectedAssignmentDetails/ProtectedAssignmentDetails";
 import ReviewDetailsPage from "./pages/ReviewDetailsPage/ReviewDetailsPage";
 import ProtectedReviewDetails from "./components/ProtectedReviewDetails/ProtectedReviewDetails";
+import AdminPage from "./pages/AdminPage/AdminPage";
+import ProtectedAdmin from "./components/ProtectedAdmin/ProtectedAdmin";
 function App() {
   const [showSmallMenu, setShowSmallMenu] = useState(false);
   const [showContent, setShowContent] = useState("Home");
@@ -115,6 +117,11 @@ function App() {
               </ProtectedAcceptInvite>
             }
           />
+
+          <Route element={<ProtectedAdmin />}>
+            <Route path="/admin" element={<AdminPage />} />
+          </Route>
+          
           <Route element={<ProtectedAttendByLink />}>
             <Route path="/classes/:classId/attend" element={<AttendByLink />} />
           </Route>

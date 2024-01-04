@@ -18,7 +18,6 @@ const ProtectedLanding = () => {
     }
     checkLoggedIn()
       .then((res) => {
-        console.log(res.data);
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
         dispatch(
           update({

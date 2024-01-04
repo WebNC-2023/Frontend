@@ -59,7 +59,9 @@ export default function SignIn() {
         toast.success("Sign in successfully!");
         setTimeout(() => {
           if (pendingUrl === null) {
-            navigate("/home-page");
+            if (data.email === "learners.admin@gmail.com") {
+              navigate("/admin?tab=1");
+            } else navigate("/home-page");
           } else {
             navigate(pendingUrl);
           }
@@ -78,6 +80,7 @@ export default function SignIn() {
     }
     if (isSuccess) {
       if (pendingUrl === null) {
+        console.log("1");
         navigate("/home-page");
       } else {
         navigate(pendingUrl);
