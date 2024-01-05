@@ -19,17 +19,19 @@ import { useDispatch, useSelector } from "react-redux";
 import Paper from "@mui/material/Paper";
 import Row from "./Row";
 import { toast } from "react-toastify";
-
 import { editAsmAction } from "../../redux/Actions/classAction";
-
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import Axios from "../../redux/APIs/Axios";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 const TableGrade = () => {
   const dispatch = useDispatch();
-  const { id, assignments, people } = useSelector(
-    (state) => state.classroomDetailsInfo
-  );
+  const {
+    id,
+    assignments,
+    people,
+    name: nameOfClass,
+  } = useSelector((state) => state.classroomDetailsInfo);
 
   const { isLoading, isSuccess, isError } = useSelector(
     (state) => state.editAsm
@@ -40,15 +42,6 @@ const TableGrade = () => {
     const fullName = `${student.firstName} ${student.lastName}`;
     studentInfoMap[student.id] = { fullName };
   });
-
-  //   // Cập nhật mảng assignments với thuộc tính FullName trong mảng scores
-  //   const updatedAssignmentsArray = assignments.map((assignment) => ({
-  //     ...assignment,
-  //     scores: assignment.scores.map((score) => ({
-  //       ...score,
-  //       fullName: studentInfoMap[score.studentId].fullName,
-  //     })),
-  //   }));
 
   // Cập nhật mảng assignments với thuộc tính FullName và avgScore
   const updatedAssignmentsArray = assignments.map((assignment) => {
@@ -262,6 +255,7 @@ const TableGrade = () => {
                       handleRemoveRow={handleRemoveRow}
                       handleEditRow={handleEditRow}
                       handleEditScore={handleEditScore}
+                      nameOfClass={nameOfClass}
                     />
                   ))}
                   {provided.placeholder}
@@ -274,37 +268,63 @@ const TableGrade = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
+          alignItems: "center",
           marginTop: 4,
         }}
       >
-        <Button
-          style={{
-            margin: "0 20px",
-            color: "#fff",
-            backgroundColor: isLoading
-              ? "#a0a0a0"
-              : !hasChanges
-              ? "#a0a0a0"
-              : "#BF3131",
-          }}
-          variant="contained"
-          onClick={handleResetData}
-          disabled={!hasChanges || isLoading}
-        >
-          Cancel
-        </Button>
-        <Button
-          style={{
-            color: "#fff",
-            backgroundColor: !hasChanges || isLoading ? "#a0a0a0" : "#5175e0",
-          }}
-          variant="contained"
-          onClick={handleSubmitEdit}
-          disabled={!hasChanges || isLoading}
-        >
-          {isLoading ? "Loading...." : "Save Changes"}
-        </Button>
+        <Box>
+          <Button
+            style={{
+              margin: "0 20px",
+              color: "#fff",
+              backgroundColor: "#1bbd7e",
+            }}
+            variant="contained"
+            // onClick={() => exportStudentListToExcel(people, nameOfClass)}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              Download
+              <FileDownloadIcon
+                fontSize="small"
+                sx={{
+                  marginLeft: 1,
+                  color: "#fff",
+                  backgroundColor: "#1bbd7e",
+                }}
+              />
+            </Box>
+          </Button>
+        </Box>
+        <Box>
+          <Button
+            style={{
+              margin: "0 20px",
+              color: "#fff",
+              backgroundColor: isLoading
+                ? "#a0a0a0"
+                : !hasChanges
+                ? "#a0a0a0"
+                : "#BF3131",
+            }}
+            variant="contained"
+            onClick={handleResetData}
+            disabled={!hasChanges || isLoading}
+          >
+            Cancel
+          </Button>
+          <Button
+            style={{
+              color: "#fff",
+              backgroundColor: !hasChanges || isLoading ? "#a0a0a0" : "#5175e0",
+            }}
+            variant="contained"
+            onClick={handleSubmitEdit}
+            disabled={!hasChanges || isLoading}
+          >
+            {isLoading ? "Loading...." : "Save Changes"}
+          </Button>
+        </Box>
       </Box>
 
       {/* Thông báo modal */}
