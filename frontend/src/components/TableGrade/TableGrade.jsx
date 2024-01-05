@@ -22,18 +22,62 @@ import { toast } from "react-toastify";
 
 import { editAsmAction } from "../../redux/Actions/classAction";
 
+import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import Axios from "../../redux/APIs/Axios";
+
 const TableGrade = () => {
   const dispatch = useDispatch();
-  const { id, assignments } = useSelector(
+  const { id, assignments, people } = useSelector(
     (state) => state.classroomDetailsInfo
   );
 
   const { isLoading, isSuccess, isError } = useSelector(
     (state) => state.editAsm
   );
+  // Tạo một đối tượng ánh xạ studentId với thông tin sinh viên
+  const studentInfoMap = {};
+  people.forEach((student) => {
+    const fullName = `${student.firstName} ${student.lastName}`;
+    studentInfoMap[student.id] = { fullName };
+  });
 
-  const [originalRows, setOriginalRows] = useState(assignments);
-  const [rows, setRows] = useState(assignments);
+  //   // Cập nhật mảng assignments với thuộc tính FullName trong mảng scores
+  //   const updatedAssignmentsArray = assignments.map((assignment) => ({
+  //     ...assignment,
+  //     scores: assignment.scores.map((score) => ({
+  //       ...score,
+  //       fullName: studentInfoMap[score.studentId].fullName,
+  //     })),
+  //   }));
+
+  // Cập nhật mảng assignments với thuộc tính FullName và avgScore
+  const updatedAssignmentsArray = assignments.map((assignment) => {
+    // Tính avgScore
+    const totalScore = assignment.scores.reduce(
+      (sum, score) => sum + score.score,
+      0
+    );
+    const avgScore =
+      assignment.scores.length > 0 ? totalScore / assignment.scores.length : 0;
+
+    // Thêm thuộc tính FullName vào scores
+    const scoresWithFullName = assignment.scores.map((score) => ({
+      ...score,
+      fullName: studentInfoMap[score.studentId].fullName,
+    }));
+
+    // Trả về assignment mới với scores được cập nhật và avgScore
+    return {
+      ...assignment,
+      scores: scoresWithFullName,
+      avgScore: avgScore.toFixed(1),
+    };
+  });
+
+  console.log(updatedAssignmentsArray);
+
+  const [originalRows, setOriginalRows] = useState(updatedAssignmentsArray);
+  const [rows, setRows] = useState(updatedAssignmentsArray);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -67,15 +111,40 @@ const TableGrade = () => {
 
   // successfull & error edit
   React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await Axios.get(`/classes/${id}`);
+        console.log(res.data);
+        dispatch(
+          updateClassroomDetailsInfo({
+            id: res.data.data.id,
+            name: res.data.data.name,
+            topic: res.data.data.topic,
+            room: res.data.data.room,
+            isOwner: res.data.data.isOwner,
+            people: res.data.data.people,
+            owner: res.data.data.owner,
+            classroomAvatar: res.data.data.avatar,
+            assignments: res.data.data.assignments,
+            reviews: res.data.data.reviews,
+          })
+        );
+      } catch (error) {
+        console.error(error.response);
+      }
+    };
+
     if (isError) {
       toast.error(isError);
       dispatch({ type: "EDIT_ASM_RESET" });
     }
     if (isSuccess) {
+      fetchData();
       toast.success("Update successfully !");
       setHasChanges(false); // Reset hasChanges state to false
+      dispatch({ type: "EDIT_ASM_RESET" });
     }
-  }, [isSuccess, isError, dispatch]);
+  }, [isSuccess, isError, dispatch, id]);
 
   // DnD
   const handleDragEnd = (result) => {
@@ -112,7 +181,6 @@ const TableGrade = () => {
   };
 
   // edit score
-
   const handleEditScore = (idScore, newScore) => {
     const updatedArray = rows?.map((obj) => {
       const newObj = { ...obj };
