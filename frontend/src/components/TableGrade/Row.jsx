@@ -25,13 +25,23 @@ import TableRow from "@mui/material/TableRow";
 
 import { Draggable } from "react-beautiful-dnd";
 import TableScoreStudent from "./TableScoreStudent";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { exportGradesForAnAssignmentToExcel } from "../../utils/exportToExcel";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function Row(props) {
-  const { row, index, handleRemoveRow, handleEditRow, handleEditScore } = props;
+  const {
+    row,
+    index,
+    handleRemoveRow,
+    handleEditRow,
+    handleEditScore,
+    nameOfClass,
+  } = props;
   const [open, setOpen] = useState(false);
 
   const [openForm, setOpenForm] = React.useState(false);
@@ -118,9 +128,93 @@ export default function Row(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 4, marginBottom: "40px" }}>
-              <Typography variant="h6" gutterBottom component="div">
-                List of assigned students
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 4,
+                  marginBottom: 4,
+                }}
+              >
+                <Box>
+                  <Typography variant="h6" gutterBottom component="div">
+                    List of assigned students
+                  </Typography>
+                </Box>
+                <Box>
+                  <Button
+                    style={{
+                      color: "#fff",
+                      backgroundColor: "#5175e0",
+                    }}
+                    variant="contained"
+                    sx={{
+                      fontSize: "0.7rem",
+                      minWidth: "70px",
+                      minHeight: "28px",
+                    }}
+                    onClick={() =>
+                      exportGradesForAnAssignmentToExcel(
+                        row.scores,
+                        nameOfClass,
+                        row.title
+                      )
+                    }
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      Download
+                      <CloudDownloadIcon
+                        fontSize="small"
+                        sx={{
+                          marginLeft: 1,
+                          color: "#fff",
+                          backgroundColor: "#5175e0",
+                        }}
+                      />
+                    </Box>
+                  </Button>
+
+                  <Button
+                    style={{
+                      marginLeft: "20px",
+                      color: "#fff",
+                      backgroundColor: "#5175e0",
+                    }}
+                    variant="contained"
+                    sx={{
+                      fontSize: "0.7rem",
+                      minWidth: "70px",
+                      minHeight: "28px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      Upload
+                      <CloudUploadIcon
+                        fontSize="small"
+                        sx={{
+                          marginLeft: 1,
+                          color: "#fff",
+                          backgroundColor: "#5175e0",
+                        }}
+                      />
+                    </Box>
+                  </Button>
+                </Box>
+              </Box>
+
               <Table
                 size="small"
                 aria-label="purchases"
