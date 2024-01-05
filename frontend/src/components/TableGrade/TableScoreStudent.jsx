@@ -57,9 +57,7 @@ const TableScoreStudent = ({
         <TableCell component="th" scope="row" style={{ padding: "16px" }}>
           {peopleRow.studentId}
         </TableCell>
-        <TableCell style={{ padding: "16px" }}>
-          {peopleRow.studentName || "Lưu Tuấn Khanh"}
-        </TableCell>
+        <TableCell style={{ padding: "16px" }}>{peopleRow.fullName}</TableCell>
         <TableCell align="right" style={{ padding: "16px" }}>
           {grade}
         </TableCell>

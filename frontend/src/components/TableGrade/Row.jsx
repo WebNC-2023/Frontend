@@ -76,7 +76,9 @@ export default function Row(props) {
               {row.title}
             </TableCell>
             <TableCell align="right">100</TableCell>
-            <TableCell align="right">{row.classAvgScore || null}</TableCell>
+            <TableCell align="right">
+              {row.avgScore !== "0.0" ? row.avgScore : null}
+            </TableCell>
             <TableCell align="right">{row.deadline || null}</TableCell>
 
             <TableCell align="right">
@@ -134,13 +136,14 @@ export default function Row(props) {
                 </TableHead>
                 <TableBody>
                   {row?.scores?.map((peopleRow) => {
+                    const compoundKey = `${peopleRow?.id}-${peopleRow?.studentId}`;
                     // Create a new object with the same properties
                     const updatedPeopleRow = { ...peopleRow, hovered: false };
 
                     return (
                       <TableScoreStudent
                         updatedPeopleRow={updatedPeopleRow}
-                        key={peopleRow.id}
+                        key={compoundKey}
                         peopleRow={peopleRow}
                         handleEditScore={handleEditScore}
                       />
