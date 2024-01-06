@@ -6,7 +6,7 @@ import {
   GridToolbarExport,
   gridClasses,
 } from "@mui/x-data-grid";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import AccountAction from "./AccountAction";
 
@@ -30,7 +30,6 @@ function CustomToolbar() {
 
 const AccountManagement = () => {
   const data = useSelector((state) => state.admin.data);
-  const [rowId, setRowId] = useState(null);
   const columns = useMemo(
     () => [
       { field: "id", headerName: "Id", width: 100 },
@@ -59,19 +58,17 @@ const AccountManagement = () => {
         headerName: "Is Blocked",
         width: 200,
         type: "boolean",
-        editable: true,
+        editable: false,
       },
       {
         field: "actions",
         headerName: "Actions",
         type: "actions",
-        renderCell: (params) => (
-          <AccountAction {...{ params, rowId, setRowId }} />
-        ),
+        renderCell: (params) => <AccountAction {...{ params }} />,
         disableExport: true,
       },
     ],
-    [rowId]
+    []
   );
   return (
     <>
@@ -108,17 +105,17 @@ const AccountManagement = () => {
               cursor: "pointer",
             },
           }}
-          processRowUpdate={(a, b) => {
-            if (a.isBlocked !== data.find((x) => x.id === a.id).isBlocked) {
-              setRowId(a.id);
-            } else {
-              setRowId(null);
-            }
-            return a;
-          }}
-          onCellEditStart={() => {
-            setRowId(null);
-          }}
+          // processRowUpdate={(a, b) => {
+          //   if (a.isBlocked !== data.find((x) => x.id === a.id).isBlocked) {
+          //     setRowId(a.id);
+          //   } else {
+          //     setRowId(null);
+          //   }
+          //   return a;
+          // }}
+          // onCellEditStart={() => {
+          //   setRowId(null);
+          // }}
           slots={{
             toolbar: CustomToolbar,
           }}

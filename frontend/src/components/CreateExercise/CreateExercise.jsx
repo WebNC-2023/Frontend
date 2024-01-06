@@ -96,7 +96,6 @@ const CreateExercise = () => {
           },
         });
         const res1 = await Axios.get(`/classes/${classId}`);
-        console.log('update data', res1.data.data);
         dispatch(
           updateClassroomDetailsInfo({
             id: res1.data.data.id,
@@ -134,14 +133,6 @@ const CreateExercise = () => {
       }
     }
     CreateAssignment();
-    // dispatch(
-    //   addAssignment({
-    //     assignment_title: titleContent,
-    //     assignment_instruction: contentMsg,
-    //     assignment_score: 100,
-    //     assignment_published: present.toISOString(),
-    //   })
-    // );
   };
   return (
     <>

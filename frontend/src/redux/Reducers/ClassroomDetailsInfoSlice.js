@@ -34,9 +34,6 @@ export const ClassroomDetailsInfoSlice = createSlice({
     updateClassroomName: (state, action) => {
       state.name = action.payload.name;
     },
-    addAssignment: (state, action) => {
-      state.assignments = [...state.assignments, action.payload];
-    },
     updateAssignmentDetails: (state, action) => {
       state.assignmentDetail = action.payload;
     },
@@ -51,7 +48,6 @@ export const ClassroomDetailsInfoSlice = createSlice({
 export const {
   updateClassroomDetailsInfo,
   updateClassroomName,
-  addAssignment,
   updateAssignmentDetails,
   updateReviewDetails,
   updateReload,
