@@ -6,7 +6,7 @@ import {
   GridToolbarExport,
   gridClasses,
 } from "@mui/x-data-grid";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import ClassroomAction from "./ClassroomAction";
@@ -30,7 +30,6 @@ function CustomToolbar() {
 
 const ClassroomManagement = () => {
   const classrooms = useSelector((state) => state.admin.classrooms);
-  const [rowId, setRowId] = useState(null);
   const columns = useMemo(
     () => [
       { field: "id", headerName: "Id", width: 150 },
@@ -64,19 +63,17 @@ const ClassroomManagement = () => {
         headerName: "Is Active",
         width: 200,
         type: "boolean",
-        editable: true,
+        editable: false,
       },
       {
         field: "actions",
         headerName: "Actions",
         type: "actions",
-        renderCell: (params) => (
-          <ClassroomAction {...{ params, rowId, setRowId }} />
-        ),
+        renderCell: (params) => <ClassroomAction {...{ params }} />,
         disableExport: true,
       },
     ],
-    [rowId]
+    []
   );
   return (
     <>
@@ -111,17 +108,17 @@ const ClassroomManagement = () => {
               cursor: "pointer",
             },
           }}
-          processRowUpdate={(a, b) => {
-            if (a.isActive !== classrooms.find((x) => x.id === a.id).isActive) {
-              setRowId(a.id);
-            } else {
-              setRowId(null);
-            }
-            return a;
-          }}
-          onCellEditStart={() => {
-            setRowId(null);
-          }}
+          // processRowUpdate={(a, b) => {
+          //   if (a.isActive !== classrooms.find((x) => x.id === a.id).isActive) {
+          //     setRowId(a.id);
+          //   } else {
+          //     setRowId(null);
+          //   }
+          //   return a;
+          // }}
+          // onCellEditStart={() => {
+          //   setRowId(null);
+          // }}
           slots={{
             toolbar: CustomToolbar,
           }}
