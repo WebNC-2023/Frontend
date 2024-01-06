@@ -1,0 +1,21 @@
+.classroom-details-grade-container {
+  padding: 0px 16px 16px 16px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.classroom-details-grade-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.classroom-details-show-grade-compositions-title,
+.classroom-details-grade-requirement-title {
+  width: 100%;
+  padding: 40px 16px 24px;
+  border-bottom: 1px solid #4285f4;
+  color: #1967d2;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}

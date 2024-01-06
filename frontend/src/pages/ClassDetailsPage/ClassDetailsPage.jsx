@@ -19,6 +19,7 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import ContentTab4 from "./ContentTab4";
+import ContentTab5 from "./ContentTab5";
 const ClassDetailsPage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -129,6 +130,7 @@ const ClassDetailsPage = () => {
     else if (Number(Tab) === 2) return "two";
     else if (Number(Tab) === 3) return "three";
     else if (Number(Tab) === 4) return "four";
+    else if (Number(Tab) === 5) return "five";
     else return "error";
   });
   return (
@@ -157,6 +159,11 @@ const ClassDetailsPage = () => {
         />
       ) : Number(Tab) === 4 ? (
         <ContentTab4
+          loadingClassDetails={loadingClassDetails}
+          ClassDetailsSuccess={ClassDetailsSuccess}
+        />
+      ) : Number(Tab) === 5 ? (
+        <ContentTab5
           loadingClassDetails={loadingClassDetails}
           ClassDetailsSuccess={ClassDetailsSuccess}
         />

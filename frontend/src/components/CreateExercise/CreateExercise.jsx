@@ -117,6 +117,7 @@ const CreateExercise = () => {
               };
             }),
             reviews: res1.data.data.reviews,
+
           })
         );
         setTitleContent("");
@@ -183,7 +184,13 @@ const CreateExercise = () => {
                   autoFocus
                   color="inherit"
                   onClick={handleGiveAssignment}
-                  disabled={titleContent === "" ? true : titleContent.length > 255 || contentMsg.length > 255 ? true : false}
+                  disabled={
+                    titleContent === ""
+                      ? true
+                      : titleContent.length > 255 || contentMsg.length > 255
+                      ? true
+                      : false
+                  }
                 >
                   Giao bài
                 </Button>
@@ -204,19 +211,6 @@ const CreateExercise = () => {
                 placeholderTipTap="Hướng dẫn (Không bắt buộc)"
                 content={contentMsg}
               />
-              {/* <div className="upload-exercise-section">
-                            <p>Đính kèm</p>
-                            <MuiFileInput
-                              value={valueFile}
-                              placeholder="Tải tệp lên"
-                              color="primary"
-                              onChange={handleChange}
-                              clearIconButtonProps={{
-                                title: "Xóa",
-                                children: <CloseIcon fontSize="small" />,
-                              }}
-                            />
-                          </div> */}
               <div
                 style={{
                   border: "1px solid #dadce0",

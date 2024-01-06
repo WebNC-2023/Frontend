@@ -78,3 +78,15 @@ export const deleteClassAction = (id) => async (dispatch) => {
     ErrorsAction(error, dispatch, classConstants.DELETE_CLASS_FAIL);
   }
 };
+
+// edit Asm action
+
+export const editAsmAction = (datas) => async (dispatch) => {
+  try {
+    dispatch({ type: classConstants.EDIT_ASM_REQUEST });
+    const res = await classApi.editAsm(datas);
+    dispatch({ type: classConstants.EDIT_ASM_SUCCESS, payload: res });
+  } catch (error) {
+    ErrorsAction(error, dispatch, classConstants.EDIT_ASM_FAIL);
+  }
+};
