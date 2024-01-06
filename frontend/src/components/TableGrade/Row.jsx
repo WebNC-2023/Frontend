@@ -240,6 +240,7 @@ export default function Row(props) {
                         key={compoundKey}
                         peopleRow={peopleRow}
                         handleEditScore={handleEditScore}
+                        idAsm={row.id}
                       />
                     );
                   })}
