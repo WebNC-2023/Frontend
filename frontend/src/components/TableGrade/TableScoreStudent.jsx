@@ -17,6 +17,7 @@ const TableScoreStudent = ({
   updatedPeopleRow,
   peopleRow,
   handleEditScore,
+  idAsm,
 }) => {
   const [classAnchorEl, setClassAnchorEl] = React.useState(null);
 
@@ -33,7 +34,7 @@ const TableScoreStudent = ({
   };
 
   const handleSubmitEditScore = () => {
-    handleEditScore(peopleRow.id, Number(grade));
+    handleEditScore(idAsm, peopleRow.studentId, Number(grade));
 
     setOpenEditScore(false);
   };
@@ -132,7 +133,7 @@ const TableScoreStudent = ({
             autoComplete="off"
             fullWidth
             variant="standard"
-            value={grade}
+            value={grade || ""}
             onChange={(e) => setGrade(e.target.value)}
           />
         </DialogContent>

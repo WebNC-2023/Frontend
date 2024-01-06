@@ -44,14 +44,14 @@ const TableGrade = () => {
   });
 
   // Cập nhật mảng assignments với thuộc tính FullName và avgScore
-  const updatedAssignmentsArray = assignments.map((assignment) => {
+  const updatedAssignmentsArray = assignments?.map((assignment) => {
     // Tính avgScore
-    const totalScore = assignment.scores.reduce(
+    const totalScore = assignment?.scores?.reduce(
       (sum, score) => sum + score.score,
       0
     );
     const avgScore =
-      assignment.scores.length > 0 ? totalScore / assignment.scores.length : 0;
+      assignment.scores?.length > 0 ? totalScore / assignment.scores.length : 0;
 
     // Thêm thuộc tính FullName vào scores
     const scoresWithFullName = assignment.scores.map((score) => ({
@@ -174,23 +174,17 @@ const TableGrade = () => {
   };
 
   // edit score
-  const handleEditScore = (idScore, newScore) => {
-    const updatedArray = rows?.map((obj) => {
-      const newObj = { ...obj };
-      if (newObj.scores && newObj.scores.length > 0) {
-        newObj.scores = newObj.scores?.map((score) => {
-          if (score.id === idScore) {
-            return { ...score, score: newScore };
-          }
-          return score;
-        });
-      }
-
-      return newObj;
-    });
-
-    // Đặt lại mảng đã cập nhật
-    setRows(updatedArray);
+  const handleEditScore = (idAsm, studentId, newScore) => {
+    setRows((prevRows) =>
+      prevRows.map((row) => ({
+        ...row,
+        scores: row.scores?.map((score) =>
+          row.id === idAsm && score.studentId === studentId
+            ? { ...score, score: newScore }
+            : score
+        ),
+      }))
+    );
   };
 
   // Reset dữ liệu

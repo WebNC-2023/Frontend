@@ -86,9 +86,9 @@ const CreateExercise = () => {
                   .filter((element) => element.role === "student")
                   .map((student) => {
                     return {
-                      score: 50,
+                      score: null,
                       studentId: student.id,
-                      isReturned: true,
+                      isReturned: false,
                     };
                   }),
               },
@@ -106,9 +106,9 @@ const CreateExercise = () => {
               .filter((element) => element.role === "student")
               .map((student) => {
                 return {
-                  score: 50,
+                  score: null,
                   studentId: student.id,
-                  isReturned: true,
+                  isReturned: false,
                 };
               }),
           })
@@ -185,7 +185,13 @@ const CreateExercise = () => {
                   autoFocus
                   color="inherit"
                   onClick={handleGiveAssignment}
-                  disabled={titleContent === "" ? true : titleContent.length > 255 || contentMsg.length > 255 ? true : false}
+                  disabled={
+                    titleContent === ""
+                      ? true
+                      : titleContent.length > 255 || contentMsg.length > 255
+                      ? true
+                      : false
+                  }
                 >
                   Giao bài
                 </Button>
