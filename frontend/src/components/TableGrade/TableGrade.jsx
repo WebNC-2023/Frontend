@@ -45,16 +45,8 @@ const TableGrade = () => {
 
   // Cập nhật mảng assignments với thuộc tính FullName và avgScore
   const updatedAssignmentsArray = assignments?.map((assignment) => {
-    // Tính avgScore
-    const totalScore = assignment?.scores?.reduce(
-      (sum, score) => sum + score.score,
-      0
-    );
-    const avgScore =
-      assignment.scores?.length > 0 ? totalScore / assignment.scores.length : 0;
-
     // Thêm thuộc tính FullName vào scores
-    const scoresWithFullName = assignment.scores.map((score) => ({
+    const scoresWithFullName = assignment?.scores?.map((score) => ({
       ...score,
       fullName: studentInfoMap[score.studentId].fullName,
     }));
@@ -63,7 +55,6 @@ const TableGrade = () => {
     return {
       ...assignment,
       scores: scoresWithFullName,
-      avgScore: avgScore.toFixed(1),
     };
   });
 
@@ -107,7 +98,6 @@ const TableGrade = () => {
     const fetchData = async () => {
       try {
         const res = await Axios.get(`/classes/${id}`);
-        console.log(res.data);
         dispatch(
           updateClassroomDetailsInfo({
             id: res.data.data.id,
@@ -178,10 +168,36 @@ const TableGrade = () => {
     setRows((prevRows) =>
       prevRows.map((row) => ({
         ...row,
-        scores: row.scores?.map((score) =>
-          row.id === idAsm && score.studentId === studentId
-            ? { ...score, score: newScore }
-            : score
+        scores: row.scores?.map((sc) =>
+          row.id === idAsm && sc.studentId === studentId
+            ? { ...sc, score: newScore, isReturned: false }
+            : sc
+        ),
+      }))
+    );
+  };
+
+  // return the lesson
+  const handleReturnLesson = (idScore) => {
+    setRows((prevRows) =>
+      prevRows.map((row) => ({
+        ...row,
+        scores: row.scores?.map((sc) =>
+          sc.id === idScore ? { ...sc, isReturned: true } : sc
+        ),
+      }))
+    );
+  };
+
+  // return all lessons
+  const handleReturnAllLessons = (idAsm) => {
+    setRows((prevRows) =>
+      prevRows.map((row) => ({
+        ...row,
+        scores: row.scores?.map((sc) =>
+          row.id === idAsm && sc.score !== null
+            ? { ...sc, isReturned: true }
+            : sc
         ),
       }))
     );
@@ -220,7 +236,7 @@ const TableGrade = () => {
   };
 
   return (
-    <div style={{ marginTop: "1rem" }}>
+    <div style={{ marginTop: "2rem" }}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="droppable" direction="vertical">
           {(provided) => (
@@ -250,6 +266,8 @@ const TableGrade = () => {
                       handleEditRow={handleEditRow}
                       handleEditScore={handleEditScore}
                       nameOfClass={nameOfClass}
+                      handleReturnLesson={handleReturnLesson}
+                      handleReturnAllLessons={handleReturnAllLessons}
                     />
                   ))}
                   {provided.placeholder}

@@ -113,11 +113,10 @@ const CreateExercise = () => {
                 description: element.description,
                 type: element.type,
                 dateCreated: element.dateCreated,
-                scores: element.scores1,
+                scores: element.scores,
               };
             }),
             reviews: res1.data.data.reviews,
-
           })
         );
         setTitleContent("");
