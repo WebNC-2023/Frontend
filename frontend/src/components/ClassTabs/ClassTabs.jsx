@@ -1,8 +1,19 @@
 import { Tabs, Tab } from "@mui/material";
 import "./ClassTabs.css";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ClassTabs = ({ tab, setTab }) => {
+  const { userInfo } = useSelector((state) => state.userLogin);
+
+  const { people } = useSelector((state) => state.classroomDetailsInfo);
+
+  const Info = JSON.parse(userInfo);
+
+  const isUserTeacher = !!people.find(
+    (person) => person?.id === Info?.id && person.role === "teacher"
+  );
+
   const navigate = useNavigate();
   const { classId } = useParams();
   // const handleChange = (event, newValue) => {
@@ -23,10 +34,12 @@ const ClassTabs = ({ tab, setTab }) => {
     } else if (newValue === "three") {
       setTab("three");
       navigate(`/class-details/${classId}?tab=3`);
-    }
-    else if (newValue === "four") {
+    } else if (newValue === "four") {
       setTab("four");
       navigate(`/class-details/${classId}?tab=4`);
+    } else if (newValue === "five") {
+      setTab("five");
+      navigate(`/class-details/${classId}?tab=5`);
     }
   };
   return (
@@ -75,8 +88,19 @@ const ClassTabs = ({ tab, setTab }) => {
           fontSize: "1rem",
         }}
         value="four"
-        label="Điểm"
+        label="Xem xét lại điểm"
       />
+      {isUserTeacher && (
+        <Tab
+          style={{
+            textTransform: "none",
+            color: "#5f6368",
+            fontSize: "1rem",
+          }}
+          value="five"
+          label="Điểm "
+        />
+      )}
     </Tabs>
   );
 };

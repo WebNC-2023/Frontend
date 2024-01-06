@@ -41,3 +41,10 @@ export const deleteClass = async (id) => {
   const { data } = await Axios.delete(`/classes/${id}`);
   return data.data;
 };
+
+// edit Asm API call
+
+export const editAsm = async (datas) => {
+  const { data } = await Axios.patch(`/assignments/bulk`, datas);
+  return data.data;
+};
