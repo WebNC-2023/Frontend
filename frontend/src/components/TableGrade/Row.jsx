@@ -12,7 +12,7 @@ import Slide from "@mui/material/Slide";
 import DialogContent from "@mui/material/DialogContent";
 import TipTap from "../TipTap/TipTap";
 import TextField from "@mui/material/TextField";
-import { Tooltip, Stack } from "@mui/material";
+import { Tooltip, Stack, DialogTitle, DialogActions } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -27,6 +27,7 @@ import { Draggable } from "react-beautiful-dnd";
 import TableScoreStudent from "./TableScoreStudent";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
 import { exportGradesForAnAssignmentToExcel } from "../../utils/exportToExcel";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -41,6 +42,8 @@ export default function Row(props) {
     handleEditRow,
     handleEditScore,
     nameOfClass,
+    handleReturnLesson,
+    handleReturnAllLessons,
   } = props;
   const [open, setOpen] = useState(false);
 
@@ -48,6 +51,38 @@ export default function Row(props) {
   const [scroll, setScroll] = React.useState("paper");
   const [contentMsg, setContentMsg] = React.useState(row.description);
   const [titleContent, setTitleContent] = React.useState(row.title);
+  const [avgScoreClass, setAvgScoreClass] = React.useState(null);
+  const [allScoreNull, setAllScoreNull] = React.useState(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const avgScoreHandle = () => {
+      // Tính avgScore
+      const totalScore = row?.scores?.reduce((sum, sc) => {
+        // Kiểm tra nếu sc.isReturned là true thì mới tính vào tổng điểm
+        if (sc.isReturned) {
+          return sum + sc.score;
+        }
+        return sum;
+      }, 0);
+
+      const returnedScores = row?.scores?.filter((sc) => sc.isReturned);
+      const avgScore =
+        returnedScores?.length > 0 ? totalScore / returnedScores.length : 0;
+
+      setAvgScoreClass(avgScore.toFixed(1));
+    };
+
+    const areAllScoresNull = () => {
+      // true or false
+      const checkNull = row?.scores?.every((sc) => sc.score === null);
+
+      setAllScoreNull(checkNull);
+    };
+
+    avgScoreHandle();
+    areAllScoresNull();
+  }, [row.scores]);
 
   const handleClickOpenForm = (scrollType) => {
     setOpenForm(true);
@@ -61,6 +96,16 @@ export default function Row(props) {
   const handleEditSubmit = () => {
     handleEditRow(row.id, titleContent, contentMsg);
     setOpenForm(false);
+  };
+
+  // Reset dữ liệu
+  const handleClickOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSubmitReturnAllLessons = () => {
+    handleReturnAllLessons(row.id);
+    setIsModalOpen(false);
   };
 
   return (
@@ -87,7 +132,7 @@ export default function Row(props) {
             </TableCell>
             <TableCell align="right">100</TableCell>
             <TableCell align="right">
-              {row.avgScore !== "0.0" ? row.avgScore : null}
+              {avgScoreClass !== "0.0" ? avgScoreClass : null}
             </TableCell>
             <TableCell align="right">{row.deadline || null}</TableCell>
 
@@ -116,6 +161,18 @@ export default function Row(props) {
                     onClick={() => handleRemoveRow(row.id)}
                   >
                     <DeleteIcon fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Return All Lessons">
+                  <IconButton
+                    aria-label="Return"
+                    sx={{ color: "#1bbd7e" }}
+                    size="medium"
+                    onClick={handleClickOpenModal}
+                    disabled={allScoreNull}
+                  >
+                    <AssignmentReturnIcon fontSize="inherit" />
                   </IconButton>
                 </Tooltip>
               </Stack>
@@ -241,6 +298,7 @@ export default function Row(props) {
                         peopleRow={peopleRow}
                         handleEditScore={handleEditScore}
                         idAsm={row.id}
+                        handleReturnLesson={handleReturnLesson}
                       />
                     );
                   })}
@@ -340,6 +398,22 @@ export default function Row(props) {
             />
           </div>
         </DialogContent>
+      </Dialog>
+
+      {/* Thông báo modal */}
+      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <DialogTitle>Return these assignments?</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to return these assignments?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsModalOpen(false)}>No</Button>
+          <Button onClick={handleSubmitReturnAllLessons} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
       </Dialog>
     </React.Fragment>
   );

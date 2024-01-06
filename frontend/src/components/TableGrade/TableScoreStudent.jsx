@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
-import { Menu, MenuItem } from "@mui/material";
+import { Menu, MenuItem, Stack, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -17,6 +17,7 @@ const TableScoreStudent = ({
   updatedPeopleRow,
   peopleRow,
   handleEditScore,
+  handleReturnLesson,
   idAsm,
 }) => {
   const [classAnchorEl, setClassAnchorEl] = React.useState(null);
@@ -35,6 +36,12 @@ const TableScoreStudent = ({
 
   const handleSubmitEditScore = () => {
     handleEditScore(idAsm, peopleRow.studentId, Number(grade));
+
+    setOpenEditScore(false);
+  };
+
+  const handleSubmitReturnTheLesson = () => {
+    handleReturnLesson(peopleRow.id);
 
     setOpenEditScore(false);
   };
@@ -60,7 +67,33 @@ const TableScoreStudent = ({
         </TableCell>
         <TableCell style={{ padding: "16px" }}>{peopleRow.fullName}</TableCell>
         <TableCell align="right" style={{ padding: "16px" }}>
-          {grade}
+          {grade ? (
+            peopleRow.isReturned ? (
+              <Typography>{grade}</Typography>
+            ) : (
+              <Stack spacing={0} justifyContent="center" alignItems="flex-end">
+                <Typography
+                  sx={{
+                    color: "#1bbd7e",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {grade}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  component="span"
+                  sx={{
+                    fontStyle: "italic",
+                    color: "#8d8d8d",
+                    fontSize: "small",
+                  }}
+                >
+                  Draft
+                </Typography>
+              </Stack>
+            )
+          ) : null}
         </TableCell>
         <TableCell style={{ padding: "16px", textAlign: "right" }}>
           <IconButton
@@ -116,7 +149,13 @@ const TableScoreStudent = ({
             <MenuItem key="updateGrade" onClick={handleClickOpenEditScore}>
               Update grade
             </MenuItem>
-            <MenuItem key="view">View assignment</MenuItem>
+            <MenuItem
+              key="return"
+              disabled={peopleRow.isReturned || peopleRow.score === null}
+              onClick={handleSubmitReturnTheLesson}
+            >
+              Return the lesson
+            </MenuItem>
           </Menu>
         </TableCell>
       </TableRow>
@@ -138,7 +177,7 @@ const TableScoreStudent = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseEditScore}>Hủy</Button>
+          <Button onClick={handleCloseEditScore}>Cancel</Button>
           <Button
             onClick={handleSubmitEditScore}
             disabled={
@@ -149,7 +188,7 @@ const TableScoreStudent = ({
                 : true
             }
           >
-            Cập nhật
+            Update
           </Button>
         </DialogActions>
       </Dialog>
