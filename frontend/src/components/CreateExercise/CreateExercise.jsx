@@ -18,7 +18,7 @@ import TipTap from "../TipTap/TipTap";
 import TextField from "@mui/material/TextField";
 // import { MuiFileInput } from "mui-file-input";
 import { useDispatch, useSelector } from "react-redux";
-import { addAssignment } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import AssignmentCardForTeacher from "../AssignmentCard/AssignmentCardForTeacher";
 import Axios from "../../redux/APIs/Axios";
 // import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
@@ -86,31 +86,38 @@ const CreateExercise = () => {
                   .filter((element) => element.role === "student")
                   .map((student) => {
                     return {
-                      score: 50,
+                      score: null,
                       studentId: student.id,
-                      isReturned: true,
+                      isReturned: false,
                     };
                   }),
               },
             ],
           },
         });
+        const res1 = await Axios.get(`/classes/${classId}`);
+        console.log('update data', res1.data.data);
         dispatch(
-          addAssignment({
-            id: res.data.data.id,
-            title: res.data.data.title,
-            description: res.data.data.description,
-            type: res.data.data.type,
-            dateCreated: res.data.data.dateCreated,
-            scores: people
-              .filter((element) => element.role === "student")
-              .map((student) => {
-                return {
-                  score: 50,
-                  studentId: student.id,
-                  isReturned: true,
-                };
-              }),
+          updateClassroomDetailsInfo({
+            id: res1.data.data.id,
+            name: res1.data.data.name,
+            topic: res1.data.data.topic,
+            room: res1.data.data.room,
+            isOwner: res1.data.data.isOwner,
+            people: res1.data.data.people,
+            owner: res1.data.data.owner,
+            classroomAvatar: res1.data.data.avatar,
+            assignments: res1.data.data.assignments.map((element) => {
+              return {
+                id: element.id,
+                title: element.title,
+                description: element.description,
+                type: element.type,
+                dateCreated: element.dateCreated,
+                scores: element.scores1,
+              };
+            }),
+            reviews: res1.data.data.reviews,
           })
         );
         setTitleContent("");
