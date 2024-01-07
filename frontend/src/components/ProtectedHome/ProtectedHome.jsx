@@ -24,29 +24,29 @@ const ProtectedHome = () => {
         const res = await Axios.get("/auth/me");
         if (res.data.data.email === "learners.admin@gmail.com") {
           navigate("/admin?tab=1");
-        }
-        localStorage.setItem("userInfo", JSON.stringify(res.data.data));
-        dispatch(
-          update({
-            fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-            avatar:
-              res.data.data.avatar === null
-                ? null
-                : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
-                    res.data.data.avatar
-                  }?${Date.now()}`,
-          })
-        );
-        dispatch(
-          updateClassroomDetailsPendingUrl({
-            pendingUrl: null,
-            success: true,
-          })
-        );
-        
+        } else {
+          localStorage.setItem("userInfo", JSON.stringify(res.data.data));
+          dispatch(
+            update({
+              fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
+              avatar:
+                res.data.data.avatar === null
+                  ? null
+                  : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+                      res.data.data.avatar
+                    }?${Date.now()}`,
+            })
+          );
+          dispatch(
+            updateClassroomDetailsPendingUrl({
+              pendingUrl: null,
+              success: true,
+            })
+          );
+
           setLoadingHomePage(false);
           setIsAuth(true);
-        
+        }
       } catch (err) {
         console.error(err.response);
         if (err?.response?.data === "Unauthorized") {

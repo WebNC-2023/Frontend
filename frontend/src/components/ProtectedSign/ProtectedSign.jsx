@@ -23,16 +23,17 @@ const ProtectedSign = () => {
       .then((res) => {
         if (res.data.data.email === "learners.admin@gmail.com") {
           navigate("/admin?tab=1");
+        } else {
+          localStorage.removeItem("userInfo");
+          dispatch(
+            update({
+              fullName: " ",
+              avatar: "",
+            })
+          );
+          setLoadingSignPage(false);
+          setIsAuth(true);
         }
-        localStorage.removeItem("userInfo");
-        dispatch(
-          update({
-            fullName: " ",
-            avatar: "",
-          })
-        );
-        setLoadingSignPage(false);
-        setIsAuth(true);
       })
       .catch((err) => {
         if (err?.response?.data === "Unauthorized") {
