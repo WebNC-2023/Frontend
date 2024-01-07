@@ -25,31 +25,32 @@ const ProtectedAdmin = () => {
         const res = await Axios.get("/auth/me");
         if (res.data.data.email !== "learners.admin@gmail.com") {
           navigate("/home-page");
+        } else {
+          const res1 = await Axios.get("/users");
+          const res2 = await Axios.get("/classes");
+          dispatch(updateData(res1.data.data));
+          dispatch(updateClassrooms(res2.data.data));
+          localStorage.setItem("userInfo", JSON.stringify(res.data.data));
+          dispatch(
+            update({
+              fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
+              avatar:
+                res.data.data.avatar === null
+                  ? null
+                  : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+                      res.data.data.avatar
+                    }?${Date.now()}`,
+            })
+          );
+          dispatch(
+            updateClassroomDetailsPendingUrl({
+              pendingUrl: null,
+              success: true,
+            })
+          );
+          setLoadingHomePage(false);
+          setIsAuth(true);
         }
-        const res1 = await Axios.get("/users");
-        const res2 = await Axios.get("/classes");
-        dispatch(updateData(res1.data.data));
-        dispatch(updateClassrooms(res2.data.data));
-        localStorage.setItem("userInfo", JSON.stringify(res.data.data));
-        dispatch(
-          update({
-            fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-            avatar:
-              res.data.data.avatar === null
-                ? null
-                : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
-                    res.data.data.avatar
-                  }?${Date.now()}`,
-          })
-        );
-        dispatch(
-          updateClassroomDetailsPendingUrl({
-            pendingUrl: null,
-            success: true,
-          })
-        );
-        setLoadingHomePage(false);
-        setIsAuth(true);
       } catch (err) {
         if (err?.response?.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
