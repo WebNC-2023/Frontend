@@ -17,10 +17,12 @@ const SeeExercise = () => {
               color: "#1967d2",
               textTransform: "none",
               padding: "8px",
+              userSelect: "none"
             }}
             startIcon={<AssignmentIndOutlinedIcon />}
+            disabled
           >
-            Xem tất cả bài tập của bạn
+            Tất cả bài tập của bạn
           </Button>
         </div>
         <div className="seeExercise-flex-direction-col">

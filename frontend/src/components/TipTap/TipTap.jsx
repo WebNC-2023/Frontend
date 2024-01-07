@@ -106,7 +106,7 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-const TipTap = ({content, setContentMsg, placeholderTipTap }) => {
+const TipTap = ({content, setContentMsg, placeholderTipTap, tipTapFocus }) => {
   
   const editor = useEditor({
     extensions: [
@@ -116,7 +116,7 @@ const TipTap = ({content, setContentMsg, placeholderTipTap }) => {
         placeholder: placeholderTipTap,
       }),
     ],
-    autofocus: true,
+    autofocus: tipTapFocus,
     content,
     onUpdate: ({ editor }) => {
       const data = editor.getHTML();

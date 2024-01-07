@@ -23,11 +23,11 @@ const ProtectedAdmin = () => {
       );
       try {
         const res = await Axios.get("/auth/me");
-        const res1 = await Axios.get("/users");
-        const res2 = await Axios.get("/classes");
         if (res.data.data.email !== "learners.admin@gmail.com") {
           navigate("/home-page");
         }
+        const res1 = await Axios.get("/users");
+        const res2 = await Axios.get("/classes");
         dispatch(updateData(res1.data.data));
         dispatch(updateClassrooms(res2.data.data));
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
@@ -51,7 +51,6 @@ const ProtectedAdmin = () => {
         setLoadingHomePage(false);
         setIsAuth(true);
       } catch (err) {
-        console.error(err.response);
         if (err?.response?.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(

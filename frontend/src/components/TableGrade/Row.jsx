@@ -294,6 +294,7 @@ export default function Row(props) {
             setContentMsg={setContentMsg}
             placeholderTipTap="Hướng dẫn (Không bắt buộc)"
             content={contentMsg}
+            tipTapFocus={true}
           />
           <div
             style={{
