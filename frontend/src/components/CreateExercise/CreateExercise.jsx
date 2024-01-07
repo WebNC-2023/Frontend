@@ -204,11 +204,13 @@ const CreateExercise = () => {
                 sx={{ paddingBottom: "16px" }}
                 value={titleContent}
                 onChange={(e) => setTitleContent(e.target.value)}
+                autoFocus
               />
               <TipTap
                 setContentMsg={setContentMsg}
                 placeholderTipTap="Hướng dẫn (Không bắt buộc)"
                 content={contentMsg}
+                tipTapFocus={false}
               />
               <div
                 style={{

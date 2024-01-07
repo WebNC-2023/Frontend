@@ -145,6 +145,7 @@ const ReviewRequirementByStudent = () => {
               value={Number(expectationGrade)}
               onChange={(e) => setExpectationGrade(e.target.value)}
               disabled={sendingReviewRequest ? true : false}
+              autoFocus
             />
             <TextField
               required
@@ -243,6 +244,7 @@ const ReviewRequirementByStudent = () => {
               setContentMsg={setContentMsg}
               placeholderTipTap="Viết bình luận..."
               content={contentMsg}
+              tipTapFocus={true}
             />
             <Button
               sx={{ marginTop: "16px" }}

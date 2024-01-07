@@ -298,6 +298,7 @@ const ReviewDetailsPage = () => {
                 setContentMsg={setContentMsg}
                 placeholderTipTap="Nhập bình luận..."
                 content={contentMsg}
+                tipTapFocus={true}
               />
             )}
             {showChat && (
