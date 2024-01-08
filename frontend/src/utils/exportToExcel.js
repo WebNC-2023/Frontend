@@ -34,8 +34,6 @@ export const exportStudentListToExcel = (people, className) => {
   const fileName = `exported_studentLists_class_${className}.xlsx`;
   saveAs(data, fileName);
 };
-
-// Export default template for grades for an assignment
 export const exportGradesForAnAssignmentToExcel = (
   scores,
   nameOfClass,
@@ -43,20 +41,31 @@ export const exportGradesForAnAssignmentToExcel = (
 ) => {
   const gradesDataToExport = scores.map((sc) => ({
     StudentId: sc.studentId,
-    Grade: sc.score,
+    Grade:
+      sc.score === null ? "" : sc.isReturned ? sc.score : `${sc.score} (draft)`,
   }));
 
   const ws = XLSX.utils.json_to_sheet(gradesDataToExport, {
     header: ["StudentId", "Grade"],
-    widths: [10, 10],
+    widths: [10, 20],
     cellStyles: true,
     raw: true,
   });
 
+  // Căn chỉnh văn bản về bên phải cho từng ô trong cột "Grade"
+  const range = XLSX.utils.decode_range(ws["!ref"]);
+  for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+    const cellAddress = XLSX.utils.encode_cell({ r: R, c: 1 }); // Cột "Grade" là cột thứ 1
+    ws[cellAddress].s = {
+      alignment: { horizontal: "right", vertical: "middle" },
+    };
+  }
+
   ws["!cols"] = [
     { wch: 10, s: { alignment: { horizontal: "center", vertical: "middle" } } },
-    { wch: 10, s: { alignment: { horizontal: "center", vertical: "middle" } } },
+    { wch: 20, s: { alignment: { horizontal: "right", vertical: "middle" } } }, // Đặt horizontal thành "right"
   ];
+
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
@@ -67,4 +76,64 @@ export const exportGradesForAnAssignmentToExcel = (
   });
   const fileName = `exported_grades_class_${nameOfClass}_assignment_${assignmentName}.xlsx`;
   saveAs(data, fileName);
+};
+
+export const importGradesToAnAssignmentFormExcel = (file) => {
+  return new Promise((resolve, reject) => {
+    const allowedFileTypes = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
+
+    if (file && allowedFileTypes.includes(file.type)) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+
+          const dataArray = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+          // Kiểm tra định dạng của dữ liệu
+          const isValidFormat = dataArray.slice(1).every((row) => {
+            console.log("Row", row);
+
+            // Kiểm tra xem có đúng 2 giá trị và là số không
+            if (
+              row.length !== 2 ||
+              typeof row[0] !== "number" ||
+              (row[1] !== "" &&
+                (typeof row[1] !== "number" || row[1] < 0 || row[1] > 100))
+            ) {
+              return false;
+            }
+
+            return true;
+          });
+
+          if (!isValidFormat) {
+            reject(
+              new Error(
+                "Invalid data format. Please check the format of your Excel file.(typeOf Grade,Grade Scale [0,100], StudentId InCorrect,...) "
+              )
+            );
+            return;
+          }
+
+          resolve(dataArray.slice(1));
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
+    } else {
+      reject(
+        new Error("Invalid file type. Please upload an Excel (.xlsx) file.")
+      );
+    }
+  });
 };

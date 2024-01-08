@@ -177,6 +177,27 @@ const TableGrade = () => {
     );
   };
 
+  const handleEditScoreFileUpload = (idAsm, newScores) => {
+    setRows((prevRows) =>
+      prevRows.map((row) => ({
+        ...row,
+        scores:
+          row.id === idAsm
+            ? newScores.map((newScore) => {
+                const existingScore = row.scores?.find(
+                  (sc) => sc.studentId === newScore.studentId
+                );
+                return {
+                  ...existingScore,
+                  score: newScore.score,
+                  isReturned: false,
+                };
+              })
+            : row.scores,
+      }))
+    );
+  };
+
   // return the lesson
   const handleReturnLesson = (idScore) => {
     setRows((prevRows) =>
@@ -268,6 +289,7 @@ const TableGrade = () => {
                       nameOfClass={nameOfClass}
                       handleReturnLesson={handleReturnLesson}
                       handleReturnAllLessons={handleReturnAllLessons}
+                      handleEditScoreFileUpload={handleEditScoreFileUpload}
                     />
                   ))}
                   {provided.placeholder}

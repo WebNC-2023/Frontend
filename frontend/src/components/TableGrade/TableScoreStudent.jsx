@@ -12,6 +12,7 @@ import TableRow from "@mui/material/TableRow";
 
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useEffect } from "react";
 
 const TableScoreStudent = ({
   updatedPeopleRow,
@@ -20,9 +21,15 @@ const TableScoreStudent = ({
   handleReturnLesson,
   idAsm,
 }) => {
-  const [classAnchorEl, setClassAnchorEl] = React.useState(null);
+  console.log(peopleRow);
 
-  const [grade, setGrade] = useState(peopleRow.score);
+  const [classAnchorEl, setClassAnchorEl] = React.useState(null);
+  const [grade, setGrade] = useState(peopleRow.score || null);
+
+  useEffect(() => {
+    // Cập nhật giá trị grade khi peopleRow.score thay đổi
+    setGrade(peopleRow.score || null);
+  }, [peopleRow.score]);
 
   const [openEditScore, setOpenEditScore] = useState(false);
 
