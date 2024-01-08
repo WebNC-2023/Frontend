@@ -473,21 +473,29 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                     }
                   >
                     <NotificationsActiveOutlinedIcon fontSize="inherit" />
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: "0px",
-                        right: "0px",
-                        fontSize: "14px",
-                        padding: "3px",
-                        backgroundColor: "#EB4D5E",
-                        color: "white",
-                        borderRadius: "10px",
-                        minWidth: "20px",
-                      }}
-                    >
-                      1
-                    </Box>
+                    {notifications.filter(
+                      (notification) => !notification.isRead
+                    ).length !== 0 && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "0px",
+                          right: "0px",
+                          fontSize: "14px",
+                          padding: "3px",
+                          backgroundColor: "#EB4D5E",
+                          color: "white",
+                          borderRadius: "10px",
+                          minWidth: "20px",
+                        }}
+                      >
+                        {
+                          notifications.filter(
+                            (notification) => !notification.isRead
+                          ).length
+                        }
+                      </Box>
+                    )}
                   </IconButton>
                 </Tooltip>
               </Stack>
