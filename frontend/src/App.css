@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1rem;
   line-height: 1.5rem;
   font-weight: 400;
@@ -13,6 +13,8 @@ body {
   scroll-behavior: smooth;
   min-height: 100vh;
   background-color: #fff;
+  overflow-y: auto !important;
+  padding: 0px !important;
 }
 
 img {
@@ -31,7 +33,6 @@ img {
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
-
 
 .tiptap ul,
 .tiptap ol {
@@ -54,9 +55,9 @@ img {
 }
 
 .tiptap pre {
-  background: #0D0D0D;
-  color: #FFF;
-  font-family: 'JetBrainsMono', monospace;
+  background: #0d0d0d;
+  color: #fff;
+  font-family: "JetBrainsMono", monospace;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
 }
@@ -67,7 +68,6 @@ img {
   background: none;
   font-size: 0.8rem;
 }
-
 
 .tiptap img {
   max-width: 100%;
@@ -83,4 +83,17 @@ img {
   border: none;
   border-top: 2px solid #9c9c9c;
   margin: 2rem 0;
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d4d4d4;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
 }

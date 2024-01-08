@@ -3,6 +3,7 @@ import {
   Grid,
   Box,
   Avatar,
+  Button,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -36,6 +37,7 @@ import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AppsOutlinedIcon from "@mui/icons-material/AppsOutlined";
+import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import InputIcon from "@mui/icons-material/Input";
@@ -44,6 +46,12 @@ import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
 import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
 import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
 import * as userApi from "../../redux/APIs/userServices";
+import {
+  getNotification,
+  markAllAsRead,
+  markAsRead,
+} from "../../redux/APIs/notificationServices";
+import moment from "moment";
 
 const HomePageHeader = ({ showSidebar, classRoom }) => {
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
@@ -52,10 +60,58 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [classAnchorEl, setClassAnchorEl] = useState(null);
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [filterUnread, setFilterUnread] = useState(false);
+  const [ws, setWs] = useState(null);
+
   const [openDialogCreateClass, setOpenDialogCreateClass] = useState(false);
   const [openDialogJoinClass, setOpenDialogJoinClass] = useState(false);
   const openMenuClass = Boolean(classAnchorEl);
   const open = Boolean(anchorEl);
+  const openNotification = Boolean(notificationAnchorEl);
+
+  const getNotificationData = async () => {
+    const res = await getNotification();
+    setNotifications(res.data);
+  };
+
+  const calculateTimeAgo = (date) => {
+    const now = moment();
+    const targetDate = moment(date);
+
+    const duration = moment.duration(now.diff(targetDate));
+
+    if (duration.asSeconds() < 60) {
+      return `${Math.floor(duration.asSeconds())}s ago`;
+    } else if (duration.asMinutes() < 60) {
+      return `${Math.floor(duration.asMinutes())}m ago`;
+    } else if (duration.asHours() < 24) {
+      return `${Math.floor(duration.asHours())}h ago`;
+    } else {
+      return targetDate.format("MMM D, YYYY [at] h:mm A");
+    }
+  };
+
+  const configWS = async () => {
+    const newWs = new WebSocket(
+      `${
+        process.env.REACT_APP_SOCKET_SERVER_URL
+      }?access_token=${localStorage.getItem("accessToken")}`
+    );
+
+    newWs.onmessage = () => {
+      getNotificationData();
+    };
+
+    setWs(newWs);
+  };
+
+  React.useEffect(() => {
+    getNotificationData();
+    configWS();
+  }, []);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -67,6 +123,9 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
   };
   const handleClassClose = () => {
     setClassAnchorEl(null);
+  };
+  const handleCloseNotification = () => {
+    setNotificationAnchorEl(null);
   };
   const handleClickChangePasswordBtn = () => {
     setAnchorEl(null);
@@ -402,14 +461,33 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                   </Tooltip>
                 )}
 
-                {/* Applications */}
-                <Tooltip title="Applications">
+                {/* Notifications */}
+                <Tooltip title="Notifications">
                   <IconButton
+                    id="notification-icon"
                     aria-label="App"
                     sx={{ color: "#5175e0" }}
                     size="large"
+                    onClick={(event) =>
+                      setNotificationAnchorEl(event.currentTarget)
+                    }
                   >
-                    <AppsOutlinedIcon fontSize="inherit" />
+                    <NotificationsActiveOutlinedIcon fontSize="inherit" />
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "0px",
+                        right: "0px",
+                        fontSize: "14px",
+                        padding: "3px",
+                        backgroundColor: "#EB4D5E",
+                        color: "white",
+                        borderRadius: "10px",
+                        minWidth: "20px",
+                      }}
+                    >
+                      1
+                    </Box>
                   </IconButton>
                 </Tooltip>
               </Stack>
@@ -564,6 +642,148 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
               Logout
             </MenuItem>
           </Menu>
+
+          <Menu
+            anchorEl={notificationAnchorEl}
+            id="notification-menu"
+            open={openNotification}
+            onClose={handleCloseNotification}
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                width: "450px",
+                maxHeight: "600px",
+                overflowY: "auto",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                "& .MuiAvatar-root": {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1,
+                },
+                "&:before": {
+                  content: '""',
+                  display: "block",
+                  position: "absolute",
+                  top: 0,
+                  right: 14,
+                  width: 10,
+                  height: 10,
+                  bgcolor: "background.paper",
+                  transform: "translateY(-50%) rotate(45deg)",
+                  zIndex: 0,
+                },
+              },
+            }}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <Box
+              sx={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box>
+                <Button
+                  variant={filterUnread ? "outlined" : "contained"}
+                  sx={{ marginRight: "20px" }}
+                  onClick={() => setFilterUnread(false)}
+                >
+                  All
+                </Button>
+                <Button
+                  variant={filterUnread ? "contained" : "outlined"}
+                  onClick={() => setFilterUnread(true)}
+                >
+                  Unread
+                </Button>
+              </Box>
+              <Box>
+                <Button
+                  variant="text"
+                  onClick={async () => {
+                    await markAllAsRead();
+                    getNotificationData();
+                  }}
+                >
+                  Mark all as read
+                </Button>
+              </Box>
+            </Box>
+            {(filterUnread
+              ? notifications.filter((n) => !n.isRead)
+              : notifications
+            ).length === 0 && (
+              <MenuItem>
+                <Box>No notifications found</Box>
+              </MenuItem>
+            )}
+            {(filterUnread
+              ? notifications.filter((n) => !n.isRead)
+              : notifications
+            ).map((notification) => (
+              <MenuItem
+                key={notification.id}
+                onClick={async () => {
+                  if (!notification.isRead) {
+                    await markAsRead(notification.id);
+                    getNotificationData();
+                  }
+                  navigate(notification.link);
+                }}
+              >
+                <Avatar
+                  src={`${process.env.REACT_APP_SERVER_BASE_URL}/files/${notification.sender.avatar}`}
+                  sx={{
+                    width: "50px !important",
+                    height: "50px !important",
+                    backgroundColor: "#5175e0",
+                  }}
+                ></Avatar>
+                <Box
+                  sx={{
+                    wordWrap: true,
+                    width: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  <Box sx={{ fontWeight: 400, display: "flex", gap: "4px" }}>
+                    <Box sx={{ fontWeight: 500 }}>{`${
+                      notification.sender.firstName ?? ""
+                    } ${notification.sender.lastName ?? ""}`}</Box>
+                    <Box
+                      sx={{
+                        flex: "1",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {notification.content}
+                    </Box>
+                  </Box>
+                  <Box sx={{ fontSize: "14px" }}>
+                    {calculateTimeAgo(notification.dateCreated)}
+                  </Box>
+                </Box>
+                {!notification.isRead && (
+                  <Box
+                    sx={{
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "10px",
+                      backgroundColor: "red",
+                      marginLeft: "10px",
+                      marginBottom: "25px",
+                    }}
+                  ></Box>
+                )}
+              </MenuItem>
+            ))}
+          </Menu>
+
           {/* Dialog Create Class */}
           <FormDialogCreateClass
             open={openDialogCreateClass}
