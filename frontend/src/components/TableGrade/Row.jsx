@@ -29,6 +29,11 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
 import { exportGradesForAnAssignmentToExcel } from "../../utils/exportToExcel";
+import { useSelector } from "react-redux";
+
+import { importGradesToAnAssignmentFormExcel } from "../../utils/exportToExcel";
+
+import { toast } from "react-toastify";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -44,7 +49,11 @@ export default function Row(props) {
     nameOfClass,
     handleReturnLesson,
     handleReturnAllLessons,
+    handleEditScoreFileUpload,
   } = props;
+
+  const { assignments } = useSelector((state) => state.classroomDetailsInfo);
+
   const [open, setOpen] = useState(false);
 
   const [openForm, setOpenForm] = React.useState(false);
@@ -54,6 +63,9 @@ export default function Row(props) {
   const [avgScoreClass, setAvgScoreClass] = React.useState(null);
   const [allScoreNull, setAllScoreNull] = React.useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [uniqueKey, setUniqueKey] = React.useState(new Date().getTime());
+
+  const assignment = assignments.find((asm) => asm.id === row.id);
 
   React.useEffect(() => {
     const avgScoreHandle = () => {
@@ -106,6 +118,67 @@ export default function Row(props) {
   const handleSubmitReturnAllLessons = () => {
     handleReturnAllLessons(row.id);
     setIsModalOpen(false);
+  };
+  // download file Excel
+  const handleFileDownload = (scores, nameOfClass, assignmentName) => {
+    try {
+      exportGradesForAnAssignmentToExcel(scores, nameOfClass, assignmentName);
+      toast.success("Download successful!");
+    } catch (error) {
+      console.error("Error exporting grades:", error);
+      toast.error(`Error: ${error.message}`);
+    }
+  };
+
+  // Hàm kiểm tra xem studentId có thuộc mảng cũ hay không v
+  const isStudentIdValid = (newArray, oldScores) => {
+    const newStudentIds = newArray.map((item) => item.studentId);
+
+    // Check if any new studentId does not exist in the oldScores array
+    const hasNewStudentId = newStudentIds.some(
+      (id) => !oldScores.some((score) => score.studentId === id)
+    );
+    return !hasNewStudentId;
+  };
+
+  // Hàm upload mảng cũ
+
+  // Upload file Excel
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      try {
+        const excelDataArray = await importGradesToAnAssignmentFormExcel(file);
+
+        // Tạo mảng mới từ dữ liệu Excel
+        const newArray = excelDataArray.map((row) => ({
+          studentId: parseInt(row[0]),
+          score: parseInt(row[1]),
+        }));
+
+        // Kiểm tra xem studentId có thuộc mảng cũ hay không
+        if (!isStudentIdValid(newArray, row.scores)) {
+          toast.error(
+            "Invalid studentId found in the uploaded file. Please check and try again."
+          );
+          event.target.value = null;
+          return;
+        }
+
+        toast.success("Upload successfully !");
+
+        // handleEditScore(row.id)
+
+        handleEditScoreFileUpload(row.id, newArray);
+
+        event.target.value = null;
+      } catch (error) {
+        console.error("Error processing Excel file:", error);
+
+        toast.error(`Error : ${error.message}`);
+      }
+    }
   };
 
   return (
@@ -212,8 +285,8 @@ export default function Row(props) {
                       minHeight: "28px",
                     }}
                     onClick={() =>
-                      exportGradesForAnAssignmentToExcel(
-                        row.scores,
+                      handleFileDownload(
+                        assignment.scores,
                         nameOfClass,
                         row.title
                       )
@@ -237,7 +310,6 @@ export default function Row(props) {
                       />
                     </Box>
                   </Button>
-
                   <Button
                     style={{
                       marginLeft: "20px",
@@ -250,6 +322,7 @@ export default function Row(props) {
                       minWidth: "70px",
                       minHeight: "28px",
                     }}
+                    component="label"
                   >
                     <Box
                       sx={{
@@ -268,6 +341,13 @@ export default function Row(props) {
                         }}
                       />
                     </Box>
+                    <input
+                      type="file"
+                      accept=".xlsx"
+                      style={{ display: "none" }}
+                      onChange={(event) => handleFileUpload(event)}
+                      key={uniqueKey}
+                    />
                   </Button>
                 </Box>
               </Box>
