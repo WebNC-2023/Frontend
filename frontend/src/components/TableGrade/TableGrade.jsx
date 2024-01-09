@@ -24,6 +24,8 @@ import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetail
 import Axios from "../../redux/APIs/Axios";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
+import { exportGradesToExcel } from "../../utils/exportToExcel";
+
 const TableGrade = () => {
   const dispatch = useDispatch();
   const {
@@ -39,7 +41,7 @@ const TableGrade = () => {
   // Tạo một đối tượng ánh xạ studentId với thông tin sinh viên
   const studentInfoMap = {};
   people.forEach((student) => {
-    const fullName = `${student.firstName} ${student.lastName}`;
+    const fullName = `${student?.firstName} ${student?.lastName}`;
     studentInfoMap[student.id] = { fullName };
   });
 
@@ -48,7 +50,7 @@ const TableGrade = () => {
     // Thêm thuộc tính FullName vào scores
     const scoresWithFullName = assignment?.scores?.map((score) => ({
       ...score,
-      fullName: studentInfoMap[score.studentId].fullName,
+      fullName: studentInfoMap[score.studentId]?.fullName,
     }));
 
     // Trả về assignment mới với scores được cập nhật và avgScore
@@ -57,8 +59,6 @@ const TableGrade = () => {
       scores: scoresWithFullName,
     };
   });
-
-  console.log(updatedAssignmentsArray);
 
   const [originalRows, setOriginalRows] = useState(updatedAssignmentsArray);
   const [rows, setRows] = useState(updatedAssignmentsArray);
@@ -315,7 +315,7 @@ const TableGrade = () => {
               backgroundColor: "#1bbd7e",
             }}
             variant="contained"
-            // onClick={() => exportStudentListToExcel(people, nameOfClass)}
+            onClick={() => exportGradesToExcel(rows)}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               Download
