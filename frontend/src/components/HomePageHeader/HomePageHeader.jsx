@@ -739,7 +739,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                     await markAsRead(notification.id);
                     getNotificationData();
                   }
-                  navigate(notification.link);
+                  window.location.href = `${process.env.REACT_APP_CLIENT_BASE_URL}${notification.link}`;
                 }}
               >
                 <Avatar

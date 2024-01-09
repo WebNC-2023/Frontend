@@ -77,6 +77,131 @@ export const exportGradesForAnAssignmentToExcel = (
   const fileName = `exported_grades_class_${nameOfClass}_assignment_${assignmentName}.xlsx`;
   saveAs(data, fileName);
 };
+export const transformData = (data) => {
+  // Tạo một đối tượng để lưu trữ kết quả
+  const result = {};
+
+  // Duyệt qua mảng dữ liệu gốc
+  data.forEach((test) => {
+    // Duyệt qua mảng điểm của từng bài kiểm tra
+    test.scores.forEach((score) => {
+      // Nếu chưa có thông tin về sinh viên trong đối tượng kết quả, tạo mới
+      if (!result[score.studentId]) {
+        result[score.studentId] = {
+          studentId: score.studentId,
+          fullName: score.fullName,
+          scores: [],
+        };
+      }
+
+      // Thêm thông tin điểm vào đối tượng kết quả
+      result[score.studentId].scores.push({
+        id: test.id,
+        title: test.title,
+        score: score.score,
+        isReturned: score.isReturned,
+      });
+    });
+  });
+
+  // Chuyển đối tượng kết quả thành mảng
+  const finalResult = Object.values(result);
+
+  return finalResult;
+};
+
+export const exportGradesToExcel = (assignments) => {
+  const newArray = transformData(assignments);
+
+  // Tạo dòng tiêu đề
+  const headerRow = ["User", "StudentId"];
+  const assignmentColumns = newArray[0].scores.map((score) => score.title);
+  headerRow.push(...assignmentColumns);
+  const sheetData = [headerRow];
+
+  // Thêm dữ liệu cho từng sinh viên
+  newArray.forEach((student) => {
+    const rowData = [student.fullName, student.studentId];
+
+    // Thêm điểm số cho từng bài kiểm tra
+    student.scores.forEach((score) => {
+      const scoreValue = score.isReturned
+        ? score.score
+        : score.score !== null
+        ? `${score.score} (draft)`
+        : "";
+      rowData.push(scoreValue);
+    });
+
+    sheetData.push(rowData);
+  });
+
+  // Thêm dòng Class Average
+  const classAvgRow = ["Class Average", ""];
+  assignmentColumns.forEach((assignmentTitle) => {
+    const assignmentScores = newArray
+      .flatMap((student) => student.scores)
+      .filter((score) => score.title === assignmentTitle && score.isReturned);
+
+    const totalScore = assignmentScores.reduce(
+      (sum, score) => sum + score.score,
+      0
+    );
+    const classAvg =
+      assignmentScores.length > 0
+        ? (totalScore / assignmentScores.length).toFixed(2)
+        : "";
+    classAvgRow.push(classAvg);
+  });
+
+  sheetData.push(classAvgRow);
+
+  // Tạo sheet Excel từ mảng dữ liệu
+  const ws = XLSX.utils.aoa_to_sheet(sheetData);
+  // Định dạng style cho ô (center align)
+  ws["!rows"] = [
+    { hpt: 20, hpx: 20, s: { bold: true, horizontal: "center" } }, // Hàng tiêu đề
+    ...Array(sheetData.length - 2).fill({
+      hpt: 15,
+      hpx: 15,
+      s: { horizontal: "center" },
+    }), // Các hàng dữ liệu
+  ];
+
+  // Định dạng cột
+  ws["!cols"] = [
+    { width: 20 }, // Cột User
+    { width: 15 }, // Cột StudentId
+    ...assignmentColumns.map(() => ({ width: 15 })), // Các cột điểm
+  ];
+
+  // Định dạng dữ liệu
+  const A1Cell = XLSX.utils.encode_cell({ c: 0, r: 0 }); // 'A1'
+  ws[A1Cell]["t"] = "s"; // User
+
+  const B1Cell = XLSX.utils.encode_cell({ c: 1, r: 0 }); // 'B1'
+  ws[B1Cell]["t"] = "n"; // StudentId
+
+  // Căn giữ ô tiêu đề và làm đậm
+  ws["!rows"] = [{ hpt: 20, hpx: 20, s: { bold: true, horizontal: "center" } }]; // Chiều cao của hàng tiêu đề
+
+  // Tạo workbook và thêm sheet vào workbook
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+  // Xuất file Excel
+  const excelBuffer = XLSX.write(wb, {
+    bookType: "xlsx",
+    type: "array",
+  });
+  const dataBlob = new Blob([excelBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  // Tạo tên file và download
+  const fileName = `report_grade_board.xlsx`;
+  saveAs(dataBlob, fileName);
+};
 
 export const importGradesToAnAssignmentFormExcel = (file) => {
   return new Promise((resolve, reject) => {
@@ -100,7 +225,9 @@ export const importGradesToAnAssignmentFormExcel = (file) => {
           // Kiểm tra định dạng của dữ liệu
           const isValidFormat = dataArray.slice(1).every((row) => {
             console.log("Row", row);
-
+            if (row.length === 1) {
+              row[1] = "";
+            }
             // Kiểm tra xem có đúng 2 giá trị và là số không
             if (
               row.length !== 2 ||

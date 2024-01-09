@@ -21,8 +21,6 @@ const TableScoreStudent = ({
   handleReturnLesson,
   idAsm,
 }) => {
-  console.log(peopleRow);
-
   const [classAnchorEl, setClassAnchorEl] = React.useState(null);
   const [grade, setGrade] = useState(peopleRow.score || null);
 
