@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Button from "@mui/material/Button";
@@ -13,6 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useEffect } from "react";
+import { DataContext } from "../../contexts/DataContext";
 
 const TableScoreStudent = ({
   updatedPeopleRow,
@@ -21,6 +22,7 @@ const TableScoreStudent = ({
   handleReturnLesson,
   idAsm,
 }) => {
+  const { language } = useContext(DataContext);
   const [classAnchorEl, setClassAnchorEl] = React.useState(null);
   const [grade, setGrade] = useState(peopleRow.score || null);
 
@@ -94,7 +96,7 @@ const TableScoreStudent = ({
                     fontSize: "small",
                   }}
                 >
-                  Draft
+                  {language === "English" ? "Draft" : "Bản nháp"}
                 </Typography>
               </Stack>
             )
@@ -152,27 +154,33 @@ const TableScoreStudent = ({
             }}
           >
             <MenuItem key="updateGrade" onClick={handleClickOpenEditScore}>
-              Update grade
+              {language === "English" ? "Update grade" : "Cập nhật điểm số"}
             </MenuItem>
             <MenuItem
               key="return"
               disabled={peopleRow.isReturned || peopleRow.score === null}
               onClick={handleSubmitReturnTheLesson}
             >
-              Return the lesson
+              {language === "English" ? "Return the lesson" : "Trả bài"}
             </MenuItem>
           </Menu>
         </TableCell>
       </TableRow>
       {/* Edit score */}
       <Dialog open={openEditScore} fullWidth>
-        <DialogTitle>Cập nhật điểm số</DialogTitle>
+        <DialogTitle>
+          {language === "English"
+            ? "Update the student's grade"
+            : "Cập nhật điểm số"}
+        </DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Nhập điểm số mới"
+            label={
+              language === "English" ? "Enter new grade" : "Nhập điểm số mới"
+            }
             type="number"
             autoComplete="off"
             fullWidth
@@ -182,18 +190,20 @@ const TableScoreStudent = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseEditScore}>Cancel</Button>
+          <Button onClick={handleCloseEditScore}>
+            {language === "English" ? "Cancel" : "Hủy"}
+          </Button>
           <Button
             onClick={handleSubmitEditScore}
             disabled={
               isNaN(parseFloat(grade))
                 ? true
-                : Number(grade) >= 0 && Number(grade) <= 100
+                : Number.isInteger(Number(grade)) && Number(grade) >= 0 && Number(grade) <= 100
                 ? false
                 : true
             }
           >
-            Update
+            {language === "English" ? "Update" : "Cập nhật"}
           </Button>
         </DialogActions>
       </Dialog>
