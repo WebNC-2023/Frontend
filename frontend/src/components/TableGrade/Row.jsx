@@ -63,6 +63,7 @@ export default function Row(props) {
   const [titleContent, setTitleContent] = React.useState(row.title);
   const [avgScoreClass, setAvgScoreClass] = React.useState(null);
   const [allScoreNull, setAllScoreNull] = React.useState(null);
+  const [isReturnAll, setIsReturnAll] = React.useState(true);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [uniqueKey, setUniqueKey] = React.useState(new Date().getTime());
 
@@ -93,8 +94,15 @@ export default function Row(props) {
       setAllScoreNull(checkNull);
     };
 
+    const isReturnAllScore = () => {
+      const checkReturn = row?.scores?.every((sc) => sc.isReturned === true);
+
+      setIsReturnAll(checkReturn);
+    };
+
     avgScoreHandle();
     areAllScoresNull();
+    isReturnAllScore();
   }, [row.scores]);
 
   const handleClickOpenForm = (scrollType) => {
@@ -250,22 +258,18 @@ export default function Row(props) {
                   </IconButton>
                 </Tooltip>
 
-                <Tooltip
-                  title={
-                    language === "English"
-                      ? "Return All Lessons"
-                      : "Trả tất cả bài tập"
-                  }
-                >
-                  <IconButton
-                    aria-label="Return"
-                    sx={{ color: "#1bbd7e" }}
-                    size="medium"
-                    onClick={handleClickOpenModal}
-                    disabled={allScoreNull}
-                  >
-                    <AssignmentReturnIcon fontSize="inherit" />
-                  </IconButton>
+                <Tooltip title={language === "English" ? "Return All Lessons" : "Trả tất cả bài tập"}>
+                  <span>
+                    <IconButton
+                      aria-label="Return"
+                      sx={{ color: "#1bbd7e" }}
+                      size="medium"
+                      onClick={handleClickOpenModal}
+                      disabled={allScoreNull || isReturnAll}
+                    >
+                      <AssignmentReturnIcon fontSize="inherit" />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               </Stack>
             </TableCell>
