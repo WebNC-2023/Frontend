@@ -1,10 +1,11 @@
 import "./AssignmentCardForTeacher.css";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import IconButton from "@mui/material/IconButton";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useContext } from "react";
 import Button from "@mui/material/Button";
 import parser from "html-react-parser";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "../../contexts/DataContext";
 const AssignmentCardForStudent = ({
   assignment_title,
   assignment_published,
@@ -12,6 +13,7 @@ const AssignmentCardForStudent = ({
   assignment_score,
   assignment_id,
 }) => {
+  const { language } = useContext(DataContext);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const handleClickInstruction = () => {
@@ -27,14 +29,23 @@ const AssignmentCardForStudent = ({
       let day = newTime.getUTCDate();
       let month = newTime.getUTCMonth() + 1;
       let year = newTime.getUTCFullYear();
-      return `${hour.toString().padStart(2, "0")}:${minute
-        .toString()
-        .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
-        .toString()
-        .padStart(2, "0")} thg ${month.toString().padStart(2, "0")}, ${year}`;
+      if (language === "English") {
+        return `${month.toString().padStart(2, "0")}/${day
+          .toString()
+          .padStart(2, "0")}/${year}, ${hour
+          .toString()
+          .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:${sec
+          .toString()
+          .padStart(2, "0")}`;
+      } else
+        return `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
+          .toString()
+          .padStart(2, "0")} thg ${month.toString().padStart(2, "0")} ${year}`;
     }
     return convertTime(assignment_published);
-  }, [assignment_published]);
+  }, [assignment_published, language]);
   return (
     <div style={{ paddingBottom: "8px" }}>
       <div
@@ -79,7 +90,8 @@ const AssignmentCardForStudent = ({
               userSelect: "none",
             }}
           >
-            Đã đăng vào {dateCreated}
+            {language === "English" ? "Published on: " : "Đã đăng vào: "}
+            {dateCreated}
           </span>
         </div>
       </div>
@@ -103,7 +115,8 @@ const AssignmentCardForStudent = ({
                   userSelect: "none",
                 }}
               >
-                {assignment_score} điểm
+                {assignment_score}
+                {language === "English" ? " points" : " điểm"}
               </p>
               <p
                 style={{
@@ -114,7 +127,7 @@ const AssignmentCardForStudent = ({
                   userSelect: "none",
                 }}
               >
-                Đã giao
+                {language === "English" ? "Assigned" : "Đã giao"}
               </p>
             </div>
             <div
@@ -146,7 +159,7 @@ const AssignmentCardForStudent = ({
               sx={{ color: "#1967d2", textTransform: "none" }}
               onClick={handleClickInstruction}
             >
-              Xem hướng dẫn
+              {language === "English" ? "View details" : "Xem chi tiết"}
             </Button>
           </div>
         </>

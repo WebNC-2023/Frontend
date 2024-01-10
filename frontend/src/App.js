@@ -36,6 +36,7 @@ function App() {
   const [showContent, setShowContent] = useState("Home");
   const [showSidebar, setShowSidebar] = useState(true);
   const [contentClassTab, setContentClassTab] = useState();
+  const [language, setLanguage] = useState("Tiếng Việt");
   return (
     <DataContext.Provider
       value={{
@@ -47,6 +48,8 @@ function App() {
         setShowSidebar,
         contentClassTab,
         setContentClassTab,
+        language,
+        setLanguage,
       }}
     >
       <Router>
@@ -121,7 +124,7 @@ function App() {
           <Route element={<ProtectedAdmin />}>
             <Route path="/admin" element={<AdminPage />} />
           </Route>
-          
+
           <Route element={<ProtectedAttendByLink />}>
             <Route path="/classes/:classId/attend" element={<AttendByLink />} />
           </Route>

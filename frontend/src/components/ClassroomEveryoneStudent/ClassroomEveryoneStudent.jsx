@@ -9,7 +9,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Axios from "../../redux/APIs/Axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
@@ -18,6 +18,7 @@ import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { styled, alpha } from "@mui/material/styles";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { DataContext } from "../../contexts/DataContext";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -69,6 +70,7 @@ const ClassroomEveryoneStudent = ({
   email,
   userId,
 }) => {
+  const { language } = useContext(DataContext);
   const people = useSelector((state) => state.classroomDetailsInfo.people);
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
@@ -175,7 +177,9 @@ const ClassroomEveryoneStudent = ({
             }
           >
             {firstName === null && lastName === null
-              ? `${email}  (Đã được mời)`
+              ? `${email}  ${
+                  language === "English" ? "(Invited)" : "(Đã được mời)"
+                }`
               : `${firstName} ${lastName}`}
           </div>
         </div>
@@ -208,27 +212,37 @@ const ClassroomEveryoneStudent = ({
                 onClick={handleOpenRemoveDialog}
                 disableRipple
               >
-                Xóa học sinh
+                {language === "English" ? "Delete a student" : "Xóa học sinh"}
               </MenuItem>
             </StyledMenu>
             <Dialog open={openRemoveDialog} fullWidth>
-              <DialogTitle>Xoá học sinh?</DialogTitle>
+              <DialogTitle>
+                {language === "English" ? "Delete a student?" : "Xóa học sinh?"}
+              </DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  Học sinh này sẽ không thể mở lớp này nếu không được mời lại.
+                  {language === "English"
+                    ? "The student will not be able to open this class unless invited again."
+                    : "Học sinh này sẽ không thể mở lớp này nếu không được mời lại."}
                 </DialogContentText>
                 <DialogActions>
                   <Button
                     disabled={deleting ? true : false}
                     onClick={handleCloseRemoveDialog}
                   >
-                    Huỷ
+                    {language === "English" ? "Cancel" : "Hủy"}
                   </Button>
                   <Button
                     disabled={deleting ? true : false}
                     onClick={handleRemoveStudent}
                   >
-                    {deleting ? "Đang xoá..." : "Xoá"}
+                    {deleting
+                      ? language === "English"
+                        ? "Deleting..."
+                        : "Đang xóa..."
+                      : language === "English"
+                      ? "Delete"
+                      : "Xóa"}
                   </Button>
                 </DialogActions>
               </DialogContent>

@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import LinkIcon from "@mui/icons-material/Link";
@@ -14,7 +14,9 @@ import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import "./ClassDetailsPage.css";
 import { toast } from "react-toastify";
+import { DataContext } from "../../contexts/DataContext";
 const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
+  const { language } = useContext(DataContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -27,9 +29,9 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
   const copyToClipboard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Copied to clipboard");
+      toast.success(language === "English" ? "Copied to clipboard" : "Đã sao chép vào clipboard");
     } catch (error) {
-      toast.error("Can not copy to clipboard");
+      toast.error(language === "English" ? "Can not copy to clipboard" : "Không thể sao chép vào clipboard");
     }
     handleClose();
   };
@@ -61,7 +63,9 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                 }
               >
                 <div className="class-details-page-left-code">
-                  <div className="class-details-page-code-title">Mã lớp</div>
+                  <div className="class-details-page-code-title">
+                    {language === "English" ? "Class code" : "Mã lớp"}
+                  </div>
                   <div className="class-details-page-code-content">
                     {classDetails.id}
                   </div>
@@ -94,7 +98,11 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                     }}
                   >
                     <LinkIcon />
-                    <p>Sao chép đường liên kết mời tham gia lớp học</p>
+                    <p>
+                      {language === "English"
+                        ? "Copy the class invitation link"
+                        : "Sao chép đường liên kết mời tham gia lớp học"}
+                    </p>
                   </MenuItem>
                   <MenuItem
                     onClick={() => copyToClipboard(classDetails.id)}
@@ -104,7 +112,9 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                     }}
                   >
                     <ContentCopyRoundedIcon />
-                    <p>Sao chép mã lớp</p>
+                    <p>{language === "English"
+                        ? "Copy class code"
+                        : "Sao chép mã lớp"}</p>
                   </MenuItem>
                   <MenuItem
                     onClick={handleClose}
@@ -114,7 +124,9 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                     }}
                   >
                     <CancelPresentationIcon />
-                    <p>Tắt</p>
+                    <p>{language === "English"
+                        ? "Turn off"
+                        : "Tắt"}</p>
                   </MenuItem>
                 </Menu>
               </div>

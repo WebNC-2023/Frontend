@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -23,10 +23,12 @@ import { editAsmAction } from "../../redux/Actions/classAction";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import Axios from "../../redux/APIs/Axios";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import { DataContext } from "../../contexts/DataContext";
 
 import { exportGradesToExcel } from "../../utils/exportToExcel";
 
 const TableGrade = () => {
+  const { language } = useContext(DataContext);
   const dispatch = useDispatch();
   const {
     id,
@@ -270,11 +272,27 @@ const TableGrade = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell />
-                    <TableCell> Assignment Header</TableCell>
-                    <TableCell align="right">Grade Scale</TableCell>
-                    <TableCell align="right">Class average score</TableCell>
-                    <TableCell align="right">Expiration date</TableCell>
-                    <TableCell align="right">Action</TableCell>
+                    <TableCell>
+                      {language === "English"
+                        ? "Assignment Header"
+                        : "Tiêu đề bài tập"}
+                    </TableCell>
+                    <TableCell align="right">
+                      {language === "English" ? "Grade Scale" : "Thang điểm"}
+                    </TableCell>
+                    <TableCell align="right">
+                      {language === "English"
+                        ? "Class average score"
+                        : "Điểm trung bình của lớp"}
+                    </TableCell>
+                    <TableCell align="right">
+                      {language === "English"
+                        ? "Expiration date"
+                        : "Ngày hết hạn"}
+                    </TableCell>
+                    <TableCell align="right">
+                      {language === "English" ? "Action" : "Hành động"}
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -318,7 +336,7 @@ const TableGrade = () => {
             onClick={() => exportGradesToExcel(rows)}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              Download
+              {language === "English" ? "Download" : "Tải xuống"}
               <FileDownloadIcon
                 fontSize="small"
                 sx={{
@@ -345,7 +363,7 @@ const TableGrade = () => {
             onClick={handleResetData}
             disabled={!hasChanges || isLoading}
           >
-            Cancel
+            {language === "English" ? "Cancel" : "Hủy"}
           </Button>
           <Button
             style={{
@@ -356,24 +374,37 @@ const TableGrade = () => {
             onClick={handleSubmitEdit}
             disabled={!hasChanges || isLoading}
           >
-            {isLoading ? "Loading...." : "Save Changes"}
+            {isLoading
+              ? language === "English"
+                ? "Loading...."
+                : "Đang tải..."
+              : language === "English"
+              ? "Save Changes"
+              : "Lưu những thay đổi"}
           </Button>
         </Box>
       </Box>
 
       {/* Thông báo modal */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <DialogTitle>Unsaved Changes</DialogTitle>
+        <DialogTitle>
+          {language === "English"
+            ? "Unsaved Changes"
+            : "Những thay đổi chưa được lưu"}
+        </DialogTitle>
         <DialogContent>
           <Typography>
-            You have unsaved changes. Are you sure you want to cancel and
-            discard these changes?
+            {language === "English"
+              ? "You have unsaved changes. Are you sure you want to cancel and discard these changes?"
+              : "Bạn có các thay đổi chưa lưu. Bạn có chắc chắn muốn hủy và loại bỏ những thay đổi này?"}
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setIsModalOpen(false)}>No</Button>
+          <Button onClick={() => setIsModalOpen(false)}>
+            {language === "English" ? "No" : "Không đồng ý"}
+          </Button>
           <Button onClick={handleConfirmReset} autoFocus>
-            Yes
+            {language === "English" ? "Yes" : "Đồng ý"}
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import EditIcon from "@mui/icons-material/Edit";
@@ -34,6 +34,7 @@ import { useSelector } from "react-redux";
 import { importGradesToAnAssignmentFormExcel } from "../../utils/exportToExcel";
 
 import { toast } from "react-toastify";
+import { DataContext } from "../../contexts/DataContext";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -51,7 +52,7 @@ export default function Row(props) {
     handleReturnAllLessons,
     handleEditScoreFileUpload,
   } = props;
-
+  const { language } = useContext(DataContext);
   const { assignments } = useSelector((state) => state.classroomDetailsInfo);
 
   const [open, setOpen] = useState(false);
@@ -224,7 +225,13 @@ export default function Row(props) {
                 alignItems="end"
                 spacing={1}
               >
-                <Tooltip title="Edit Grade Composition">
+                <Tooltip
+                  title={
+                    language === "English"
+                      ? "Edit Grade Composition"
+                      : "Chỉnh sửa điểm thành phần"
+                  }
+                >
                   <IconButton
                     aria-label="Edit"
                     sx={{ color: "#5175e0" }}
@@ -234,7 +241,13 @@ export default function Row(props) {
                     <EditIcon fontSize="inherit" />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Remove Grade Composition">
+                <Tooltip
+                  title={
+                    language === "English"
+                      ? "Remove Grade Composition"
+                      : "Xóa điểm thành phần"
+                  }
+                >
                   <IconButton
                     aria-label="Remove"
                     sx={{ color: "#BF3131" }}
@@ -245,7 +258,7 @@ export default function Row(props) {
                   </IconButton>
                 </Tooltip>
 
-                <Tooltip title="Return All Lessons">
+                <Tooltip title={language === "English" ? "Return All Lessons" : "Trả tất cả bài tập"}>
                   <span>
                     <IconButton
                       aria-label="Return"
@@ -279,7 +292,9 @@ export default function Row(props) {
               >
                 <Box>
                   <Typography variant="h6" gutterBottom component="div">
-                    List of assigned students
+                    {language === "English"
+                      ? "List of assigned students"
+                      : "Danh sách sinh viên được giao bài tập"}
                   </Typography>
                 </Box>
                 <Box>
@@ -309,7 +324,7 @@ export default function Row(props) {
                         gap: "0.5rem",
                       }}
                     >
-                      Download
+                      {language === "English" ? "Download" : "Tải xuống"}
                       <CloudDownloadIcon
                         fontSize="small"
                         sx={{
@@ -341,7 +356,7 @@ export default function Row(props) {
                         gap: "0.5rem",
                       }}
                     >
-                      Upload
+                      {language === "English" ? "Upload" : "Tải lên"}
                       <CloudUploadIcon
                         fontSize="small"
                         sx={{
@@ -369,10 +384,10 @@ export default function Row(props) {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell>StudentId</TableCell>
-                    <TableCell>FullName</TableCell>
-                    <TableCell align="right">Grade</TableCell>
-                    <TableCell align="right">Action</TableCell>
+                    <TableCell>{language==="English"?"studentId":"Mã học viên"}</TableCell>
+                    <TableCell>{language==="English"?"FullName":"Họ và tên"}</TableCell>
+                    <TableCell align="right">{language==="English"?"Grade":"Điểm"}</TableCell>
+                    <TableCell align="right">{language==="English"?"Actions":"Hành động"}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -416,7 +431,7 @@ export default function Row(props) {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Assignment
+              {language === "English" ? "Assignment" : "Bài tập"}
             </Typography>
             <Button
               autoFocus
@@ -424,14 +439,16 @@ export default function Row(props) {
               disabled={titleContent === "" ? true : false}
               onClick={() => handleEditSubmit()}
             >
-              Update Assignment
+              {language === "English"
+                ? "Update Assignment"
+                : "Cập nhật bài tập"}
             </Button>
           </Toolbar>
         </AppBar>
         <DialogContent dividers={scroll === "paper"}>
           <TextField
             autoComplete="off"
-            label="Tiêu đề"
+            label={language === "English" ? "Title" : "Tiêu đề"}
             variant="filled"
             fullWidth
             sx={{ paddingBottom: "16px" }}
@@ -440,7 +457,11 @@ export default function Row(props) {
           />
           <TipTap
             setContentMsg={setContentMsg}
-            placeholderTipTap="Hướng dẫn (Không bắt buộc)"
+            placeholderTipTap={
+              language === "English"
+                ? "Instructions (Optional)"
+                : "Hướng dẫn (Không bắt buộc)"
+            }
             content={contentMsg}
             tipTapFocus={true}
           />
@@ -461,7 +482,7 @@ export default function Row(props) {
                 paddingBottom: "16px",
               }}
             >
-              Điểm
+              {language === "English" ? "Grade" : "Điểm"}
             </p>
             <TextField
               type="number"
@@ -479,12 +500,14 @@ export default function Row(props) {
                 padding: "16px 0px",
               }}
             >
-              Dành cho
+              {language === "English" ? "For" : "Dành cho"}
             </p>
             <TextField
               autoComplete="off"
               variant="filled"
-              value={"Tất cả học viên"}
+              value={
+                language === "English" ? "All students" : "Tất cả học viên"
+              }
               disabled
             />
           </div>
@@ -493,16 +516,24 @@ export default function Row(props) {
 
       {/* Thông báo modal */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <DialogTitle>Return these assignments?</DialogTitle>
+        <DialogTitle>
+          {language === "English"
+            ? "Return these assignments?"
+            : "Trả những bài tập này?"}
+        </DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to return these assignments?
+            {language === "English"
+              ? "Are you sure you want to return these assignments?"
+              : "Bạn chắc chắn muốn trả những bài tập này?"}
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setIsModalOpen(false)}>No</Button>
+          <Button onClick={() => setIsModalOpen(false)}>
+            {language === "English" ? "No" : "Không đồng ý"}
+          </Button>
           <Button onClick={handleSubmitReturnAllLessons} autoFocus>
-            Yes
+            {language === "English" ? "Yes" : "Đồng ý"}
           </Button>
         </DialogActions>
       </Dialog>

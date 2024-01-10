@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
 import "./AssignmentDetailsPage.css";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
@@ -6,7 +6,9 @@ import IconButton from "@mui/material/IconButton";
 import parser from "html-react-parser";
 import { useSelector } from "react-redux";
 import ReviewRequirementByStudent from "../../components/ReviewRequirementByStudent/ReviewRequirementByStudent";
+import { DataContext } from "../../contexts/DataContext";
 const AssignmentDetailsPage = () => {
+  const { language } = useContext(DataContext);
   const assignmentDetail = useSelector(
     (state) => state.classroomDetailsInfo.assignmentDetail
   );
@@ -20,14 +22,23 @@ const AssignmentDetailsPage = () => {
       let day = newTime.getUTCDate();
       let month = newTime.getUTCMonth() + 1;
       let year = newTime.getUTCFullYear();
-      return `${hour.toString().padStart(2, "0")}:${minute
-        .toString()
-        .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
-        .toString()
-        .padStart(2, "0")} thg ${month.toString().padStart(2, "0")}, ${year}`;
+      if (language === "English") {
+        return `${month.toString().padStart(2, "0")}/${day
+          .toString()
+          .padStart(2, "0")}/${year}, ${hour
+          .toString()
+          .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:${sec
+          .toString()
+          .padStart(2, "0")}`;
+      } else
+        return `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
+          .toString()
+          .padStart(2, "0")} thg ${month.toString().padStart(2, "0")} ${year}`;
     }
     return convertTime(assignmentDetail.assignmentDateCreated);
-  }, [assignmentDetail.assignmentDateCreated]);
+  }, [assignmentDetail.assignmentDateCreated, language]);
   return (
     <>
       <HomePageHeader showSidebar={true} classRoom={true} />
@@ -64,7 +75,9 @@ const AssignmentDetailsPage = () => {
                   paddingBottom: "16px",
                 }}
               >
-                {`Bài tập được tạo vào lúc ${dateCreated}`}
+                {language === "English"
+                  ? `The assignment is created at ${dateCreated}`
+                  : `Bài tập được tạo vào lúc ${dateCreated}`}
               </p>
               <p
                 style={{
@@ -77,10 +90,10 @@ const AssignmentDetailsPage = () => {
                 }}
               >
                 {assignmentDetail.score === undefined
-                  ? "100 điểm"
+                  ? (language === "English" ? "100 points" : "100 điểm")
                   : `${assignmentDetail.score}/100`}
                 {assignmentDetail.reviewId !== undefined
-                  ? " (Đã gửi yêu cầu xem xét lại điểm)"
+                  ? (language === "English" ? " (Submitted a request for grade review)" : " (Đã gửi yêu cầu xem xét lại điểm)")
                   : ""}
               </p>
               <div
@@ -103,45 +116,6 @@ const AssignmentDetailsPage = () => {
               )}
             </div>
           </div>
-          {/* <div className="assignment-details-content-right">
-            <div className="assignment-details-content-yourAssignment">
-              <div className="assignment-details-content-yourAssignment-section1">
-                <p style={{ color: "#3c4043", fontSize: "1.25rem" }}>
-                  Bài tập của bạn
-                </p>
-                <p
-                  style={{
-                    color: "#2e7d32",
-                    fontSize: "0.875rem",
-                    fontWeight: "500",
-                  }}
-                >
-                  Đã giao
-                </p>
-              </div>
-              <div className="assignment-details-content-yourAssignment-section2">
-                <MuiFileInput
-                  value={valueFile}
-                  placeholder="Thêm bài nộp"
-                  color="primary"
-                  onChange={handleChange}
-                  clearIconButtonProps={{
-                    title: "Xóa",
-                    children: <CloseIcon fontSize="small" />,
-                  }}
-                />
-              </div>
-              {valueFile && (
-                <Button
-                  fullWidth
-                  sx={{ textTransform: "none" }}
-                  variant="contained"
-                >
-                  Nộp bài
-                </Button>
-              )}
-            </div>
-          </div> */}
         </div>
       </div>
     </>

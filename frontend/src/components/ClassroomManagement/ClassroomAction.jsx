@@ -13,14 +13,16 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Axios from "../../redux/APIs/Axios";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { updateClassrooms } from "../../redux/Reducers/AdminSlice";
 import EditIcon from "@mui/icons-material/Edit";
 import moment from "moment";
+import { DataContext } from "../../contexts/DataContext";
 const ClassroomAction = ({ params }) => {
+  const { language } = useContext(DataContext);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(params.row.isActive.toString());
@@ -83,7 +85,9 @@ const ClassroomAction = ({ params }) => {
         <EditIcon />
       </Fab>
       <Dialog fullWidth open={open}>
-        <DialogTitle>Chỉnh sửa</DialogTitle>
+        <DialogTitle>
+          {language === "English" ? "Edit" : "Chỉnh sửa"}
+        </DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
@@ -136,14 +140,22 @@ const ClassroomAction = ({ params }) => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Hủy</Button>
+          <Button onClick={handleClose}>
+            {language === "English" ? "Cancel" : "Hủy"}
+          </Button>
           <Button
             disabled={
               value === params.row.isActive.toString() || loading ? true : false
             }
             onClick={handleSubmit}
           >
-            {loading ? "Đang cập nhật" : "Cập nhật"}
+            {loading
+              ? language === "English"
+                ? "Updating..."
+                : "Đang cập nhật..."
+              : language === "English"
+              ? "Update"
+              : "Cập nhật"}
           </Button>
         </DialogActions>
       </Dialog>

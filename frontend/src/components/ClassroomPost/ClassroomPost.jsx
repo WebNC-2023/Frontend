@@ -13,6 +13,7 @@ import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { DataContext } from "../../contexts/DataContext";
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -57,6 +58,7 @@ const StyledMenu = styled((props) => (
 }));
 
 const ClassroomPost = ({ post }) => {
+  const { language } = React.useContext(DataContext);
   const [contentMsg, setContentMsg] = useState("");
   const [toggleComments, setToggleComments] = useState(false);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
@@ -105,6 +107,7 @@ const ClassroomPost = ({ post }) => {
         commentContent: contentMsg,
       })
     );
+    setContentMsg("");
   };
   return (
     <>
@@ -142,7 +145,7 @@ const ClassroomPost = ({ post }) => {
               onClick={handleClose}
               disableRipple
             >
-              Xóa
+              {language === "English" ? "Delete" : "Xóa"}
             </MenuItem>
           </StyledMenu>
         </div>
@@ -161,7 +164,9 @@ const ClassroomPost = ({ post }) => {
                   comments.filter((comment) => comment.postId === post.postId)
                     .length
                 }{" "}
-                nhận xét về lớp học
+                {language === "English"
+                  ? "comments about the class"
+                  : "nhận xét về lớp học"}
               </p>
             </div>
           )}
@@ -187,10 +192,11 @@ const ClassroomPost = ({ post }) => {
           <div className="add-comment-in-post-container">
             <TipTap
               setContentMsg={setContentMsg}
-              placeholderTipTap="Thêm nhận xét trong lớp học..."
+              placeholderTipTap="Add comments in class..."
+              content={contentMsg}
             />
           </div>
-          <Tooltip title="Đăng">
+          <Tooltip title={language === "English" ? "Post" : "Đăng"}>
             <div style={{ cursor: "pointer" }} className="send-comment-btn">
               <IconButton
                 style={

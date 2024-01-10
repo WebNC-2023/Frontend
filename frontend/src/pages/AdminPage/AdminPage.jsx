@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AccountManagement from "../../components/AccountManagement/AccountManagement";
 import AdminTabs from "../../components/ClassTabs/AdminTabs";
 import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
 import "./AdminPage.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import ClassroomManagement from "../../components/ClassroomManagement/ClassroomManagement";
+import { DataContext } from "../../contexts/DataContext";
 const AdminPage = () => {
+  const { language } = useContext(DataContext);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const [loadingPage, setLoadingPage] = useState(true);
@@ -56,7 +58,9 @@ const AdminPage = () => {
                     lineHeight: "2.25rem",
                   }}
                 >
-                  Quản lí tài khoản
+                  {language === "English"
+                    ? "Accounts management"
+                    : "Quản lí tài khoản"}
                 </p>
                 <div style={{ padding: "24px 0px" }}>
                   <AccountManagement />
@@ -74,10 +78,12 @@ const AdminPage = () => {
                     lineHeight: "2.25rem",
                   }}
                 >
-                  Quản lí lớp học
+                  {language === "English"
+                    ? "Classes management"
+                    : "Quản lí lớp học"}
                 </p>
                 <div style={{ padding: "24px 0px" }}>
-                    <ClassroomManagement />
+                  <ClassroomManagement />
                 </div>
               </>
             )}

@@ -2,16 +2,18 @@ import "./AssignmentCardForTeacher.css";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import IconButton from "@mui/material/IconButton";
 //import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import parser from "html-react-parser";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "../../contexts/DataContext";
 const AssignmentCardForTeacher = ({
   assignment_title,
   assignment_published,
   assignment_instruction,
   assignment_score,
-  assignment_id
+  assignment_id,
 }) => {
+  const { language } = useContext(DataContext);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const handleClickViewInstruction = () => {
@@ -27,14 +29,23 @@ const AssignmentCardForTeacher = ({
       let day = newTime.getUTCDate();
       let month = newTime.getUTCMonth() + 1;
       let year = newTime.getUTCFullYear();
-      return `${hour.toString().padStart(2, "0")}:${minute
-        .toString()
-        .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
-        .toString()
-        .padStart(2, "0")} thg ${month.toString().padStart(2, "0")}, ${year}`;
+      if (language === "English") {
+        return `${month.toString().padStart(2, "0")}/${day
+          .toString()
+          .padStart(2, "0")}/${year}, ${hour
+          .toString()
+          .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:${sec
+          .toString()
+          .padStart(2, "0")}`;
+      } else
+        return `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
+          .toString()
+          .padStart(2, "0")} thg ${month.toString().padStart(2, "0")} ${year}`;
     }
     return convertTime(assignment_published);
-  }, [assignment_published]);
+  }, [assignment_published, language]);
   return (
     <div style={{ paddingBottom: "8px" }}>
       <div
@@ -79,7 +90,8 @@ const AssignmentCardForTeacher = ({
               userSelect: "none",
             }}
           >
-            Đã đăng vào {dateCreated}
+            {language === "English" ? "Published on: " : "Đã đăng vào: "}
+            {dateCreated}
           </span>
           {/* <IconButton sx={{}}>
             <MoreVertIcon />
@@ -90,14 +102,14 @@ const AssignmentCardForTeacher = ({
         <div className="assignment-card-for-teacher-details">
           <p
             style={{
-              fontSize: "0.875rem",
-              lineHeight: "1.25rem",
+              fontSize: "1rem",
+              lineHeight: "1.5rem",
               color: "#3c4043",
               fontWeight: "500",
-              textDecoration: "underline",
             }}
           >
-            {assignment_score} điểm
+            {assignment_score}
+            {language === "English" ? " points" : " điểm"}
           </p>
           <div
             style={{
@@ -116,7 +128,7 @@ const AssignmentCardForTeacher = ({
               className="teacher-view-instruction"
               onClick={handleClickViewInstruction}
             >
-              Xem hướng dẫn
+              {language === "English" ? "View details" : "Xem chi tiết"}
             </p>
           </div>
         </div>

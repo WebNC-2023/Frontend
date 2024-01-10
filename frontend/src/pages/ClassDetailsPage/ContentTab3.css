@@ -25,6 +25,8 @@
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
+    flex-wrap: wrap;
+    padding-top: 64px;
 }
 
 .classroom-everyone-student-title {
@@ -49,9 +51,14 @@
         padding: 10px;
     }
 
-    .classroom-everyone-student-header,
     .classroom-everyone-teacher-header {
         padding: 10px;
+    }
+
+    .classroom-everyone-student-header {
+        padding: 10px;
+        padding-top: 64px;
+
     }
 
     .classroom-everyone-teacher-header,
