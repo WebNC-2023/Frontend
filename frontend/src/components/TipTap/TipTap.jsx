@@ -10,15 +10,17 @@ import "./TipTap.css";
 import Placeholder from "@tiptap/extension-placeholder";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import { DataContext } from "../../contexts/DataContext";
 
 const MenuBar = ({ editor }) => {
+  const { language } = React.useContext(DataContext);
   if (!editor) {
     return null;
   }
 
   return (
     <div style={{ paddingTop: "16px" }}>
-      <Tooltip title="Đậm">
+      <Tooltip title={language === "English" ? "Bold" : "Đậm"}>
         <IconButton
           size="small"
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -39,7 +41,7 @@ const MenuBar = ({ editor }) => {
           <FormatBoldIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Nghiêng">
+      <Tooltip title={language === "English" ? "Italic" : "Nghiêng"}>
         <IconButton
           size="small"
           onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -60,7 +62,7 @@ const MenuBar = ({ editor }) => {
           <FormatItalicIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Gạch chân">
+      <Tooltip title={language === "English" ? "Underline" : "Gạch chân"}>
         <IconButton
           size="small"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
@@ -81,7 +83,11 @@ const MenuBar = ({ editor }) => {
           <FormatUnderlinedIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Danh sách có dấu đầu dòng">
+      <Tooltip
+        title={
+          language === "English" ? "Bulleted list" : "Danh sách có dấu đầu dòng"
+        }
+      >
         <IconButton
           size="small"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -106,8 +112,7 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-const TipTap = ({content, setContentMsg, placeholderTipTap, tipTapFocus }) => {
-  
+const TipTap = ({ content, setContentMsg, placeholderTipTap, tipTapFocus }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -122,13 +127,12 @@ const TipTap = ({content, setContentMsg, placeholderTipTap, tipTapFocus }) => {
       const data = editor.getHTML();
       setContentMsg(data);
     },
-  
   });
-  React.useEffect(()=>{
+  React.useEffect(() => {
     if (content === "") {
       editor?.commands?.clearContent();
     }
-  }, [content])
+  }, [content]);
   return (
     <div className="TipTap-container">
       <EditorContent spellCheck="false" autoComplete="off" editor={editor} />

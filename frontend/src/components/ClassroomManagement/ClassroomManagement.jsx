@@ -54,7 +54,7 @@ const ClassroomManagement = () => {
       {
         field: "dateCreated",
         headerName: "Date Created",
-        width: 200,
+        width: 350,
         renderCell: (params) =>
           moment(params.row.dateCreated).format("HH:mm:ss DD-MM-YYYY"),
       },

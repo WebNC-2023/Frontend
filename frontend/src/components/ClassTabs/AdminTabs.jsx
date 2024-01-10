@@ -1,8 +1,11 @@
 import { Tabs, Tab } from "@mui/material";
 import "./ClassTabs.css";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { DataContext } from "../../contexts/DataContext";
 
 const AdminTabs = ({ tabAdmin, setTabAdmin }) => {
+  const { language } = useContext(DataContext);
   const navigate = useNavigate();
   const handleChange = (event, newValue) => {
     if (newValue === "two") {
@@ -32,7 +35,7 @@ const AdminTabs = ({ tabAdmin, setTabAdmin }) => {
           fontSize: "1rem",
         }}
         value="one"
-        label="Tài khoản"
+        label={language === "English" ? "Accounts" : "Tài khoản"}
       />
       <Tab
         style={{
@@ -41,7 +44,7 @@ const AdminTabs = ({ tabAdmin, setTabAdmin }) => {
           fontSize: "1rem",
         }}
         value="two"
-        label="Lớp học"
+        label={language === "English" ? "Classes" : "Lớp học"}
       />
     </Tabs>
   );

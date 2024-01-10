@@ -13,7 +13,9 @@ import Axios from "../../redux/APIs/Axios";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import { DataContext } from "../../contexts/DataContext";
 const InviteTeacherToClassroom = () => {
+  const { language } = React.useContext(DataContext);
   const [open, setOpen] = React.useState(false);
   const [content, setContent] = React.useState("");
   const [sending, setSending] = React.useState(false);
@@ -61,20 +63,24 @@ const InviteTeacherToClassroom = () => {
   };
   return (
     <>
-      <Tooltip title="Mời giáo viên">
+      <Tooltip
+        title={language === "English" ? "Invite a teacher" : "Mời giáo viên"}
+      >
         <IconButton color="primary" size="large" onClick={handleClickOpen}>
           <PersonAddAltOutlinedIcon sx={{ color: "#1967d2" }} />
         </IconButton>
       </Tooltip>
       <Dialog open={open} fullWidth>
-        <DialogTitle>Mời giáo viên</DialogTitle>
+        <DialogTitle>
+          {language === "English" ? "Invite a teacher" : "Mời giáo viên"}
+        </DialogTitle>
         <DialogContent>
           <TextField
             disabled={sending ? true : false}
             autoFocus
             margin="dense"
             id="name"
-            label="Nhập email"
+            label={language === "English" ? "Enter the email" : "Nhập email"}
             type="email"
             fullWidth
             variant="standard"
@@ -89,12 +95,14 @@ const InviteTeacherToClassroom = () => {
               userSelect: "none",
             }}
           >
-            Giáo viên mà bạn thêm có thể làm mọi thứ bạn làm, trừ xóa lớp học.
+            {language === "English"
+              ? "The teacher you add can do everything you do, except delete the class."
+              : "Giáo viên mà bạn thêm có thể làm mọi thứ bạn làm, trừ xóa lớp học."}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} disabled={sending ? true : false}>
-            Huỷ
+            {language === "English" ? "Cancel" : "Hủy"}
           </Button>
           <Button
             onClick={handleSendInviteTeacher}
@@ -109,7 +117,13 @@ const InviteTeacherToClassroom = () => {
                 : false
             }
           >
-            {sending ? "Đang mời..." : "Mời"}
+            {sending
+              ? language === "English"
+                ? "Inviting..."
+                : "Đang mời..."
+              : language === "English"
+              ? "Invite"
+              : "Mời"}
           </Button>
         </DialogActions>
       </Dialog>

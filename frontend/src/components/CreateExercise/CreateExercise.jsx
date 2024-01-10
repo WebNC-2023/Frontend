@@ -16,26 +16,22 @@ import Slide from "@mui/material/Slide";
 import DialogContent from "@mui/material/DialogContent";
 import TipTap from "../TipTap/TipTap";
 import TextField from "@mui/material/TextField";
-// import { MuiFileInput } from "mui-file-input";
 import { useDispatch, useSelector } from "react-redux";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import AssignmentCardForTeacher from "../AssignmentCard/AssignmentCardForTeacher";
 import Axios from "../../redux/APIs/Axios";
-// import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
-// import ClassOutlinedIcon from "@mui/icons-material/ClassOutlined";
-// import RepeatOutlinedIcon from "@mui/icons-material/RepeatOutlined";
-// import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
 import { toast } from "react-toastify";
+import { DataContext } from "../../contexts/DataContext";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const CreateExercise = () => {
+  const { language } = React.useContext(DataContext);
   const [openForm, setOpenForm] = React.useState(false);
   const [scroll, setScroll] = React.useState("paper");
   const [contentMsg, setContentMsg] = React.useState("");
-  //const [valueFile, setValueFile] = React.useState(null);
   const [titleContent, setTitleContent] = React.useState("");
   const dispatch = useDispatch();
   const assignments = useSelector(
@@ -43,9 +39,6 @@ const CreateExercise = () => {
   );
   const classId = useSelector((state) => state.classroomDetailsInfo.id);
   const people = useSelector((state) => state.classroomDetailsInfo.people);
-  // const handleChange = (newValue) => {
-  //   setValueFile(newValue);
-  // };
   const handleClickOpenForm = (scrollType) => {
     setOpenForm(true);
     setScroll(scrollType);
@@ -122,9 +115,14 @@ const CreateExercise = () => {
         setTitleContent("");
         setContentMsg("");
         setOpenForm(false);
-        toast.success(`${res.data.message}`, {
-          autoClose: 3000,
-        });
+        toast.success(
+          language === "English"
+            ? `${res.data.message}`
+            : "Tạo bài tập thành công",
+          {
+            autoClose: 3000,
+          }
+        );
       } catch (error) {
         if (error.response.status === 403)
           toast.error(`${error.response.message}`, { autoClose: 3000 });
@@ -154,7 +152,7 @@ const CreateExercise = () => {
             }
             onClick={() => handleClickOpenForm("paper")}
           >
-            Tạo
+            {language === "English" ? "Create" : "Tạo"}
           </Button>
           <Dialog
             fullScreen
@@ -177,7 +175,7 @@ const CreateExercise = () => {
                   variant="h6"
                   component="div"
                 >
-                  Bài tập
+                  {language === "English" ? "Assignment" : "Bài tập"}
                 </Typography>
                 <Button
                   autoFocus
@@ -191,14 +189,14 @@ const CreateExercise = () => {
                       : false
                   }
                 >
-                  Giao bài
+                  {language === "English" ? "Give an assignment" : "Giao bài"}
                 </Button>
               </Toolbar>
             </AppBar>
             <DialogContent dividers={scroll === "paper"}>
               <TextField
                 autoComplete="off"
-                label="Tiêu đề"
+                label={language === "English" ? "Title" : "Tiêu đề"}
                 variant="filled"
                 fullWidth
                 sx={{ paddingBottom: "16px" }}
@@ -208,7 +206,11 @@ const CreateExercise = () => {
               />
               <TipTap
                 setContentMsg={setContentMsg}
-                placeholderTipTap="Hướng dẫn (Không bắt buộc)"
+                placeholderTipTap={
+                  language === "English"
+                    ? "Instructions (Optional)"
+                    : "Hướng dẫn (Không bắt buộc)"
+                }
                 content={contentMsg}
                 tipTapFocus={false}
               />
@@ -229,7 +231,7 @@ const CreateExercise = () => {
                     paddingBottom: "16px",
                   }}
                 >
-                  Điểm
+                  {language === "English" ? "Scores" : "Điểm"}
                 </p>
                 <TextField
                   type="number"
@@ -247,12 +249,14 @@ const CreateExercise = () => {
                     padding: "16px 0px",
                   }}
                 >
-                  Dành cho
+                  {language === "English" ? "For" : "Dành cho"}
                 </p>
                 <TextField
                   autoComplete="off"
                   variant="filled"
-                  value={"Tất cả học viên"}
+                  value={
+                    language === "English" ? "All students" : "Tất cả học viên"
+                  }
                   disabled
                 />
               </div>

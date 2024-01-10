@@ -3,7 +3,10 @@ import Button from "@mui/material/Button";
 import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
 import AssignmentCardForStudent from "../AssignmentCard/AssignmentCardForStudent";
 import { useSelector } from "react-redux";
+import { useContext } from "react";
+import { DataContext } from "../../contexts/DataContext";
 const SeeExercise = () => {
+  const {language} = useContext(DataContext);
   const assignments = useSelector(
     (state) => state.classroomDetailsInfo.assignments
   );
@@ -22,7 +25,7 @@ const SeeExercise = () => {
             startIcon={<AssignmentIndOutlinedIcon />}
             disabled
           >
-            Tất cả bài tập của bạn
+            {language === "English" ? "All your assignments" : "Tất cả bài tập của bạn"}
           </Button>
         </div>
         <div className="seeExercise-flex-direction-col">

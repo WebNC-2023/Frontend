@@ -1,11 +1,13 @@
 import "./StartClasses.css";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
 import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
+import { DataContext } from "../../contexts/DataContext";
 
 const StartClasses = () => {
+  const { language } = useContext(DataContext);
   const [openDialogCreateClass, setOpenDialogCreateClass] = useState(false);
   const [openDialogJoinClass, setOpenDialogJoinClass] = useState(false);
   // Handle create & join Class
@@ -29,7 +31,11 @@ const StartClasses = () => {
     <div className="start_classes">
       <div className="start_classes_img"></div>
       <div className="start_classes_text">
-        <p>Add a class to get started</p>
+        <p>
+          {language === "English"
+            ? "Add a class to get started"
+            : "Thêm một lớp học để bắt đầu"}
+        </p>
         <Stack
           spacing={3}
           direction="row"
@@ -40,10 +46,10 @@ const StartClasses = () => {
           }}
         >
           <Button variant="text" onClick={handleOpenDialogJoin}>
-            Join the class
+            {language === "English" ? "Join the class" : "Tham gia lớp học"}
           </Button>
           <Button variant="contained" onClick={handleOpenDialogCreate}>
-            Create classes
+            {language === "English" ? "Create classes" : "Tạo lớp học"}
           </Button>
         </Stack>
       </div>

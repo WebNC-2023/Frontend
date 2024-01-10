@@ -13,3 +13,9 @@
 .Mui-selected {
     color: #1967d2 !important;
 }
+
+@media screen and (max-width: 353px) {
+    .tabs-class-container {
+        padding-top: 100px;
+    }
+}

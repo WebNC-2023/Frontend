@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { styled, alpha } from "@mui/material/styles";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { DataContext } from "../../contexts/DataContext";
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -67,6 +68,7 @@ const ClassroomEveryoneTeacher = ({
   email,
   userId,
 }) => {
+  const { language } = useContext(DataContext);
   const navigate = useNavigate();
   const owner = useSelector((state) => state.classroomDetailsInfo.owner);
   const dispatch = useDispatch();
@@ -211,7 +213,9 @@ const ClassroomEveryoneTeacher = ({
             }
           >
             {firstName === null && lastName === null
-              ? `${email}  (Đã được mời)`
+              ? `${email}  ${
+                  language === "English" ? "(Invited)" : "(Đã được mời)"
+                }`
               : `${firstName} ${lastName}`}
           </div>
         </div>
@@ -240,29 +244,46 @@ const ClassroomEveryoneTeacher = ({
                   onClick={handleOpenLeaveDialog}
                   disableRipple
                 >
-                  Rời lớp học
+                  {language === "English"
+                    ? "Leave the classroom"
+                    : "Rời lớp học"}
                 </MenuItem>
               </StyledMenu>
               <Dialog open={openLeaveDialog} fullWidth>
-                <DialogTitle>Rời khỏi lớp học?</DialogTitle>
+                <DialogTitle>
+                  {language === "English"
+                    ? "Leave the classroom?"
+                    : "Rời khỏi lớp học?"}
+                </DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    Bạn sẽ không thể mở lớp học này trừ khi bạn được mời trở
-                    lại.
-                    <b> Bạn không thể hoàn tác hành động này.</b>
+                    {language === "English"
+                      ? "You will not be able to open this class unless you are invited back."
+                      : "Bạn sẽ không thể mở lớp học này trừ khi bạn được mời trở lại."}
+                    <b>
+                      {language === "English"
+                        ? " You cannot undo this action."
+                        : " Bạn không thể hoàn tác hành động này."}
+                    </b>
                   </DialogContentText>
                   <DialogActions>
                     <Button
                       disabled={leaving ? true : false}
                       onClick={handleCloseLeaveDialog}
                     >
-                      Huỷ
+                      {language === "English" ? "Cancel" : "Hủy"}
                     </Button>
                     <Button
                       disabled={leaving ? true : false}
                       onClick={handleTeacherLeave}
                     >
-                      {leaving ? "Đang rời lớp..." : "Rời lớp"}
+                      {leaving
+                        ? language === "English"
+                          ? "Leaving the classroom..."
+                          : "Đang rời lớp..."
+                        : language === "English"
+                        ? "Leave the classroom"
+                        : "Rời lớp"}
                     </Button>
                   </DialogActions>
                 </DialogContent>
@@ -293,27 +314,41 @@ const ClassroomEveryoneTeacher = ({
                 onClick={handleOpenRemoveDialog}
                 disableRipple
               >
-                Xóa giáo viên
+                {language === "English"
+                  ? "Delete a teacher"
+                  : "Xóa giáo viên"}
               </MenuItem>
             </StyledMenu>
             <Dialog open={openRemoveDialog} fullWidth>
-              <DialogTitle>Xoá giáo viên?</DialogTitle>
+              <DialogTitle>
+                {language === "English"
+                  ? "Delete a teacher?"
+                  : "Xóa giáo viên?"}
+              </DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  Giáo viên này sẽ không thể mở lớp này nếu không được mời lại.
+                  {language === "English"
+                    ? "This teacher will not be able to open this class unless invited back."
+                    : "Giáo viên này sẽ không thể mở lớp này nếu không được mời lại."}
                 </DialogContentText>
                 <DialogActions>
                   <Button
                     disabled={deleting ? true : false}
                     onClick={handleCloseRemoveDialog}
                   >
-                    Huỷ
+                    {language === "English" ? "Cancel" : "Hủy"}
                   </Button>
                   <Button
                     disabled={deleting ? true : false}
                     onClick={handleRemoveTeacher}
                   >
-                    {deleting ? "Đang xoá..." : "Xoá"}
+                    {deleting
+                      ? language === "English"
+                        ? "Deleting..."
+                        : "Đang xoá..."
+                      : language === "English"
+                      ? "Delete"
+                      : "Xoá"}
                   </Button>
                 </DialogActions>
               </DialogContent>

@@ -1,11 +1,13 @@
 import { Avatar } from "@mui/material";
 import "./NotificationInClassroom.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Grid, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/ClassroomPostSlice";
 import TipTap from "../TipTap/TipTap";
+import { DataContext } from "../../contexts/DataContext";
 const NotificationInClassroom = () => {
+  const {language} = useContext(DataContext);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const [showWriteNotification, setShowWriteNotification] = useState(false);
   const [contentMsg, setContentMsg] = useState("");
@@ -58,7 +60,7 @@ const NotificationInClassroom = () => {
         <div className="write-notification-for-classroom">
           <TipTap
             setContentMsg={setContentMsg}
-            placeholderTipTap="Thông báo nội dung nào đó cho lớp học của bạn"
+            placeholderTipTap={language === "English" ? "Announce something to your class" : "Thông báo nội dung nào đó cho lớp học của bạn"}
             content={contentMsg}
           />
           <Grid
@@ -69,7 +71,7 @@ const NotificationInClassroom = () => {
           >
             <Grid item>
               <Button onClick={handleClickCancel} variant="text">
-                Huỷ
+                {language === "English" ? "Cancel" : "Hủy"}
               </Button>
             </Grid>
             <Grid item>
@@ -80,7 +82,7 @@ const NotificationInClassroom = () => {
                 }
                 onClick={handleClickPostNotification}
               >
-                Đăng
+                {language === "English" ? "Post" : "Đăng"}
               </Button>
             </Grid>
           </Grid>
@@ -98,7 +100,7 @@ const NotificationInClassroom = () => {
               userSelect: "none",
             }}
           >
-            Thông báo nội dung nào đó cho lớp học của bạn
+            {language === "English" ? "Announce something to your class" : "Thông báo nội dung nào đó cho lớp học của bạn"} 
           </p>
         </div>
       )}

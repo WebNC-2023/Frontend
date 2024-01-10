@@ -15,8 +15,10 @@ import {
   unSubClassAction,
   deleteClassAction,
 } from "../../redux/Actions/classAction";
+import { DataContext } from "../../contexts/DataContext";
 
 const JoinedClasses = ({ classData }) => {
+  const {language} = React.useContext(DataContext);
   const [classAnchorEl, setClassAnchorEl] = React.useState(null);
   const openMenuClass = Boolean(classAnchorEl);
   const [openDialogEditClass, setOpenDialogEditClass] = React.useState(false);
@@ -61,9 +63,9 @@ const JoinedClasses = ({ classData }) => {
 
     try {
       await navigator.clipboard.writeText(currentURL);
-      toast.success("Copied to clipboard");
+      toast.success(language === "English"?"Copied to clipboard":"Đã sao chép vào clipboard");
     } catch (error) {
-      toast.error("Can not copy to clipboard");
+      toast.error(language==="English"?"Can not copy to clipboard":"Không thể sao chép vào clipboard");
     }
 
     handleClassClose();
@@ -79,7 +81,7 @@ const JoinedClasses = ({ classData }) => {
     handleClassClose();
   };
 
-  const navgiateHandle = (e) => {
+  const navigateHandle = (e) => {
     if (e.target.classList.contains("joined__content")) {
       navigate(`/class-details/${classData.id}?tab=1`);
     }
@@ -104,7 +106,7 @@ const JoinedClasses = ({ classData }) => {
               backgroundImage: `url(${urlImage})`,
             }}
           />
-          <div className="joined__content" onClick={navgiateHandle}>
+          <div className="joined__content" onClick={navigateHandle}>
             <Link
               className="joined__title"
               to={`/class-details/${classData.id}?tab=1`}
@@ -178,19 +180,19 @@ const JoinedClasses = ({ classData }) => {
       >
         {classData.role === "teacher" && [
           <MenuItem key="copyLink" onClick={handleCopyLinkClick}>
-            Copy the invite link
+            {language === "English"?"Copy the invite link":"Sao chép đường liên kết mời"}
           </MenuItem>,
           <MenuItem key="edit" onClick={handleOpenDialogEdit}>
-            Edit
+            {language === "English"?"Edit":"Chỉnh sửa"}
           </MenuItem>,
         ]}
         {classData.isOwner && (
           <MenuItem key="delete" onClick={handleDeleteClass}>
-            Delete
+            {language==="English"?"Delete":"Xóa"}
           </MenuItem>
         )}
         {!classData.isOwner && (
-          <MenuItem onClick={handleUnSubscribe}>Unsubscribe</MenuItem>
+          <MenuItem onClick={handleUnSubscribe}>{language==="English"?"Unsubscribe":"Hủy đăng ký"}</MenuItem>
         )}
       </Menu>
       <div className="joined__bottom">

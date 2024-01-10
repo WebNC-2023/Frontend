@@ -2,18 +2,12 @@ import { Tabs, Tab } from "@mui/material";
 import "./ClassTabs.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useContext } from "react";
+import { DataContext } from "../../contexts/DataContext";
 
 const ClassTabs = ({ tab, setTab }) => {
-  const { userInfo } = useSelector((state) => state.userLogin);
-
   const { people } = useSelector((state) => state.classroomDetailsInfo);
-
-  const Info = JSON.parse(userInfo);
-
-  const isUserTeacher = !!people.find(
-    (person) => person?.id === Info?.id && person.role === "teacher"
-  );
-
+  const {language} = useContext(DataContext);
   const navigate = useNavigate();
   const { classId } = useParams();
   // const handleChange = (event, newValue) => {
@@ -61,7 +55,7 @@ const ClassTabs = ({ tab, setTab }) => {
           fontSize: "1rem",
         }}
         value="one"
-        label="Bảng tin"
+        label={language === "English" ? "News" : "Bảng tin"}
       />
       <Tab
         style={{
@@ -70,7 +64,7 @@ const ClassTabs = ({ tab, setTab }) => {
           fontSize: "1rem",
         }}
         value="two"
-        label="Bài tập trên lớp"
+        label={language === "English" ? "Classroom assignments" : "Bài tập trên lớp"}
       />
       <Tab
         style={{
@@ -79,18 +73,31 @@ const ClassTabs = ({ tab, setTab }) => {
           fontSize: "1rem",
         }}
         value="three"
-        label="Mọi người"
+        label={language === "English" ? "Everybody" : "Mọi người"}
       />
-      <Tab
-        style={{
-          textTransform: "none",
-          color: "#5f6368",
-          fontSize: "1rem",
-        }}
-        value="four"
-        label="Xem xét lại điểm"
-      />
-      {isUserTeacher && (
+      {people.find(
+        (element) =>
+          element.email ===
+            JSON.parse(localStorage.getItem("userInfo")).email &&
+          element.role === "teacher"
+      ) && (
+        <Tab
+          style={{
+            textTransform: "none",
+            color: "#5f6368",
+            fontSize: "1rem",
+          }}
+          value="four"
+          label={language === "English" ? "Grade review requests" : "Xem xét lại điểm"}
+        />
+      )}
+
+      {people.find(
+        (element) =>
+          element.email ===
+            JSON.parse(localStorage.getItem("userInfo")).email &&
+          element.role === "teacher"
+      ) && (
         <Tab
           style={{
             textTransform: "none",
@@ -98,7 +105,7 @@ const ClassTabs = ({ tab, setTab }) => {
             fontSize: "1rem",
           }}
           value="five"
-          label="Điểm "
+          label={language === "English" ? "Scores" : "Điểm"}
         />
       )}
     </Tabs>

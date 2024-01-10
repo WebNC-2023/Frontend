@@ -32,7 +32,6 @@ const ClassDetailsPage = () => {
       setLoadingClassDetails(true);
       try {
         const res = await Axios.get(`/classes/${classId}`);
-        console.log('class details', res.data);
         dispatch(
           update({
             fullName: `${
@@ -136,11 +135,17 @@ const ClassDetailsPage = () => {
   return (
     <>
       <HomePageHeader showSidebar={true} classRoom={true} />
-      {tab === "error" ? <></> : <ClassTabs tab={tab} setTab={setTab} />}
       {loadingClassDetails && (
-        <Box sx={{ width: "100%", paddingTop: "2px" }}>
+        <Box sx={{ width: "100%", paddingTop: "65px" }}>
           <LinearProgress />
         </Box>
+      )}
+      {tab === "error" ? (
+        <></>
+      ) : loadingClassDetails ? (
+        <></>
+      ) : (
+        <ClassTabs tab={tab} setTab={setTab} />
       )}
       {Number(Tab) === 1 ? (
         <ContentTab1

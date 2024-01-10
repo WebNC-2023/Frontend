@@ -13,13 +13,15 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Axios from "../../redux/APIs/Axios";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { updateData } from "../../redux/Reducers/AdminSlice";
 import EditIcon from "@mui/icons-material/Edit";
+import { DataContext } from "../../contexts/DataContext";
 const AccountAction = ({ params }) => {
+  const { language } = useContext(DataContext);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(params.row.isBlocked.toString());
@@ -82,7 +84,9 @@ const AccountAction = ({ params }) => {
         <EditIcon />
       </Fab>
       <Dialog fullWidth open={open}>
-        <DialogTitle>Chỉnh sửa</DialogTitle>
+        <DialogTitle>
+          {language === "English" ? "Edit" : "Chỉnh sửa"}
+        </DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
@@ -143,7 +147,9 @@ const AccountAction = ({ params }) => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Hủy</Button>
+          <Button onClick={handleClose}>
+            {language === "English" ? "Cancel" : "Hủy"}
+          </Button>
           <Button
             disabled={
               value === params.row.isBlocked.toString() || loading
@@ -152,7 +158,13 @@ const AccountAction = ({ params }) => {
             }
             onClick={handleSubmit}
           >
-            {loading ? "Đang cập nhật" : "Cập nhật"}
+            {loading
+              ? language === "English"
+                ? "Updating..."
+                : "Đang cập nhật..."
+              : language === "English"
+              ? "Update"
+              : "Cập nhật"}
           </Button>
         </DialogActions>
       </Dialog>

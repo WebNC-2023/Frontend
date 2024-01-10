@@ -2,13 +2,21 @@ import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import TableGrade from "../../components/TableGrade/TableGrade";
 import "./ContentTab5.css";
+import { useSelector } from "react-redux";
 
 const ContentTab5 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
+  const people = useSelector((state) => state.classroomDetailsInfo.people);
   return (
     <>
       {loadingClassDetails ? (
         <></>
-      ) : ClassDetailsSuccess ? (
+      ) : ClassDetailsSuccess &&
+        people.find(
+          (element) =>
+            element.email ===
+              JSON.parse(localStorage.getItem("userInfo")).email &&
+            element.role === "teacher"
+        ) ? (
         <div className="classroom-details-grade-container">
           <div className="classroom-details-grade-flex">
             <TableGrade />

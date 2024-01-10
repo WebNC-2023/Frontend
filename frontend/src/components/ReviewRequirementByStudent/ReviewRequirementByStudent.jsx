@@ -2,7 +2,7 @@ import "./ReviewRequirementByStudent.css";
 //import AssignmentIcon from "@mui/icons-material/Assignment";
 import { Button } from "@mui/material";
 // import IconButton from "@mui/material/IconButton";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import PreviewIcon from "@mui/icons-material/Preview";
 import TipTap from "../TipTap/TipTap";
 import Comment from "../Comment/Comment";
@@ -22,7 +22,9 @@ import {
   updateReload,
 } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import { useParams } from "react-router-dom";
+import { DataContext } from "../../contexts/DataContext";
 const ReviewRequirementByStudent = () => {
+  const { language } = useContext(DataContext);
   const [contentMsg, setContentMsg] = useState("");
   const [showMsg, setShowMsg] = useState(true);
   const [open, setOpen] = useState(false);
@@ -114,7 +116,9 @@ const ReviewRequirementByStudent = () => {
           }
           onClick={handleClickOpen}
         >
-          Yêu cầu xem xét lại điểm
+          {language === "English"
+            ? "Request for grade review"
+            : "Yêu cầu xem xét lại điểm"}
         </Button>
         <Dialog open={open} fullWidth>
           <DialogTitle>Yêu cầu xem xét lại điểm</DialogTitle>
@@ -202,7 +206,13 @@ const ReviewRequirementByStudent = () => {
                 })
               }
             >
-              {showMsg ? "Ẩn cuộc hội thoại" : "Hiện cuộc hội thoại"}
+              {showMsg
+                ? language === "English"
+                  ? "Hide the conversation"
+                  : "Ẩn cuộc hội thoại"
+                : language === "English"
+                ? "Show the conversation"
+                : "Hiện cuộc hội thoại"}
             </Button>
           </div>
         ) : (
@@ -217,7 +227,9 @@ const ReviewRequirementByStudent = () => {
                   firstName={
                     cmt.userId ===
                     JSON.parse(localStorage.getItem("userInfo")).id
-                      ? "Tôi"
+                      ? language === "English"
+                        ? "Me"
+                        : "Tôi"
                       : cmt.user.firstName
                   }
                   lastName={
@@ -242,7 +254,11 @@ const ReviewRequirementByStudent = () => {
             )}
             <TipTap
               setContentMsg={setContentMsg}
-              placeholderTipTap="Viết bình luận..."
+              placeholderTipTap={
+                language === "English"
+                  ? "Write a comment..."
+                  : "Viết bình luận..."
+              }
               content={contentMsg}
               tipTapFocus={true}
             />
@@ -260,7 +276,7 @@ const ReviewRequirementByStudent = () => {
               }
               onClick={handleSendComment}
             >
-              Gửi
+              {language === "English" ? "Send" : "Gửi"}
             </Button>
           </>
         )}

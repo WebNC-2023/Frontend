@@ -6,9 +6,12 @@ import ClassroomEveryoneStudent from "../../components/ClassroomEveryoneStudent/
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import "./ContentTab3.css";
+import { useContext } from "react";
+import { DataContext } from "../../contexts/DataContext";
 const ContentTab3 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
+  const { language } = useContext(DataContext);
   const people = useSelector((state) => state.classroomDetailsInfo.people);
-  const isOwner = useSelector((state) => state.classroomDetailsInfo.isOwner);
+  //const isOwner = useSelector((state) => state.classroomDetailsInfo.isOwner);
   return (
     <>
       {loadingClassDetails ? (
@@ -22,7 +25,7 @@ const ContentTab3 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                   color: "#1967d2",
                 }}
               >
-                Giáo viên
+                {language === "English" ? "Teachers" : "Giáo viên"}
               </p>
               {people.filter(
                 (element) =>
@@ -57,8 +60,15 @@ const ContentTab3 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                 />
               ))}
             <div className="classroom-everyone-student-header">
-              <div className="classroom-everyone-student-title">Học sinh</div>
-              {!isOwner && (
+              <div className="classroom-everyone-student-title">
+                {language === "English" ? "Students" : "Học sinh"}
+              </div>
+              {people.find(
+                (x) =>
+                  x.email ===
+                    JSON.parse(localStorage.getItem("userInfo")).email &&
+                  x.role === "student"
+              ) && (
                 <div className="classroom-everyone-student-total">
                   {people.filter(
                     (element) =>
@@ -70,7 +80,7 @@ const ContentTab3 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                             element.role === "student" &&
                             element.id !== undefined
                         ).length
-                      } sinh viên`
+                      } ${language === "English" ? "students" : "sinh viên"}`
                     : ""}
                 </div>
               )}

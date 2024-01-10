@@ -10,13 +10,15 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import EnhancedEncryptionIcon from "@mui/icons-material/EnhancedEncryption";
-import { useState} from "react";
+import { useContext, useState } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import {toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Axios from "../../redux/APIs/Axios";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "../../contexts/DataContext";
 const ChangePassword = () => {
+  const { language } = useContext(DataContext);
   const navigate = useNavigate();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -38,15 +40,19 @@ const ChangePassword = () => {
   const handleClickSaveChangePassword = () => {
     if (currentPassword === "") {
       setCurrentPasswordErrorState(true);
-      setCurrentPasswordErrorMsg("Required");
+      setCurrentPasswordErrorMsg(
+        language === "English" ? "Required" : "Bắt buộc"
+      );
     }
     if (newPassword === "") {
       setNewPasswordErrorState(true);
-      setNewPasswordErrorMsg("Required");
+      setNewPasswordErrorMsg(language === "English" ? "Required" : "Bắt buộc");
     }
     if (confirmNewPassword === "") {
       setConfirmNewPasswordErrorState(true);
-      setConfirmNewPasswordErrorMsg("Required");
+      setConfirmNewPasswordErrorMsg(
+        language === "English" ? "Required" : "Bắt buộc"
+      );
     }
     if (
       currentPassword !== "" &&
@@ -75,9 +81,14 @@ const ChangePassword = () => {
           setCurrentPassword("");
           setNewPassword("");
           setConfirmNewPassword("");
-          toast.success("Your password has been changed successfully.", {
-            autoClose: 3000,
-          });
+          toast.success(
+            language === "English"
+              ? "Your password has been changed successfully."
+              : "Cập nhật mật khẩu thành công.",
+            {
+              autoClose: 3000,
+            }
+          );
         })
         .catch((err) => {
           setShowLoadingChangePasswordBtn(false);
@@ -117,7 +128,9 @@ const ChangePassword = () => {
             <Avatar style={{ backgroundColor: "#1bbd7e" }}>
               <EnhancedEncryptionIcon />
             </Avatar>
-            <h2 className="editProfile-title">Change password</h2>
+            <h2 className="editProfile-title">
+              {language === "English" ? "Change password" : "Đổi mật khẩu"}
+            </h2>
           </Grid>
           <TextField
             disabled={showLoadingChangePasswordBtn}
@@ -128,11 +141,17 @@ const ChangePassword = () => {
                 ? { marginTop: "16px", pointerEvents: "none" }
                 : { marginTop: "16px" }
             }
-            label="Current password"
+            label={
+              language === "English" ? "Current password" : "Mật khẩu hiện tại"
+            }
             variant="standard"
             fullWidth
             type={showCurrentPassword ? "text" : "password"}
-            placeholder="Enter current password"
+            placeholder={
+              language === "English"
+                ? "Enter current password"
+                : "Nhập mật khẩu hiện tại"
+            }
             spellCheck="false"
             autoComplete="none"
             required
@@ -154,7 +173,9 @@ const ChangePassword = () => {
             onChange={(e) => {
               setCurrentPassword(e.target.value);
               if (e.target.value === "") {
-                setCurrentPasswordErrorMsg("Required");
+                setCurrentPasswordErrorMsg(
+                  language === "English" ? "Required" : "Bắt buộc"
+                );
                 setCurrentPasswordErrorState(true);
               } else {
                 const regexPassword = /^.{8,20}$/;
@@ -163,7 +184,9 @@ const ChangePassword = () => {
                   setCurrentPasswordErrorState(false);
                 } else {
                   setCurrentPasswordErrorMsg(
-                    "Password must have a minimum of 8 characters and a maximum of 20 characters"
+                    language === "English"
+                      ? "Password must have 8-20 characters"
+                      : "Mật khẩu phải có độ dài từ 8-20 ký tự"
                   );
                   setCurrentPasswordErrorState(true);
                 }
@@ -179,11 +202,15 @@ const ChangePassword = () => {
                 ? { marginTop: "16px", pointerEvents: "none" }
                 : { marginTop: "16px" }
             }
-            label="New password"
+            label={language === "English" ? "New password" : "Mật khẩu mới"}
             variant="standard"
             fullWidth
             type={showNewPassword ? "text" : "password"}
-            placeholder="Enter new password"
+            placeholder={
+              language === "English"
+                ? "Enter new password"
+                : "Nhập mật khẩu mới"
+            }
             spellCheck="false"
             autoComplete="none"
             required
@@ -205,7 +232,9 @@ const ChangePassword = () => {
             onChange={(e) => {
               setNewPassword(e.target.value);
               if (e.target.value === "") {
-                setNewPasswordErrorMsg("Required");
+                setNewPasswordErrorMsg(
+                  language === "English" ? "Required" : "Bắt buộc"
+                );
                 setNewPasswordErrorState(true);
               } else {
                 const regexPassword = /^.{8,20}$/;
@@ -223,13 +252,17 @@ const ChangePassword = () => {
                     confirmNewPassword.length >= 8
                   ) {
                     setConfirmNewPasswordErrorMsg(
-                      "Password confirmation does not match the new password"
+                      language === "English"
+                        ? "Password confirmation does not match the new password"
+                        : "Mật khẩu xác nhận không khớp với mật khẩu mới"
                     );
                     setConfirmNewPasswordErrorState(true);
                   }
                 } else {
                   setNewPasswordErrorMsg(
-                    "Password must have a minimum of 8 characters and a maximum of 20 characters"
+                    language === "English"
+                      ? "Password must have 8-20 characters"
+                      : "Mật khẩu phải có độ dài từ 8-20 ký tự"
                   );
                   setNewPasswordErrorState(true);
                 }
@@ -245,11 +278,19 @@ const ChangePassword = () => {
                 ? { marginTop: "16px", pointerEvents: "none" }
                 : { marginTop: "16px" }
             }
-            label="Confirm new password"
+            label={
+              language === "English"
+                ? "Confirm new password"
+                : "Xác nhận mật khẩu mới"
+            }
             variant="standard"
             fullWidth
             type={showConfirmNewPassword ? "text" : "password"}
-            placeholder="Enter confirm new password"
+            placeholder={
+              language === "English"
+                ? "Enter confirm new password"
+                : "Nhập xác nhận mật khẩu mới"
+            }
             spellCheck="false"
             autoComplete="none"
             required
@@ -275,12 +316,16 @@ const ChangePassword = () => {
             onChange={(e) => {
               setConfirmNewPassword(e.target.value);
               if (e.target.value === "") {
-                setConfirmNewPasswordErrorMsg("Required");
+                setConfirmNewPasswordErrorMsg(
+                  language === "English" ? "Required" : "Bắt buộc"
+                );
                 setConfirmNewPasswordErrorState(true);
               } else {
                 if (e.target.value !== newPassword) {
                   setConfirmNewPasswordErrorMsg(
-                    "Password confirmation does not match the new password"
+                    language === "English"
+                      ? "Password confirmation does not match the new password"
+                      : "Mật khẩu xác nhận không khớp với mật khẩu mới"
                   );
                   setConfirmNewPasswordErrorState(true);
                 } else {
@@ -300,7 +345,7 @@ const ChangePassword = () => {
                 fullWidth
                 onClick={handleClickSaveChangePassword}
               >
-                Save Changes
+                {language === "English" ? "Save Changes" : "Lưu những thay đổi"}
               </Button>
               <Button
                 color="success"
@@ -308,7 +353,7 @@ const ChangePassword = () => {
                 fullWidth
                 onClick={handleClickCancelEdit}
               >
-                Cancel
+                {language === "English" ? "Cancel" : "Hủy"}
               </Button>
             </>
           ) : (
@@ -321,7 +366,7 @@ const ChangePassword = () => {
                 disabled
                 fullWidth
               >
-                In processing...
+                {language === "English" ? "Saving..." : "Đang lưu..."}
               </Button>
               <Button
                 color="success"
@@ -330,7 +375,7 @@ const ChangePassword = () => {
                 fullWidth
                 onClick={handleClickCancelEdit}
               >
-                Cancel
+                {language === "English" ? "Cancel" : "Hủy"}
               </Button>
             </>
           )}

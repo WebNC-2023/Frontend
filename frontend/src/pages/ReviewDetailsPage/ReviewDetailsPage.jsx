@@ -11,7 +11,7 @@ import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
 import "./ReviewDetailsPage.css";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import { useDispatch, useSelector } from "react-redux";
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import parser from "html-react-parser";
 import TipTap from "../../components/TipTap/TipTap";
 import Comment from "../../components/Comment/Comment";
@@ -20,7 +20,9 @@ import { updateReviewDetails } from "../../redux/Reducers/ClassroomDetailsInfoSl
 import { toast } from "react-toastify";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import CommentsDisabledIcon from "@mui/icons-material/CommentsDisabled";
+import { DataContext } from "../../contexts/DataContext";
 const ReviewDetailsPage = () => {
+  const { language } = useContext(DataContext);
   const reviewDetails = useSelector(
     (state) => state.classroomDetailsInfo.reviewDetails
   );
@@ -47,14 +49,23 @@ const ReviewDetailsPage = () => {
       let day = newTime.getUTCDate();
       let month = newTime.getUTCMonth() + 1;
       let year = newTime.getUTCFullYear();
-      return `${hour.toString().padStart(2, "0")}:${minute
-        .toString()
-        .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
-        .toString()
-        .padStart(2, "0")} thg ${month.toString().padStart(2, "0")}, ${year}`;
+      if (language === "English") {
+        return `${month.toString().padStart(2, "0")}/${day
+          .toString()
+          .padStart(2, "0")}/${year}, ${hour
+          .toString()
+          .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:${sec
+          .toString()
+          .padStart(2, "0")}`;
+      } else
+        return `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
+          .toString()
+          .padStart(2, "0")} thg ${month.toString().padStart(2, "0")} ${year}`;
     }
     return convertTime(reviewDetails.assignmentDateCreated);
-  }, [reviewDetails.assignmentDateCreated]);
+  }, [reviewDetails.assignmentDateCreated, language]);
   const handleSendComment = () => {
     async function sendComment() {
       setSending(true);
@@ -98,7 +109,12 @@ const ReviewDetailsPage = () => {
         dispatch(updateReviewDetails(res1.data.data));
         setUpdating(false);
         setOpen(false);
-        toast.success(`${res.data.message}`, { autoClose: 3000 });
+        toast.success(
+          language === "English"
+            ? `${res.data.message}`
+            : "Đã cập nhật điểm số mới",
+          { autoClose: 3000 }
+        );
       } catch (error) {
         setUpdating(false);
         setOpen(false);
@@ -144,7 +160,11 @@ const ReviewDetailsPage = () => {
                 wordBreak: "break-word",
               }}
             >
-              {`Bài tập được tạo vào lúc ${dateCreated}`}
+              {`${
+                language === "English"
+                  ? "The assignment is created at"
+                  : "Bài tập được tạo vào lúc"
+              } ${dateCreated}`}
             </p>
             <div
               className="assignment-details-content-instruction"
@@ -167,7 +187,8 @@ const ReviewDetailsPage = () => {
                 wordBreak: "break-word",
               }}
             >
-              Điểm số hiện tại: {reviewDetails.score}
+              {language === "English" ? "Current grade: " : "Điểm hiện tại: "}
+              {reviewDetails.score}
             </p>
             <p
               style={{
@@ -176,7 +197,10 @@ const ReviewDetailsPage = () => {
                 wordBreak: "break-word",
               }}
             >
-              Điểm số mong muốn: {reviewDetails.expectScore}
+              {language === "English"
+                ? "Expected grade: "
+                : "Điểm số mong muốn: "}
+              {reviewDetails.expectScore}
             </p>
             <p
               style={{
@@ -185,17 +209,23 @@ const ReviewDetailsPage = () => {
                 wordBreak: "break-word",
               }}
             >
-              Lí do: {reviewDetails.explanation}
+              {language === "English" ? "Explanation: " : "Lí do: "}
+              {reviewDetails.explanation}
             </p>
-            {reviewDetails.scoreAgain && <p
-              style={{
-                fontWeight: "500",
-                color: "#4285f4",
-                wordBreak: "break-word",
-              }}
-            >
-              Điểm đã chấm lại: {reviewDetails.scoreAgain}
-            </p>}
+            {reviewDetails.scoreAgain && (
+              <p
+                style={{
+                  fontWeight: "500",
+                  color: "#4285f4",
+                  wordBreak: "break-word",
+                }}
+              >
+                {language === "English"
+                  ? "Regraded score:"
+                  : "Điểm đã chấm lại:"}{" "}
+                {reviewDetails.scoreAgain}
+              </p>
+            )}
             <Button
               variant="contained"
               sx={{
@@ -206,16 +236,24 @@ const ReviewDetailsPage = () => {
               }}
               onClick={handleClickOpen}
             >
-              Cập nhật điểm
+              {language === "English" ? "Update grade" : "Cập nhật điểm"}
             </Button>
             <Dialog open={open} fullWidth>
-              <DialogTitle>Cập nhật điểm số</DialogTitle>
+              <DialogTitle>
+                {language === "English"
+                  ? "Update the score"
+                  : "Điểm đã chấm lại"}
+              </DialogTitle>
               <DialogContent>
                 <TextField
                   autoFocus
                   margin="dense"
                   id="name"
-                  label="Nhập điểm số mới"
+                  label={
+                    language === "English"
+                      ? "Enter the new grade"
+                      : "Nhập điểm số mới"
+                  }
                   type="number"
                   autoComplete="off"
                   fullWidth
@@ -226,7 +264,9 @@ const ReviewDetailsPage = () => {
                 />
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleClose}>Hủy</Button>
+                <Button onClick={handleClose}>
+                  {language === "English" ? "Cancel" : "Hủy"}
+                </Button>
                 <Button
                   onClick={handleUpdateScore}
                   disabled={
@@ -238,7 +278,13 @@ const ReviewDetailsPage = () => {
                       : true
                   }
                 >
-                  {updating ? "Đang cập nhật..." : "Cập nhật"}
+                  {updating
+                    ? language === "English"
+                      ? "Updating..."
+                      : "Đang cập nhật..."
+                    : language === "English"
+                    ? "Update"
+                    : "Cập nhật"}
                 </Button>
               </DialogActions>
             </Dialog>
@@ -249,7 +295,7 @@ const ReviewDetailsPage = () => {
                   fontSize: "0.875rem",
                   lineHeight: "1.25rem",
                   textTransform: "none",
-                  marginBottom: "16px"
+                  marginBottom: "16px",
                 }}
                 startIcon={
                   !showChat ? <QuestionAnswerIcon /> : <CommentsDisabledIcon />
@@ -263,7 +309,13 @@ const ReviewDetailsPage = () => {
                   })
                 }
               >
-                {!showChat ? "Hiển thị đoạn chat" : "Ẩn đoạn chat"}
+                {!showChat
+                  ? language === "English"
+                    ? "Show the conversation"
+                    : "Hiển thị đoạn hội thoại"
+                  : language === "English"
+                  ? "Hide the conversation"
+                  : "Ẩn đoạn hội thoại"}
               </Button>
             </div>
             {showChat &&
@@ -279,7 +331,7 @@ const ReviewDetailsPage = () => {
                   firstName={
                     cmt.user.email ===
                     JSON.parse(localStorage.getItem("userInfo")).email
-                      ? "Tôi"
+                      ? `${language === "English" ? "Me" : "Tôi"}`
                       : cmt.user.firstName
                   }
                   lastName={
@@ -296,7 +348,11 @@ const ReviewDetailsPage = () => {
             {showChat && (
               <TipTap
                 setContentMsg={setContentMsg}
-                placeholderTipTap="Nhập bình luận..."
+                placeholderTipTap={
+                  language === "English"
+                    ? "Write a comment..."
+                    : "Nhập bình luận..."
+                }
                 content={contentMsg}
                 tipTapFocus={true}
               />
@@ -315,7 +371,7 @@ const ReviewDetailsPage = () => {
                 variant="contained"
                 onClick={handleSendComment}
               >
-                Gửi
+                {language === "English" ? "Send" : "Gửi"}
               </Button>
             )}
           </div>

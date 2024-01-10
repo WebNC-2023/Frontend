@@ -1,11 +1,12 @@
 import "./ReviewRequirement.css";
 import ReviewsOutlinedIcon from "@mui/icons-material/ReviewsOutlined";
 import IconButton from "@mui/material/IconButton";
-import { useState } from "react";
+import { useContext, useState } from "react";
 // import TipTap from "../TipTap/TipTap";
 // import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "../../contexts/DataContext";
 // import { isNaN } from "formik";
 // import Dialog from "@mui/material/Dialog";
 // import DialogActions from "@mui/material/DialogActions";
@@ -22,6 +23,7 @@ const ReviewRequirement = ({
   reviewId,
   scoreAgain,
 }) => {
+  const { language } = useContext(DataContext);
   const [showDetails, setShowDetails] = useState(false);
   const navigate = useNavigate();
   // const [contentMsg, setContentMsg] = useState("");
@@ -103,10 +105,22 @@ const ReviewRequirement = ({
             }}
           >
             {firstName !== null && lastName !== null
-              ? `${firstName} ${lastName} đã đăng một yêu cầu xem xét lại điểm cho bài tập: ${assignmentTitle}`
+              ? `${firstName} ${lastName} ${
+                  language === "English"
+                    ? "has submitted a grade review request for assignment:"
+                    : "đã đăng một yêu cầu xem lại điểm cho bài tập:"
+                } ${assignmentTitle}`
               : firstName === null
-              ? `${lastName} đã đăng một yêu cầu xem xét lại điểm cho bài tập: ${assignmentTitle}`
-              : `${firstName} đã đăng một yêu cầu xem xét lại điểm cho bài tập: ${assignmentTitle}`}
+              ? `${lastName} ${
+                  language === "English"
+                    ? "has submitted a grade review request for assignment:"
+                    : "đã đăng một yêu cầu xem lại điểm cho bài tập:"
+                } ${assignmentTitle}`
+              : `${firstName} ${
+                  language === "English"
+                    ? "has submitted a grade review request for assignment:"
+                    : "đã đăng một yêu cầu xem lại điểm cho bài tập:"
+                } ${assignmentTitle}`}
           </p>
         </div>
       </div>
@@ -122,7 +136,7 @@ const ReviewRequirement = ({
                 color: "#1967d2",
               }}
             >
-              Họ và tên:
+              {language === "English" ? "Full name:" : "Họ và tên:"}
             </p>
             <p
               style={{
@@ -148,7 +162,7 @@ const ReviewRequirement = ({
                 color: "#1967d2",
               }}
             >
-              Điểm hiện tại:
+              {language === "English" ? "Current grade:" : "Điểm hiện tại:"}
             </p>
             <p
               style={{
@@ -170,7 +184,7 @@ const ReviewRequirement = ({
                 color: "#1967d2",
               }}
             >
-              Điểm mong muốn:
+              {language === "English" ? "Expected grade:" : "Điểm mong muốn:"}
             </p>
             <p
               style={{
@@ -198,7 +212,7 @@ const ReviewRequirement = ({
                 color: "#1967d2",
               }}
             >
-              Lí do:
+              {language === "English" ? "Explanation:" : "Lí do:"}
             </p>
             <p
               style={{
@@ -220,7 +234,7 @@ const ReviewRequirement = ({
             }}
             onClick={handleClickViewDetails}
           >
-            Xem chi tiết
+            {language === "English" ? "View details" : "Xem chi tiết"}
           </Button>
           {/* <Button
             variant="contained"

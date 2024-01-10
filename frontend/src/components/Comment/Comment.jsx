@@ -1,7 +1,8 @@
 import { Avatar } from "@mui/material";
 import "./Comment.css";
 import parser from "html-react-parser";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
+import { DataContext } from "../../contexts/DataContext";
 const Comment = ({
   commentBackgroundColor,
   firstName,
@@ -10,6 +11,7 @@ const Comment = ({
   comment,
   dateCreated,
 }) => {
+  const { language } = useContext(DataContext);
   const timeCreated = useMemo(() => {
     function convertTime(old) {
       let newTime = new Date(old);
@@ -20,14 +22,23 @@ const Comment = ({
       let day = newTime.getUTCDate();
       let month = newTime.getUTCMonth() + 1;
       let year = newTime.getUTCFullYear();
-      return `${hour.toString().padStart(2, "0")}:${minute
-        .toString()
-        .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
-        .toString()
-        .padStart(2, "0")} thg ${month.toString().padStart(2, "0")}, ${year}`;
+      if (language === "English") {
+        return `${month.toString().padStart(2, "0")}/${day
+          .toString()
+          .padStart(2, "0")}/${year}, ${hour
+          .toString()
+          .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:${sec
+          .toString()
+          .padStart(2, "0")}`;
+      } else
+        return `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}:${sec.toString().padStart(2, "0")}, ${day
+          .toString()
+          .padStart(2, "0")} thg ${month.toString().padStart(2, "0")} ${year}`;
     }
     return convertTime(dateCreated);
-  }, [dateCreated]);
+  }, [dateCreated, language]);
   return (
     <div
       className="comment-container"

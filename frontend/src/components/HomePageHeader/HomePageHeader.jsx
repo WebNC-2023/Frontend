@@ -12,7 +12,7 @@ import {
   Stack,
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Logout from "@mui/icons-material/Logout";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
@@ -45,6 +45,9 @@ import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
 import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
 import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
 import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import Fade from "@mui/material/Fade";
+import CheckIcon from "@mui/icons-material/Check";
 import * as userApi from "../../redux/APIs/userServices";
 import {
   getNotification,
@@ -52,8 +55,10 @@ import {
   markAsRead,
 } from "../../redux/APIs/notificationServices";
 import moment from "moment";
+import { DataContext } from "../../contexts/DataContext";
 
 const HomePageHeader = ({ showSidebar, classRoom }) => {
+  const { language, setLanguage } = useContext(DataContext);
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const dispatch = useDispatch();
@@ -71,9 +76,28 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
   const open = Boolean(anchorEl);
   const openNotification = Boolean(notificationAnchorEl);
 
+  const [languagesAnchorEl, setLanguagesAnchorEl] = useState(null);
+  const openLanguages = Boolean(languagesAnchorEl);
+  const handleClickLanguages = (event) => {
+    setLanguagesAnchorEl(event.currentTarget);
+  };
+  const handleCloseLanguages = () => {
+    setLanguagesAnchorEl(null);
+  };
+
   const getNotificationData = async () => {
     const res = await getNotification();
     setNotifications(res.data);
+  };
+
+  const handleChangeVietnamese = () => {
+    setLanguage("Tiếng Việt");
+    setLanguagesAnchorEl(null);
+  };
+
+  const handleChangeEnglish = () => {
+    setLanguage("English");
+    setLanguagesAnchorEl(null);
   };
 
   const calculateTimeAgo = (date) => {
@@ -195,10 +219,17 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
     navigate(`/class-details/${classroomID}?tab=1`);
   };
   const handleClickList1 = (anchor, text) => {
-    if (text === "Màn hình chính") {
-      setState({ ...state, [anchor]: false });
-      navigate("/home-page");
-    } else setState({ ...state, [anchor]: false });
+    if (language === "English") {
+      if (text === "Home screen") {
+        setState({ ...state, [anchor]: false });
+        navigate("/home-page");
+      } else setState({ ...state, [anchor]: false });
+    } else {
+      if (text === "Màn hình chính") {
+        setState({ ...state, [anchor]: false });
+        navigate("/home-page");
+      } else setState({ ...state, [anchor]: false });
+    }
   };
   const classes = useSelector((state) => state.classes.classes);
   const list = (anchor) => (
@@ -208,7 +239,10 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {["Màn hình chính", "Lịch"].map((text, index) => (
+        {(language === "English"
+          ? ["Home screen", "Calendar"]
+          : ["Màn hình chính", "Lịch"]
+        ).map((text, index) => (
           <ListItem
             key={text}
             disablePadding
@@ -232,7 +266,9 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
               <ListItemIcon>
                 <SupervisorAccountOutlinedIcon />
               </ListItemIcon>
-              <ListItemText primary="Giảng dạy" />
+              <ListItemText
+                primary={language === "English" ? "Teach" : "Giảng dạy"}
+              />
               {open2 ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
             </ListItemButton>
             <Collapse in={open2} timeout="auto" unmountOnExit>
@@ -244,7 +280,13 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                   <ListItemIcon>
                     <SourceOutlinedIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Cần xem xét" />
+                  <ListItemText
+                    primary={
+                      language === "English"
+                        ? "Need to consider"
+                        : "Cần xem xét"
+                    }
+                  />
                 </ListItemButton>
                 {classes
                   .filter((element) => element.role === "teacher")
@@ -295,7 +337,9 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
               <ListItemIcon>
                 <SchoolOutlinedIcon />
               </ListItemIcon>
-              <ListItemText primary="Đã đăng ký" />
+              <ListItemText
+                primary={language === "English" ? "Registered" : "Đã đăng ký"}
+              />
               {open1 ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
             </ListItemButton>
             <Collapse in={open1} timeout="auto" unmountOnExit>
@@ -307,7 +351,11 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                   <ListItemIcon>
                     <FactCheckOutlinedIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Việc cần làm" />
+                  <ListItemText
+                    primary={
+                      language === "English" ? "What to do" : "Việc cần làm"
+                    }
+                  />
                 </ListItemButton>
                 {classes
                   .filter((element) => element.role === "student")
@@ -351,7 +399,10 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
       )}
       <Divider />
       <List>
-        {["Lớp học đã lưu trữ", "Cài đặt"].map((text, index) => (
+        {(language === "English"
+          ? ["Archived classes", "Install"]
+          : ["Lớp học đã lưu trữ", "Cài đặt"]
+        ).map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={toggleDrawer(anchor, false)}>
               <ListItemIcon>
@@ -369,7 +420,13 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
             <ListItemIcon>
               <AddOutlinedIcon />
             </ListItemIcon>
-            <ListItemText primary="Create or join a class" />
+            <ListItemText
+              primary={
+                language === "English"
+                  ? "Create or join a class"
+                  : "Tạo hoặc tham gia lớp học"
+              }
+            />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -409,7 +466,9 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
             }}
           >
             {showSidebar ? (
-              <Tooltip title="Trình đơn chính">
+              <Tooltip
+                title={language === "English" ? "Main menu" : "Trình đơn chính"}
+              >
                 <IconButton onClick={toggleDrawer("left", true)}>
                   <MenuIcon />
                 </IconButton>
@@ -420,7 +479,14 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
 
             <Link
               style={{ marginLeft: "10px", textDecoration: "none" }}
-              to={`${classRoom ? "/home-page" : "/"}`}
+              to={`${
+                classRoom
+                  ? JSON.parse(localStorage.getItem("userInfo")).email ===
+                    "learners.admin@gmail.com"
+                    ? "/"
+                    : "/home-page"
+                  : "/"
+              }`}
               className="home-page-logo"
             >
               Learners
@@ -432,7 +498,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
             direction="row"
             justifyContent="center"
             alignItems="center"
-            spacing={2}
+            spacing={1}
           >
             {/* Start Button create class */}
             <div className="show-create-application-icon">
@@ -446,7 +512,13 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                 {classRoom ? (
                   ""
                 ) : (
-                  <Tooltip title="Create or join a class">
+                  <Tooltip
+                    title={
+                      language === "English"
+                        ? "Create or join a class"
+                        : "Tạo hoặc tham gia lớp học"
+                    }
+                  >
                     <IconButton
                       onClick={handleCreateClick}
                       aria-label="create"
@@ -462,7 +534,9 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                 )}
 
                 {/* Notifications */}
-                <Tooltip title="Notifications">
+                <Tooltip
+                  title={language === "English" ? "Notifications" : "Thông báo"}
+                >
                   <IconButton
                     id="notification-icon"
                     aria-label="App"
@@ -498,6 +572,129 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                     )}
                   </IconButton>
                 </Tooltip>
+
+                {/* Languages */}
+                <Tooltip
+                  title={language === "English" ? "Languages" : "Ngôn ngữ"}
+                >
+                  <IconButton
+                    id="language-icon"
+                    aria-label="App"
+                    sx={{ color: "#5175e0" }}
+                    size="large"
+                    onClick={handleClickLanguages}
+                  >
+                    <LanguageOutlinedIcon fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  id="fade-menu"
+                  MenuListProps={{
+                    "aria-labelledby": "fade-button",
+                  }}
+                  anchorEl={languagesAnchorEl}
+                  open={openLanguages}
+                  onClose={handleCloseLanguages}
+                  TransitionComponent={Fade}
+                >
+                  <MenuItem
+                    sx={{ display: "flex", alignItems: "center" }}
+                    onClick={handleChangeVietnamese}
+                  >
+                    Tiếng Việt {language === "Tiếng Việt" && <CheckIcon />}
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ display: "flex", alignItems: "center" }}
+                    onClick={handleChangeEnglish}
+                  >
+                    English {language === "English" && <CheckIcon />}
+                  </MenuItem>
+                </Menu>
+              </Stack>
+            </div>
+            <div className="show-notification-in-mobile-view">
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={1}
+              >
+                {/* Notifications */}
+                <Tooltip
+                  title={language === "English" ? "Notifications" : "Thông báo"}
+                >
+                  <IconButton
+                    id="notification-icon"
+                    aria-label="App"
+                    sx={{ color: "#5175e0" }}
+                    size="large"
+                    onClick={(event) =>
+                      setNotificationAnchorEl(event.currentTarget)
+                    }
+                  >
+                    <NotificationsActiveOutlinedIcon fontSize="inherit" />
+                    {notifications.filter(
+                      (notification) => !notification.isRead
+                    ).length !== 0 && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "0px",
+                          right: "0px",
+                          fontSize: "14px",
+                          padding: "3px",
+                          backgroundColor: "#EB4D5E",
+                          color: "white",
+                          borderRadius: "10px",
+                          minWidth: "20px",
+                        }}
+                      >
+                        {
+                          notifications.filter(
+                            (notification) => !notification.isRead
+                          ).length
+                        }
+                      </Box>
+                    )}
+                  </IconButton>
+                </Tooltip>
+                {/* Languages */}
+                <Tooltip
+                  title={language === "English" ? "Languages" : "Ngôn ngữ"}
+                >
+                  <IconButton
+                    id="language-icon"
+                    aria-label="App"
+                    sx={{ color: "#5175e0" }}
+                    size="large"
+                    onClick={handleClickLanguages}
+                  >
+                    <LanguageOutlinedIcon fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  id="fade-menu"
+                  MenuListProps={{
+                    "aria-labelledby": "fade-button",
+                  }}
+                  anchorEl={languagesAnchorEl}
+                  open={openLanguages}
+                  onClose={handleCloseLanguages}
+                  TransitionComponent={Fade}
+                >
+                  <MenuItem
+                    sx={{ display: "flex", alignItems: "center" }}
+                    onClick={handleChangeVietnamese}
+                  >
+                    Tiếng Việt {language === "Tiếng Việt" && <CheckIcon />}
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ display: "flex", alignItems: "center" }}
+                    onClick={handleChangeEnglish}
+                  >
+                    English {language === "English" && <CheckIcon />}
+                  </MenuItem>
+                </Menu>
               </Stack>
             </div>
             {/* End Button create class */}
@@ -511,14 +708,17 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                 textAlign: "center",
               }}
             >
-              <Tooltip title="My account">
+              <Tooltip
+                title={
+                  language === "English" ? "My account" : "Tài khoản của tôi"
+                }
+              >
                 <IconButton
                   onClick={handleClick}
                   size="small"
                   aria-controls={open ? "account-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
-                  style={{ marginTop: "5px" }}
                 >
                   <Avatar
                     src={avatarImg}
@@ -571,14 +771,14 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                   sx={{ color: "#5175e0" }}
                 />
               </ListItemIcon>
-              Create classes
+              {language === "English" ? "Create classes" : "Tạo lớp học"}
             </MenuItem>
 
             <MenuItem onClick={handleOpenDialogJoin}>
               <ListItemIcon>
                 <InputIcon fontSize="small" sx={{ color: "#5175e0" }} />
               </ListItemIcon>
-              Join the class
+              {language === "English" ? "Join the class" : "Tham gia lớp học"}
             </MenuItem>
           </Menu>
           {/* Menu Account */}
@@ -632,7 +832,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
               <ListItemIcon>
                 <Settings fontSize="small" sx={{ color: "#5175e0" }} />
               </ListItemIcon>
-              Edit profile
+              {language === "English" ? "Edit profile" : "Chỉnh sửa hồ sơ"}
             </MenuItem>
             {JSON.parse(localStorage.getItem("userInfo")) &&
               JSON.parse(localStorage.getItem("userInfo")).isSSO === false && (
@@ -640,14 +840,14 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                   <ListItemIcon>
                     <PasswordIcon fontSize="small" sx={{ color: "#5175e0" }} />
                   </ListItemIcon>
-                  Change password
+                  {language === "English" ? "Change password" : "Đổi mật khẩu"}
                 </MenuItem>
               )}
             <MenuItem onClick={handleClickLogOut}>
               <ListItemIcon>
                 <Logout fontSize="small" sx={{ color: "#5175e0" }} />
               </ListItemIcon>
-              Logout
+              {language === "English" ? "Logout" : "Đăng xuất"}
             </MenuItem>
           </Menu>
 
@@ -699,13 +899,13 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                   sx={{ marginRight: "20px" }}
                   onClick={() => setFilterUnread(false)}
                 >
-                  All
+                  {language === "English" ? "All" : "Tất cả"}
                 </Button>
                 <Button
                   variant={filterUnread ? "contained" : "outlined"}
                   onClick={() => setFilterUnread(true)}
                 >
-                  Unread
+                  {language === "English" ? "Unread" : "Chưa đọc"}
                 </Button>
               </Box>
               <Box>
@@ -716,7 +916,9 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                     getNotificationData();
                   }}
                 >
-                  Mark all as read
+                  {language === "English"
+                    ? "Mark all as read"
+                    : "Đánh dấu tất cả là đã đọc"}
                 </Button>
               </Box>
             </Box>
@@ -725,7 +927,11 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
               : notifications
             ).length === 0 && (
               <MenuItem>
-                <Box>No notifications found</Box>
+                <Box>
+                  {language === "English"
+                    ? "No notifications found"
+                    : "Không có thông báo nào"}
+                </Box>
               </MenuItem>
             )}
             {(filterUnread
@@ -743,7 +949,11 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                 }}
               >
                 <Avatar
-                  src={`${process.env.REACT_APP_SERVER_BASE_URL}/files/${notification.sender.avatar}`}
+                  src={
+                    notification.sender.avatar !== null
+                      ? `${process.env.REACT_APP_SERVER_BASE_URL}/files/${notification.sender.avatar}`
+                      : ""
+                  }
                   sx={{
                     width: "50px !important",
                     height: "50px !important",
