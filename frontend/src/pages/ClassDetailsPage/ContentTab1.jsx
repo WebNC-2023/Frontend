@@ -29,9 +29,17 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
   const copyToClipboard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(language === "English" ? "Copied to clipboard" : "Đã sao chép vào clipboard");
+      toast.success(
+        language === "English"
+          ? "Copied to clipboard"
+          : "Đã sao chép vào clipboard"
+      );
     } catch (error) {
-      toast.error(language === "English" ? "Can not copy to clipboard" : "Không thể sao chép vào clipboard");
+      toast.error(
+        language === "English"
+          ? "Can not copy to clipboard"
+          : "Không thể sao chép vào clipboard"
+      );
     }
     handleClose();
   };
@@ -112,9 +120,11 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                     }}
                   >
                     <ContentCopyRoundedIcon />
-                    <p>{language === "English"
+                    <p>
+                      {language === "English"
                         ? "Copy class code"
-                        : "Sao chép mã lớp"}</p>
+                        : "Sao chép mã lớp"}
+                    </p>
                   </MenuItem>
                   <MenuItem
                     onClick={handleClose}
@@ -124,9 +134,7 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
                     }}
                   >
                     <CancelPresentationIcon />
-                    <p>{language === "English"
-                        ? "Turn off"
-                        : "Tắt"}</p>
+                    <p>{language === "English" ? "Turn off" : "Tắt"}</p>
                   </MenuItem>
                 </Menu>
               </div>
@@ -164,9 +172,13 @@ const ContentTab1 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
             rowGap: "20px",
           }}
         >
-          <p>Không tìm thấy lớp</p>
+          <p>
+            {language === "English" ? "Class not found" : "Không tìm thấy lớp"}
+          </p>
           <Link to="/home-page">
-            <Button variant="contained">Quay lại lớp học</Button>
+            <Button variant="contained">
+              {language === "English" ? "Return to class" : "Quay lại lớp học"}
+            </Button>
           </Link>
         </div>
       )}

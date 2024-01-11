@@ -132,7 +132,7 @@ export default function Row(props) {
   const handleFileDownload = (scores, nameOfClass, assignmentName) => {
     try {
       exportGradesForAnAssignmentToExcel(scores, nameOfClass, assignmentName);
-      toast.success("Download successful!");
+      toast.success(language==="English"?"Download successful!":"Tải xuống thành công");
     } catch (error) {
       console.error("Error exporting grades:", error);
       toast.error(`Error: ${error.message}`);
@@ -175,7 +175,7 @@ export default function Row(props) {
           return;
         }
 
-        toast.success("Upload successfully !");
+        toast.success(language==="English"?"Upload successfully !":"Tải lên thành công");
 
         // handleEditScore(row.id)
 

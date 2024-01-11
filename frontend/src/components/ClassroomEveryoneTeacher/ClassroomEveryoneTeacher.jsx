@@ -120,7 +120,7 @@ const ClassroomEveryoneTeacher = ({
         );
         setOpenRemoveDialog(false);
         setDeleting(false);
-        toast.success(`${res1.data.message}`, {
+        toast.success(language==="English"?`${res1.data.message}`:"Xóa thành công", {
           autoClose: 3000,
         });
       } catch (error) {
@@ -137,7 +137,7 @@ const ClassroomEveryoneTeacher = ({
           console.log(error.response);
           setDeleting(false);
           setOpenRemoveDialog(false);
-          toast.error(`Delete fail!`, {
+          toast.error(language==="English"?`Delete fail!`:"Xóa thất bại", {
             autoClose: 3000,
           });
         }
@@ -165,7 +165,7 @@ const ClassroomEveryoneTeacher = ({
           console.log(error.response);
           setLeaving(false);
           setOpenLeaveDialog(false);
-          toast.error(`Leave fail!`, {
+          toast.error(language==="English"?`Leave fail!`:"Rời lớp thất bại", {
             autoClose: 3000,
           });
         }

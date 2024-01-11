@@ -113,9 +113,12 @@ const ClassroomEveryoneStudent = ({
         );
         setOpenRemoveDialog(false);
         setDeleting(false);
-        toast.success(`${res1.data.message}`, {
-          autoClose: 3000,
-        });
+        toast.success(
+          language === "English" ? `${res1.data.message}` : "Xóa thành công",
+          {
+            autoClose: 3000,
+          }
+        );
       } catch (error) {
         if (error?.response?.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
@@ -130,9 +133,12 @@ const ClassroomEveryoneStudent = ({
           console.log(error.response);
           setDeleting(false);
           setOpenRemoveDialog(false);
-          toast.error(`Delete fail!`, {
-            autoClose: 3000,
-          });
+          toast.error(
+            language === "English" ? `Delete fail!` : "Xóa thất bại",
+            {
+              autoClose: 3000,
+            }
+          );
         }
       }
     }
