@@ -128,9 +128,13 @@ const ContentTab3 = ({ loadingClassDetails, ClassDetailsSuccess }) => {
             rowGap: "20px",
           }}
         >
-          <p>Không tìm thấy lớp</p>
+          <p>
+            {language === "English" ? "Class not found" : "Không tìm thấy lớp"}
+          </p>
           <Link to="/home-page">
-            <Button variant="contained">Quay lại lớp học</Button>
+            <Button variant="contained">
+              {language === "English" ? "Return to class" : "Quay lại lớp học"}
+            </Button>
           </Link>
         </div>
       )}

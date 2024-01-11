@@ -125,11 +125,11 @@ const TableGrade = () => {
     }
     if (isSuccess) {
       fetchData();
-      toast.success("Update successfully !");
+      toast.success(language==="English"?"Update successfully !":"Cập nhật thành công");
       setHasChanges(false); // Reset hasChanges state to false
       dispatch({ type: "EDIT_ASM_RESET" });
     }
-  }, [isSuccess, isError, dispatch, id]);
+  }, [isSuccess, isError, dispatch, id, language]);
 
   // DnD
   const handleDragEnd = (result) => {

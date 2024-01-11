@@ -55,7 +55,7 @@ const AccountAction = ({ params }) => {
         dispatch(updateData(res1.data.data));
         setLoading(false);
         setOpen(false);
-        toast.success(`${res.data.message}`, { autoClose: 3000 });
+        toast.success(language==="English"?`${res.data.message}`:"Cập nhật thông tin thành công", { autoClose: 3000 });
       } catch (error) {
         setLoading(false);
         setOpen(false);

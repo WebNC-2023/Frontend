@@ -59,7 +59,7 @@ const ReviewRequirementByStudent = () => {
         });
         setSendingReviewRequest(false);
         setOpen(false);
-        toast.success(`${res.data.message}`, { autoClose: 3000 });
+        toast.success(language==="English"?`${res.data.message}`:"Đã gửi yêu cầu xem lại điểm", { autoClose: 3000 });
         dispatch(updateReload(!reload));
       } catch (error) {
         setSendingReviewRequest(false);
