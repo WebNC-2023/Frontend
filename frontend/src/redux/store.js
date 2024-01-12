@@ -5,6 +5,7 @@ import classroomPostReducer from "./Reducers/ClassroomPostSlice";
 import classroomCommentReducer from "./Reducers/ClassroomCommentSlice";
 import classroomDetailsInfoReducer from "./Reducers/ClassroomDetailsInfoSlice";
 import classroomDetailsPendingReducer from "./Reducers/classroomDetailsPendingSlice";
+import AdminReducer from "./Reducers/AdminSlice";
 import * as Class from "./Reducers/classReducer";
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   fullNameUser: fullNameUserReducer,
   classroomPost: classroomPostReducer,
   classroomComment: classroomCommentReducer,
+  admin: AdminReducer,
   createClass: Class.classCreateReducer,
   classes: Class.classGetReducer,
   classroomDetailsInfo: classroomDetailsInfoReducer,
@@ -22,6 +24,7 @@ const rootReducer = combineReducers({
   joinClassByCode: Class.classJoinByCodeReducer,
   unSubClass: Class.unSubClassReducer,
   deleteClass: Class.deleteClassReducer,
+  editAsm: Class.editAsmReducer,
 });
 
 // get userInfo from localStorage

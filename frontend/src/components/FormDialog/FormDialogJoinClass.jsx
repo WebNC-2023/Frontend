@@ -16,12 +16,14 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { joinClassCodeAction } from "../../redux/Actions/classAction";
+import { DataContext } from "../../contexts/DataContext";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function FullScreenDialog({ open, handleClose }) {
+  const { language } = React.useContext(DataContext);
   const [classCode, setClassCode] = React.useState("");
   const [classCodeError, setClassCodeError] = React.useState(false);
 
@@ -52,7 +54,7 @@ export default function FullScreenDialog({ open, handleClose }) {
       dispatch({ type: "JOIN_CLASS_BYCODE_RESET" });
     }
     if (isSuccess) {
-      navigate("/class-details/" + classCode);
+      navigate("/class-details/" + classCode + "?tab=1");
       dispatch({ type: "JOIN_CLASS_BYCODE_RESET" });
     }
   }, [dispatch, isError, classCode, isSuccess, navigate]);
@@ -73,7 +75,7 @@ export default function FullScreenDialog({ open, handleClose }) {
         }}
       >
         <Toolbar>
-          <Tooltip title="Close">
+          <Tooltip title={language === "English" ? "Close" : "Đóng"}>
             <IconButton
               edge="start"
               color="inherit"
@@ -85,7 +87,7 @@ export default function FullScreenDialog({ open, handleClose }) {
             </IconButton>
           </Tooltip>
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-            Join the class
+            {language === "English" ? "Join the class" : "Tham gia lớp học"}
           </Typography>
           <Button
             variant="contained"
@@ -93,7 +95,13 @@ export default function FullScreenDialog({ open, handleClose }) {
             sx={{ textTransform: "none", padding: "6px 22px" }}
             onClick={handleJoinClick}
           >
-            {isLoading ? "Loading..." : "Join"}
+            {isLoading
+              ? language === "English"
+                ? "Loading..."
+                : "Đang tải..."
+              : language === "English"
+              ? "Join"
+              : "Tham gia"}
           </Button>
         </Toolbar>
       </AppBar>
@@ -117,14 +125,16 @@ export default function FullScreenDialog({ open, handleClose }) {
         >
           <CardContent>
             <Typography variant="h5" component="div">
-              Class Code
+              {language === "English" ? "Class Code" : "Mã lớp"}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Ask your teacher for the class code and enter it here.
+              {language === "English"
+                ? "Ask your teacher for the class code and enter it here."
+                : "Đề nghị giáo viên của bạn cung cấp mã lớp rồi nhập mã đó vào đây."}
             </Typography>
             <TextField
               id="classCode"
-              label="Class Code"
+              label={language === "English" ? "Class Code" : "Mã lớp"}
               variant="outlined"
               style={{ marginTop: "1rem", width: "50%" }}
               value={classCode}
@@ -132,7 +142,9 @@ export default function FullScreenDialog({ open, handleClose }) {
               error={classCodeError}
               helperText={
                 classCodeError
-                  ? "The class code has 7-12 characters including letters and numbers, without spaces or symbols"
+                  ? language === "English"
+                    ? "The class code has 7-12 characters including letters and numbers, without spaces or symbols"
+                    : "Mã lớp có 7-12 ký tự bao gồm chữ cái và số, không chứa khoảng cách và ký hiệu"
                   : ""
               }
             />
@@ -148,12 +160,19 @@ export default function FullScreenDialog({ open, handleClose }) {
           }}
         >
           <Typography variant="subtitle2" sx={{ fontSize: "16px" }}>
-            How to log in with class code{" "}
+            {language === "English"
+              ? "How to log in with class code"
+              : "Cách đăng nhập bằng mã lớp học"}
           </Typography>
-          <Typography>• Use a licensed account</Typography>
           <Typography>
-            • Use a class code of 7-12 letters or numbers, with no spaces or
-            symbols
+            {language === "English"
+              ? "• Use a licensed account"
+              : "• Sử dụng tài khoản được cấp phép"}
+          </Typography>
+          <Typography>
+            {language === "English"
+              ? "• Use a class code of 7-12 letters or numbers, with no spaces or symbols"
+              : "• Sử dụng mã lớp học gồm 5-7 chữ cái hoặc số, không có dấu cách hoặc ký hiệu"}
           </Typography>
         </Box>
       </Box>

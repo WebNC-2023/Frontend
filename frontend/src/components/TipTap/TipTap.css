@@ -1,0 +1,20 @@
+.TipTap-container {
+    width: 100%;
+    border: 1px solid #dadce0;
+    border-radius: 10px;
+    padding: 16px;
+    color: black;
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.tiptap.ProseMirror-focused {
+    outline: none;
+    border: none;
+}
+
+.TipTap-container:focus-within {
+    /* border: 2px solid #4285f4; */
+    box-shadow: 0px 0px 0px 2px #4285f4;
+    border-radius: 10px;
+}

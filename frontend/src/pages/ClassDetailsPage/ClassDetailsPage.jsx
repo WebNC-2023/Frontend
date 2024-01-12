@@ -1,65 +1,48 @@
-import ClassDetailsName from "../../components/ClassDetailsName/ClassDetailsName";
-import ClassTabs from "../../components/ClassTabs/ClassTabs";
-import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
 import { useState, useEffect } from "react";
-import "./ClassDetailsPage.css";
-import NotificationInClassroom from "../../components/NotificationInClassroom/NotificationInClassroom";
-import ClassroomPost from "../../components/ClassroomPost/ClassroomPost";
-import { useSelector } from "react-redux";
-import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
+import HomePageHeader from "../../components/HomePageHeader/HomePageHeader";
+import ClassTabs from "../../components/ClassTabs/ClassTabs";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import Axios from "../../redux/APIs/Axios";
-import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
+import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import LinkIcon from "@mui/icons-material/Link";
-import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
+import ContentTab1 from "./ContentTab1";
+import { useSelector } from "react-redux";
+import ContentTab2 from "./ContentTab2";
+import ContentTab3 from "./ContentTab3";
+import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
+import ContentTab4 from "./ContentTab4";
+import ContentTab5 from "./ContentTab5";
 const ClassDetailsPage = () => {
-  const posts = useSelector((state) => state.classroomPost.posts);
-  const successClassDetails = useSelector(
-    (state) => state.classroomDetailsPending.success
-  );
-  const dispatch = useDispatch();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
-  const [loadingHomePage, setLoadingHomePage] = useState(true);
+  const dispatch = useDispatch();
+  const [loadingClassDetails, setLoadingClassDetails] = useState(true);
   const { classId } = useParams();
   useEffect(() => {
     const checkLoggedIn = async () => {
-      setLoadingHomePage(true);
+      setLoadingClassDetails(true);
       try {
         const res = await Axios.get(`/classes/${classId}`);
         dispatch(
           update({
             fullName: `${
-              JSON.parse(localStorage.getItem("userInfo"))
-                ? JSON.parse(localStorage.getItem("userInfo")).firstName ?? ""
-                : ""
-            } ${
-              JSON.parse(localStorage.getItem("userInfo"))
-                ? JSON.parse(localStorage.getItem("userInfo")).lastName ?? ""
-                : ""
-            }`,
-            avatar: !JSON.parse(localStorage.getItem("userInfo"))
-              ? null
-              : JSON.parse(localStorage.getItem("userInfo")).avatar === null
-              ? null
-              : `${
-                  process.env.REACT_APP_SERVER_BASE_URL ??
-                  "https://webnc-2023.vercel.app"
-                }/files/${
-                  JSON.parse(localStorage.getItem("userInfo")).avatar
-                }?${Date.now()}`,
+              JSON.parse(localStorage.getItem("userInfo")).firstName ?? ""
+            } ${JSON.parse(localStorage.getItem("userInfo")).lastName ?? ""}`,
+            avatar:
+              JSON.parse(localStorage.getItem("userInfo")).avatar === null
+                ? null
+                : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+                    JSON.parse(localStorage.getItem("userInfo")).avatar
+                  }?${Date.now()}`,
           })
         );
         dispatch(
@@ -71,6 +54,18 @@ const ClassDetailsPage = () => {
             isOwner: res.data.data.isOwner,
             people: res.data.data.people,
             owner: res.data.data.owner,
+            classroomAvatar: res.data.data.avatar,
+            assignments: res.data.data.assignments.map((element) => {
+              return {
+                id: element.id,
+                title: element.title,
+                description: element.description,
+                type: element.type,
+                dateCreated: element.dateCreated,
+                scores: element.scores,
+              };
+            }),
+            reviews: res.data.data.reviews,
           })
         );
         dispatch(
@@ -79,7 +74,7 @@ const ClassDetailsPage = () => {
             success: true,
           })
         );
-        setLoadingHomePage(false);
+        setLoadingClassDetails(false);
       } catch (err) {
         if (err?.response?.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
@@ -105,10 +100,7 @@ const ClassDetailsPage = () => {
               avatar:
                 JSON.parse(localStorage.getItem("userInfo")).avatar === null
                   ? null
-                  : `${
-                      process.env.REACT_APP_SERVER_BASE_URL ??
-                      "https://webnc-2023.vercel.app"
-                    }/files/${
+                  : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
                       JSON.parse(localStorage.getItem("userInfo")).avatar
                     }?${Date.now()}`,
             })
@@ -119,131 +111,67 @@ const ClassDetailsPage = () => {
               success: false,
             })
           );
-          setLoadingHomePage(false);
+          setLoadingClassDetails(false);
         } else {
-          throw err;
+          toast.error(`${err}`);
+          setLoadingClassDetails(false);
         }
       }
     };
     checkLoggedIn();
   }, [dispatch, classId, navigate]);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const people = useSelector((state) => state.classroomDetailsInfo.people);
+  const ClassDetailsSuccess = useSelector(
+    (state) => state.classroomDetailsPending.success
+  );
+  const Tab = searchParams.get("tab");
+  const [tab, setTab] = useState(() => {
+    if (Number(Tab) === 1) return "one";
+    else if (Number(Tab) === 2) return "two";
+    else if (Number(Tab) === 3) return "three";
+    else if (Number(Tab) === 4) return "four";
+    else if (Number(Tab) === 5) return "five";
+    else return "error";
+  });
   return (
     <>
       <HomePageHeader showSidebar={true} classRoom={true} />
-      <ClassTabs contentClassTab="one" />
-      {loadingHomePage && (
-        <Box sx={{ width: "100%", paddingTop: "2px" }}>
+      {loadingClassDetails && (
+        <Box sx={{ width: "100%", paddingTop: "65px" }}>
           <LinearProgress />
         </Box>
       )}
-      {loadingHomePage ? (
+      {tab === "error" ? (
         <></>
-      ) : successClassDetails ? (
-        <>
-          <div className="class-details-page-container">
-            <div className="class-details-page-flex">
-              <div
-                className="class-details-page-left"
-                style={
-                  people.filter(
-                    (element) =>
-                      element.email ===
-                        JSON.parse(localStorage.getItem("userInfo")).email &&
-                      element.role === "teacher"
-                  ).length === 0
-                    ? {
-                        display: "none",
-                      }
-                    : {}
-                }
-              >
-                <div className="class-details-page-left-code">
-                  <div className="class-details-page-code-title">Mã lớp</div>
-                  <div className="class-details-page-code-content">
-                    {classId}
-                  </div>
-                </div>
-                <IconButton size="large" onClick={handleClick}>
-                  <MoreVertIcon
-                    sx={{
-                      color: "#202020",
-                    }}
-                  />
-                </IconButton>
-                <Menu
-                  id="basic-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  MenuListProps={{
-                    "aria-labelledby": "basic-button",
-                  }}
-                >
-                  <MenuItem
-                    onClick={handleClose}
-                    sx={{
-                      display: "flex",
-                      columnGap: "30px",
-                    }}
-                  >
-                    <LinkIcon />
-                    <p>Sao chép đường liên kết mời tham gia lớp học</p>
-                  </MenuItem>
-                  <MenuItem
-                    onClick={handleClose}
-                    sx={{
-                      display: "flex",
-                      columnGap: "30px",
-                    }}
-                  >
-                    <ContentCopyRoundedIcon />
-                    <p>Sao chép mã lớp</p>
-                  </MenuItem>
-                  <MenuItem
-                    onClick={handleClose}
-                    sx={{
-                      display: "flex",
-                      columnGap: "30px",
-                    }}
-                  >
-                    <CancelPresentationIcon />
-                    <p>Tắt</p>
-                  </MenuItem>
-                </Menu>
-              </div>
-              <div
-                className="class-details-page-right"
-                style={
-                  people.filter(
-                    (element) =>
-                      element.email ===
-                        JSON.parse(localStorage.getItem("userInfo")).email &&
-                      element.role === "teacher"
-                  ).length === 0
-                    ? {
-                        width: "calc(100% - 25px)",
-                      }
-                    : {}
-                }
-              >
-                <ClassDetailsName />
-                <NotificationInClassroom />
-                {posts.slice(1).map((post, index) => (
-                  <ClassroomPost key={index} post={post} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </>
+      ) : loadingClassDetails ? (
+        <></>
+      ) : (
+        <ClassTabs tab={tab} setTab={setTab} />
+      )}
+      {Number(Tab) === 1 ? (
+        <ContentTab1
+          loadingClassDetails={loadingClassDetails}
+          ClassDetailsSuccess={ClassDetailsSuccess}
+        />
+      ) : Number(Tab) === 2 ? (
+        <ContentTab2
+          loadingClassDetails={loadingClassDetails}
+          ClassDetailsSuccess={ClassDetailsSuccess}
+        />
+      ) : Number(Tab) === 3 ? (
+        <ContentTab3
+          loadingClassDetails={loadingClassDetails}
+          ClassDetailsSuccess={ClassDetailsSuccess}
+        />
+      ) : Number(Tab) === 4 ? (
+        <ContentTab4
+          loadingClassDetails={loadingClassDetails}
+          ClassDetailsSuccess={ClassDetailsSuccess}
+        />
+      ) : Number(Tab) === 5 ? (
+        <ContentTab5
+          loadingClassDetails={loadingClassDetails}
+          ClassDetailsSuccess={ClassDetailsSuccess}
+        />
       ) : (
         <div
           style={{

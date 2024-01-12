@@ -3,6 +3,7 @@ import {
   Grid,
   Box,
   Avatar,
+  Button,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -11,7 +12,7 @@ import {
   Stack,
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Logout from "@mui/icons-material/Logout";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
@@ -36,24 +37,105 @@ import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AppsOutlinedIcon from "@mui/icons-material/AppsOutlined";
+import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import InputIcon from "@mui/icons-material/Input";
 import FormDialogCreateClass from "../FormDialog/FormDialogCreateClass";
 import FormDialogJoinClass from "../FormDialog/FormDialogJoinClass";
+import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
+import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import Fade from "@mui/material/Fade";
+import CheckIcon from "@mui/icons-material/Check";
 import * as userApi from "../../redux/APIs/userServices";
+import {
+  getNotification,
+  markAllAsRead,
+  markAsRead,
+} from "../../redux/APIs/notificationServices";
+import moment from "moment";
+import { DataContext } from "../../contexts/DataContext";
 
 const HomePageHeader = ({ showSidebar, classRoom }) => {
+  const { language, setLanguage } = useContext(DataContext);
   const avatarImg = useSelector((state) => state.fullNameUser.avatar);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [classAnchorEl, setClassAnchorEl] = useState(null);
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [filterUnread, setFilterUnread] = useState(false);
+  const [ws, setWs] = useState(null);
+
   const [openDialogCreateClass, setOpenDialogCreateClass] = useState(false);
   const [openDialogJoinClass, setOpenDialogJoinClass] = useState(false);
   const openMenuClass = Boolean(classAnchorEl);
   const open = Boolean(anchorEl);
+  const openNotification = Boolean(notificationAnchorEl);
+
+  const [languagesAnchorEl, setLanguagesAnchorEl] = useState(null);
+  const openLanguages = Boolean(languagesAnchorEl);
+  const handleClickLanguages = (event) => {
+    setLanguagesAnchorEl(event.currentTarget);
+  };
+  const handleCloseLanguages = () => {
+    setLanguagesAnchorEl(null);
+  };
+
+  const getNotificationData = async () => {
+    const res = await getNotification();
+    setNotifications(res.data);
+  };
+
+  const handleChangeVietnamese = () => {
+    setLanguage("Tiếng Việt");
+    setLanguagesAnchorEl(null);
+  };
+
+  const handleChangeEnglish = () => {
+    setLanguage("English");
+    setLanguagesAnchorEl(null);
+  };
+
+  const calculateTimeAgo = (date) => {
+    const now = moment();
+    const targetDate = moment(date);
+
+    const duration = moment.duration(now.diff(targetDate));
+
+    if (duration.asSeconds() < 60) {
+      return `${Math.floor(duration.asSeconds())}s ago`;
+    } else if (duration.asMinutes() < 60) {
+      return `${Math.floor(duration.asMinutes())}m ago`;
+    } else if (duration.asHours() < 24) {
+      return `${Math.floor(duration.asHours())}h ago`;
+    } else {
+      return targetDate.format("MMM D, YYYY [at] h:mm A");
+    }
+  };
+
+  const configWS = async () => {
+    const newWs = new WebSocket(
+      `${
+        process.env.REACT_APP_SOCKET_SERVER_URL
+      }?access_token=${localStorage.getItem("accessToken")}`
+    );
+
+    newWs.onmessage = () => {
+      getNotificationData();
+    };
+
+    setWs(newWs);
+  };
+
+  React.useEffect(() => {
+    getNotificationData();
+    configWS();
+  }, []);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -65,6 +147,9 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
   };
   const handleClassClose = () => {
     setClassAnchorEl(null);
+  };
+  const handleCloseNotification = () => {
+    setNotificationAnchorEl(null);
   };
   const handleClickChangePasswordBtn = () => {
     setAnchorEl(null);
@@ -98,13 +183,20 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
     ) {
       return;
     }
-    if (open === false) setOpen1(false);
+    if (open === false) {
+      setOpen1(false);
+      setOpen2(false);
+    }
     setState({ ...state, [anchor]: open });
   };
   const [open1, setOpen1] = useState(true);
+  const [open2, setOpen2] = useState(true);
 
   const handleClick1 = () => {
     setOpen1(!open1);
+  };
+  const handleClick2 = () => {
+    setOpen2(!open2);
   };
   // Handle create & join Class
 
@@ -122,7 +214,24 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
   const handleCloseDialogJoin = () => {
     setOpenDialogJoinClass(false);
   };
-
+  const handleClickSidebarClass = (anchor, classroomID) => {
+    setState({ ...state, [anchor]: false });
+    navigate(`/class-details/${classroomID}?tab=1`);
+  };
+  const handleClickList1 = (anchor, text) => {
+    if (language === "English") {
+      if (text === "Home screen") {
+        setState({ ...state, [anchor]: false });
+        navigate("/home-page");
+      } else setState({ ...state, [anchor]: false });
+    } else {
+      if (text === "Màn hình chính") {
+        setState({ ...state, [anchor]: false });
+        navigate("/home-page");
+      } else setState({ ...state, [anchor]: false });
+    }
+  };
+  const classes = useSelector((state) => state.classes.classes);
   const list = (anchor) => (
     <Box
       sx={{ width: 250 }}
@@ -130,9 +239,16 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {["Màn hình chính", "Lịch"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton onClick={toggleDrawer(anchor, false)}>
+        {(language === "English"
+          ? ["Home screen", "Calendar"]
+          : ["Màn hình chính", "Lịch"]
+        ).map((text, index) => (
+          <ListItem
+            key={text}
+            disablePadding
+            onClick={() => handleClickList1("left", text)}
+          >
+            <ListItemButton>
               <ListItemIcon>
                 {index === 0 ? <HomeIcon /> : <CalendarTodayIcon />}
               </ListItemIcon>
@@ -141,32 +257,152 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
           </ListItem>
         ))}
       </List>
-      <Divider />
-      <List>
-        <ListItemButton onClick={handleClick1}>
-          <ListItemIcon>
-            <SchoolOutlinedIcon />
-          </ListItemIcon>
-          <ListItemText primary="Đã đăng ký" />
-          {open1 ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
-        </ListItemButton>
-        <Collapse in={open1} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton
-              sx={{ pl: 2 }}
-              onClick={toggleDrawer(anchor, false)}
-            >
+      {classes !== undefined &&
+      classes.filter((element) => element.role === "teacher").length > 0 ? (
+        <>
+          <Divider />
+          <List>
+            <ListItemButton onClick={handleClick2}>
               <ListItemIcon>
-                <FactCheckOutlinedIcon />
+                <SupervisorAccountOutlinedIcon />
               </ListItemIcon>
-              <ListItemText primary="Việc cần làm" />
+              <ListItemText
+                primary={language === "English" ? "Teach" : "Giảng dạy"}
+              />
+              {open2 ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
             </ListItemButton>
+            <Collapse in={open2} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton
+                  sx={{ pl: 2 }}
+                  onClick={toggleDrawer(anchor, false)}
+                >
+                  <ListItemIcon>
+                    <SourceOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      language === "English"
+                        ? "Need to consider"
+                        : "Cần xem xét"
+                    }
+                  />
+                </ListItemButton>
+                {classes
+                  .filter((element) => element.role === "teacher")
+                  .map((classroom) => (
+                    <ListItemButton
+                      key={classroom.id}
+                      sx={{ pl: 2 }}
+                      onClick={() =>
+                        handleClickSidebarClass("left", classroom.id)
+                      }
+                    >
+                      <ListItemIcon>
+                        <Avatar
+                          src={
+                            classroom.avatar === null
+                              ? ""
+                              : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${classroom.avatar}`
+                          }
+                          sx={
+                            classroom.avatar === null
+                              ? {
+                                  backgroundColor: "#1967d2",
+                                }
+                              : {}
+                          }
+                        >
+                          {classroom.avatar === null
+                            ? `${classroom.name.toUpperCase()[0]}`
+                            : ""}
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText primary={classroom.name} />
+                    </ListItemButton>
+                  ))}
+              </List>
+            </Collapse>
           </List>
-        </Collapse>
-      </List>
+        </>
+      ) : (
+        <></>
+      )}
+      {classes !== undefined &&
+      classes.filter((element) => element.role === "student").length > 0 ? (
+        <>
+          <Divider />
+          <List>
+            <ListItemButton onClick={handleClick1}>
+              <ListItemIcon>
+                <SchoolOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={language === "English" ? "Registered" : "Đã đăng ký"}
+              />
+              {open1 ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+            </ListItemButton>
+            <Collapse in={open1} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton
+                  sx={{ pl: 2 }}
+                  onClick={toggleDrawer(anchor, false)}
+                >
+                  <ListItemIcon>
+                    <FactCheckOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      language === "English" ? "What to do" : "Việc cần làm"
+                    }
+                  />
+                </ListItemButton>
+                {classes
+                  .filter((element) => element.role === "student")
+                  .map((classroom) => (
+                    <ListItemButton
+                      key={classroom.id}
+                      sx={{ pl: 2 }}
+                      onClick={() =>
+                        handleClickSidebarClass("left", classroom.id)
+                      }
+                    >
+                      <ListItemIcon>
+                        <Avatar
+                          src={
+                            classroom.avatar === null
+                              ? ""
+                              : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${classroom.avatar}`
+                          }
+                          sx={
+                            classroom.avatar === null
+                              ? {
+                                  backgroundColor: "#1967d2",
+                                }
+                              : {}
+                          }
+                        >
+                          {classroom.avatar === null
+                            ? `${classroom.name.toUpperCase()[0]}`
+                            : ""}
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText primary={classroom.name} />
+                    </ListItemButton>
+                  ))}
+              </List>
+            </Collapse>
+          </List>
+        </>
+      ) : (
+        <></>
+      )}
       <Divider />
       <List>
-        {["Lớp học đã lưu trữ", "Cài đặt"].map((text, index) => (
+        {(language === "English"
+          ? ["Archived classes", "Install"]
+          : ["Lớp học đã lưu trữ", "Cài đặt"]
+        ).map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={toggleDrawer(anchor, false)}>
               <ListItemIcon>
@@ -184,7 +420,13 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
             <ListItemIcon>
               <AddOutlinedIcon />
             </ListItemIcon>
-            <ListItemText primary="Create or join a class" />
+            <ListItemText
+              primary={
+                language === "English"
+                  ? "Create or join a class"
+                  : "Tạo hoặc tham gia lớp học"
+              }
+            />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -224,7 +466,9 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
             }}
           >
             {showSidebar ? (
-              <Tooltip title="Trình đơn chính">
+              <Tooltip
+                title={language === "English" ? "Main menu" : "Trình đơn chính"}
+              >
                 <IconButton onClick={toggleDrawer("left", true)}>
                   <MenuIcon />
                 </IconButton>
@@ -234,8 +478,15 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
             )}
 
             <Link
-              style={{ marginLeft: "10px" }}
-              to={`${classRoom ? "/home-page" : "/"}`}
+              style={{ marginLeft: "10px", textDecoration: "none" }}
+              to={`${
+                classRoom
+                  ? JSON.parse(localStorage.getItem("userInfo")).email ===
+                    "learners.admin@gmail.com"
+                    ? "/"
+                    : "/home-page"
+                  : "/"
+              }`}
               className="home-page-logo"
             >
               Learners
@@ -247,7 +498,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
             direction="row"
             justifyContent="center"
             alignItems="center"
-            spacing={2}
+            spacing={1}
           >
             {/* Start Button create class */}
             <div className="show-create-application-icon">
@@ -261,7 +512,13 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                 {classRoom ? (
                   ""
                 ) : (
-                  <Tooltip title="Create or join a class">
+                  <Tooltip
+                    title={
+                      language === "English"
+                        ? "Create or join a class"
+                        : "Tạo hoặc tham gia lớp học"
+                    }
+                  >
                     <IconButton
                       onClick={handleCreateClick}
                       aria-label="create"
@@ -276,16 +533,168 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                   </Tooltip>
                 )}
 
-                {/* Applications */}
-                <Tooltip title="Applications">
+                {/* Notifications */}
+                <Tooltip
+                  title={language === "English" ? "Notifications" : "Thông báo"}
+                >
                   <IconButton
+                    id="notification-icon"
                     aria-label="App"
                     sx={{ color: "#5175e0" }}
                     size="large"
+                    onClick={(event) =>
+                      setNotificationAnchorEl(event.currentTarget)
+                    }
                   >
-                    <AppsOutlinedIcon fontSize="inherit" />
+                    <NotificationsActiveOutlinedIcon fontSize="inherit" />
+                    {notifications.filter(
+                      (notification) => !notification.isRead
+                    ).length !== 0 && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "0px",
+                          right: "0px",
+                          fontSize: "14px",
+                          padding: "3px",
+                          backgroundColor: "#EB4D5E",
+                          color: "white",
+                          borderRadius: "10px",
+                          minWidth: "20px",
+                        }}
+                      >
+                        {
+                          notifications.filter(
+                            (notification) => !notification.isRead
+                          ).length
+                        }
+                      </Box>
+                    )}
                   </IconButton>
                 </Tooltip>
+
+                {/* Languages */}
+                <Tooltip
+                  title={language === "English" ? "Languages" : "Ngôn ngữ"}
+                >
+                  <IconButton
+                    id="language-icon"
+                    aria-label="App"
+                    sx={{ color: "#5175e0" }}
+                    size="large"
+                    onClick={handleClickLanguages}
+                  >
+                    <LanguageOutlinedIcon fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  id="fade-menu"
+                  MenuListProps={{
+                    "aria-labelledby": "fade-button",
+                  }}
+                  anchorEl={languagesAnchorEl}
+                  open={openLanguages}
+                  onClose={handleCloseLanguages}
+                  TransitionComponent={Fade}
+                >
+                  <MenuItem
+                    sx={{ display: "flex", alignItems: "center" }}
+                    onClick={handleChangeVietnamese}
+                  >
+                    Tiếng Việt {language === "Tiếng Việt" && <CheckIcon />}
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ display: "flex", alignItems: "center" }}
+                    onClick={handleChangeEnglish}
+                  >
+                    English {language === "English" && <CheckIcon />}
+                  </MenuItem>
+                </Menu>
+              </Stack>
+            </div>
+            <div className="show-notification-in-mobile-view">
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={1}
+              >
+                {/* Notifications */}
+                <Tooltip
+                  title={language === "English" ? "Notifications" : "Thông báo"}
+                >
+                  <IconButton
+                    id="notification-icon"
+                    aria-label="App"
+                    sx={{ color: "#5175e0" }}
+                    size="large"
+                    onClick={(event) =>
+                      setNotificationAnchorEl(event.currentTarget)
+                    }
+                  >
+                    <NotificationsActiveOutlinedIcon fontSize="inherit" />
+                    {notifications.filter(
+                      (notification) => !notification.isRead
+                    ).length !== 0 && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "0px",
+                          right: "0px",
+                          fontSize: "14px",
+                          padding: "3px",
+                          backgroundColor: "#EB4D5E",
+                          color: "white",
+                          borderRadius: "10px",
+                          minWidth: "20px",
+                        }}
+                      >
+                        {
+                          notifications.filter(
+                            (notification) => !notification.isRead
+                          ).length
+                        }
+                      </Box>
+                    )}
+                  </IconButton>
+                </Tooltip>
+                {/* Languages */}
+                <Tooltip
+                  title={language === "English" ? "Languages" : "Ngôn ngữ"}
+                >
+                  <IconButton
+                    id="language-icon"
+                    aria-label="App"
+                    sx={{ color: "#5175e0" }}
+                    size="large"
+                    onClick={handleClickLanguages}
+                  >
+                    <LanguageOutlinedIcon fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  id="fade-menu"
+                  MenuListProps={{
+                    "aria-labelledby": "fade-button",
+                  }}
+                  anchorEl={languagesAnchorEl}
+                  open={openLanguages}
+                  onClose={handleCloseLanguages}
+                  TransitionComponent={Fade}
+                >
+                  <MenuItem
+                    sx={{ display: "flex", alignItems: "center" }}
+                    onClick={handleChangeVietnamese}
+                  >
+                    Tiếng Việt {language === "Tiếng Việt" && <CheckIcon />}
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ display: "flex", alignItems: "center" }}
+                    onClick={handleChangeEnglish}
+                  >
+                    English {language === "English" && <CheckIcon />}
+                  </MenuItem>
+                </Menu>
               </Stack>
             </div>
             {/* End Button create class */}
@@ -299,14 +708,17 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                 textAlign: "center",
               }}
             >
-              <Tooltip title="My account">
+              <Tooltip
+                title={
+                  language === "English" ? "My account" : "Tài khoản của tôi"
+                }
+              >
                 <IconButton
                   onClick={handleClick}
                   size="small"
                   aria-controls={open ? "account-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
-                  style={{ marginTop: "5px" }}
                 >
                   <Avatar
                     src={avatarImg}
@@ -359,14 +771,14 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                   sx={{ color: "#5175e0" }}
                 />
               </ListItemIcon>
-              Create classes
+              {language === "English" ? "Create classes" : "Tạo lớp học"}
             </MenuItem>
 
             <MenuItem onClick={handleOpenDialogJoin}>
               <ListItemIcon>
                 <InputIcon fontSize="small" sx={{ color: "#5175e0" }} />
               </ListItemIcon>
-              Join the class
+              {language === "English" ? "Join the class" : "Tham gia lớp học"}
             </MenuItem>
           </Menu>
           {/* Menu Account */}
@@ -420,7 +832,7 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
               <ListItemIcon>
                 <Settings fontSize="small" sx={{ color: "#5175e0" }} />
               </ListItemIcon>
-              Edit profile
+              {language === "English" ? "Edit profile" : "Chỉnh sửa hồ sơ"}
             </MenuItem>
             {JSON.parse(localStorage.getItem("userInfo")) &&
               JSON.parse(localStorage.getItem("userInfo")).isSSO === false && (
@@ -428,16 +840,168 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
                   <ListItemIcon>
                     <PasswordIcon fontSize="small" sx={{ color: "#5175e0" }} />
                   </ListItemIcon>
-                  Change password
+                  {language === "English" ? "Change password" : "Đổi mật khẩu"}
                 </MenuItem>
               )}
             <MenuItem onClick={handleClickLogOut}>
               <ListItemIcon>
                 <Logout fontSize="small" sx={{ color: "#5175e0" }} />
               </ListItemIcon>
-              Logout
+              {language === "English" ? "Logout" : "Đăng xuất"}
             </MenuItem>
           </Menu>
+
+          <Menu
+            anchorEl={notificationAnchorEl}
+            id="notification-menu"
+            open={openNotification}
+            onClose={handleCloseNotification}
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                width: "450px",
+                maxHeight: "600px",
+                overflowY: "auto",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                "& .MuiAvatar-root": {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1,
+                },
+                "&:before": {
+                  content: '""',
+                  display: "block",
+                  position: "absolute",
+                  top: 0,
+                  right: 14,
+                  width: 10,
+                  height: 10,
+                  bgcolor: "background.paper",
+                  transform: "translateY(-50%) rotate(45deg)",
+                  zIndex: 0,
+                },
+              },
+            }}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <Box
+              sx={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box>
+                <Button
+                  variant={filterUnread ? "outlined" : "contained"}
+                  sx={{ marginRight: "20px" }}
+                  onClick={() => setFilterUnread(false)}
+                >
+                  {language === "English" ? "All" : "Tất cả"}
+                </Button>
+                <Button
+                  variant={filterUnread ? "contained" : "outlined"}
+                  onClick={() => setFilterUnread(true)}
+                >
+                  {language === "English" ? "Unread" : "Chưa đọc"}
+                </Button>
+              </Box>
+              <Box>
+                <Button
+                  variant="text"
+                  onClick={async () => {
+                    await markAllAsRead();
+                    getNotificationData();
+                  }}
+                >
+                  {language === "English"
+                    ? "Mark all as read"
+                    : "Đánh dấu tất cả là đã đọc"}
+                </Button>
+              </Box>
+            </Box>
+            {(filterUnread
+              ? notifications.filter((n) => !n.isRead)
+              : notifications
+            ).length === 0 && (
+              <MenuItem>
+                <Box>
+                  {language === "English"
+                    ? "No notifications found"
+                    : "Không có thông báo nào"}
+                </Box>
+              </MenuItem>
+            )}
+            {(filterUnread
+              ? notifications.filter((n) => !n.isRead)
+              : notifications
+            ).map((notification) => (
+              <MenuItem
+                key={notification.id}
+                onClick={async () => {
+                  if (!notification.isRead) {
+                    await markAsRead(notification.id);
+                    getNotificationData();
+                  }
+                  window.location.href = `${process.env.REACT_APP_CLIENT_BASE_URL}${notification.link}`;
+                }}
+              >
+                <Avatar
+                  src={
+                    notification.sender.avatar !== null
+                      ? `${process.env.REACT_APP_SERVER_BASE_URL}/files/${notification.sender.avatar}`
+                      : ""
+                  }
+                  sx={{
+                    width: "50px !important",
+                    height: "50px !important",
+                    backgroundColor: "#5175e0",
+                  }}
+                ></Avatar>
+                <Box
+                  sx={{
+                    wordWrap: true,
+                    width: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  <Box sx={{ fontWeight: 400, display: "flex", gap: "4px" }}>
+                    <Box sx={{ fontWeight: 500 }}>{`${
+                      notification.sender.firstName ?? ""
+                    } ${notification.sender.lastName ?? ""}`}</Box>
+                    <Box
+                      sx={{
+                        flex: "1",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {notification.content}
+                    </Box>
+                  </Box>
+                  <Box sx={{ fontSize: "14px" }}>
+                    {calculateTimeAgo(notification.dateCreated)}
+                  </Box>
+                </Box>
+                {!notification.isRead && (
+                  <Box
+                    sx={{
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "10px",
+                      backgroundColor: "red",
+                      marginLeft: "10px",
+                      marginBottom: "25px",
+                    }}
+                  ></Box>
+                )}
+              </MenuItem>
+            ))}
+          </Menu>
+
           {/* Dialog Create Class */}
           <FormDialogCreateClass
             open={openDialogCreateClass}

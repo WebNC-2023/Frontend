@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 //import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import Axios from "../../redux/APIs/Axios";
 const ProtectedSign = () => {
   const dispatch = useDispatch();
   const [loadingSignPage, setLoadingSignPage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     async function checkLoggedIn() {
       setLoadingSignPage(true);
@@ -20,15 +21,19 @@ const ProtectedSign = () => {
     }
     checkLoggedIn()
       .then((res) => {
-        localStorage.removeItem("userInfo");
-        dispatch(
-          update({
-            fullName: " ",
-            avatar: "",
-          })
-        );
-        setLoadingSignPage(false);
-        setIsAuth(true);
+        if (res.data.data.email === "learners.admin@gmail.com") {
+          navigate("/admin?tab=1");
+        } else {
+          localStorage.removeItem("userInfo");
+          dispatch(
+            update({
+              fullName: " ",
+              avatar: "",
+            })
+          );
+          setLoadingSignPage(false);
+          setIsAuth(true);
+        }
       })
       .catch((err) => {
         if (err?.response?.data === "Unauthorized") {
@@ -45,7 +50,7 @@ const ProtectedSign = () => {
           throw err;
         }
       });
-  }, [dispatch]);
+  }, [dispatch, navigate]);
   if (loadingSignPage)
     return (
       <div className="lds-ellipsis">

@@ -9,12 +9,60 @@ import DialogTitle from "@mui/material/DialogTitle";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Axios from "../../redux/APIs/Axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
 import { toast } from "react-toastify";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
+import { styled, alpha } from "@mui/material/styles";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { DataContext } from "../../contexts/DataContext";
+
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
+
 const ClassroomEveryoneStudent = ({
   firstName,
   lastName,
@@ -22,26 +70,26 @@ const ClassroomEveryoneStudent = ({
   email,
   userId,
 }) => {
+  const { language } = useContext(DataContext);
   const people = useSelector((state) => state.classroomDetailsInfo.people);
-  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
   const { classId } = useParams();
   const dispatch = useDispatch();
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
   };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleClickOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
   };
-
   const handleCloseRemoveDialog = () => {
     setOpenRemoveDialog(false);
   };
   const handleOpenRemoveDialog = () => {
-    setOpen(false);
+    setAnchorEl(null);
     setOpenRemoveDialog(true);
   };
   const handleRemoveStudent = () => {
@@ -60,13 +108,17 @@ const ClassroomEveryoneStudent = ({
             isOwner: res2.data.data.isOwner,
             people: res2.data.data.people,
             owner: res2.data.data.owner,
+            classroomAvatar: res2.data.data.avatar,
           })
         );
         setOpenRemoveDialog(false);
         setDeleting(false);
-        toast.success(`${res1.data.message}`, {
-          autoClose: 3000,
-        });
+        toast.success(
+          language === "English" ? `${res1.data.message}` : "Xóa thành công",
+          {
+            autoClose: 3000,
+          }
+        );
       } catch (error) {
         if (error?.response?.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
@@ -81,9 +133,12 @@ const ClassroomEveryoneStudent = ({
           console.log(error.response);
           setDeleting(false);
           setOpenRemoveDialog(false);
-          toast.error(`Delete fail!`, {
-            autoClose: 3000,
-          });
+          toast.error(
+            language === "English" ? `Delete fail!` : "Xóa thất bại",
+            {
+              autoClose: 3000,
+            }
+          );
         }
       }
     }
@@ -128,7 +183,9 @@ const ClassroomEveryoneStudent = ({
             }
           >
             {firstName === null && lastName === null
-              ? `${email}  (Đã được mời)`
+              ? `${email}  ${
+                  language === "English" ? "(Invited)" : "(Đã được mời)"
+                }`
               : `${firstName} ${lastName}`}
           </div>
         </div>
@@ -141,30 +198,57 @@ const ClassroomEveryoneStudent = ({
           <></>
         ) : firstName !== null || lastName !== null ? (
           <>
-            <IconButton onClick={handleClickOpen}>
+            <IconButton onClick={handleClickOpenMenu}>
               <MoreVertIcon />
             </IconButton>
-            <Dialog open={open} onClose={handleClose} fullWidth>
-              <Button onClick={handleOpenRemoveDialog}>Xoá học sinh</Button>
-            </Dialog>
+            <StyledMenu
+              id="demo-customized-menu"
+              MenuListProps={{
+                "aria-labelledby": "demo-customized-button",
+              }}
+              anchorEl={anchorEl}
+              open={openMenu}
+              onClose={handleCloseMenu}
+            >
+              <MenuItem
+                style={{
+                  fontSize: "0.875rem",
+                  color: "black",
+                }}
+                onClick={handleOpenRemoveDialog}
+                disableRipple
+              >
+                {language === "English" ? "Delete a student" : "Xóa học sinh"}
+              </MenuItem>
+            </StyledMenu>
             <Dialog open={openRemoveDialog} fullWidth>
-              <DialogTitle>Xoá học sinh?</DialogTitle>
+              <DialogTitle>
+                {language === "English" ? "Delete a student?" : "Xóa học sinh?"}
+              </DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  Học sinh này sẽ không thể mở lớp này nếu không được mời lại.
+                  {language === "English"
+                    ? "The student will not be able to open this class unless invited again."
+                    : "Học sinh này sẽ không thể mở lớp này nếu không được mời lại."}
                 </DialogContentText>
                 <DialogActions>
                   <Button
                     disabled={deleting ? true : false}
                     onClick={handleCloseRemoveDialog}
                   >
-                    Huỷ
+                    {language === "English" ? "Cancel" : "Hủy"}
                   </Button>
                   <Button
                     disabled={deleting ? true : false}
                     onClick={handleRemoveStudent}
                   >
-                    {deleting ? "Đang xoá..." : "Xoá"}
+                    {deleting
+                      ? language === "English"
+                        ? "Deleting..."
+                        : "Đang xóa..."
+                      : language === "English"
+                      ? "Delete"
+                      : "Xóa"}
                   </Button>
                 </DialogActions>
               </DialogContent>

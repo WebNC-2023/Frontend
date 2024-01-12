@@ -28,6 +28,9 @@ const ProtectedClassroomExercises = () => {
             isOwner: res.data.data.isOwner,
             people: res.data.data.people,
             owner: res.data.data.owner,
+            classroomAvatar: res.data.data.avatar,
+            assignments: res.data.data.assignments,
+            reviews: res.data.data.reviews,
           })
         );
         dispatch(
@@ -44,10 +47,7 @@ const ProtectedClassroomExercises = () => {
             avatar:
               JSON.parse(localStorage.getItem("userInfo")).avatar === null
                 ? null
-                : `${
-                    process.env.REACT_APP_SERVER_BASE_URL ??
-                    "https://webnc-2023.vercel.app"
-                  }/files/${
+                : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
                     JSON.parse(localStorage.getItem("userInfo")).avatar
                   }?${Date.now()}`,
           })
@@ -71,7 +71,7 @@ const ProtectedClassroomExercises = () => {
           setIsAuth(false);
           dispatch(
             updateClassroomDetailsPendingUrl({
-              pendingUrl: `/class-details/${classId}/exercises`,
+              pendingUrl: `/class-details/${classId}?tab=2`,
               success: false,
             })
           );
@@ -84,10 +84,7 @@ const ProtectedClassroomExercises = () => {
               avatar:
                 JSON.parse(localStorage.getItem("userInfo")).avatar === null
                   ? null
-                  : `${
-                      process.env.REACT_APP_SERVER_BASE_URL ??
-                      "https://webnc-2023.vercel.app"
-                    }/files/${
+                  : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
                       JSON.parse(localStorage.getItem("userInfo")).avatar
                     }?${Date.now()}`,
             })

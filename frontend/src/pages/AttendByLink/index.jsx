@@ -13,7 +13,7 @@ export default function AttendByLink() {
     try {
       await classApi.joinClass(classId);
       toast.success("Join class successfully!");
-      navigate("/class-details/" + classId);
+      navigate("/class-details/" + classId + "?tab=1");
     } catch (error) {
       toast.error("Some things went wrong!");
     }

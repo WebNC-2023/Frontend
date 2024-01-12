@@ -14,8 +14,13 @@ import ContentTab1 from "../ClassDetailsPage/ContentTab1";
 import { useSelector } from "react-redux";
 import ContentTab2 from "../ClassDetailsPage/ContentTab2";
 import ContentTab3 from "../ClassDetailsPage/ContentTab3";
+import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
 const NewClassDetailsPage = () => {
-  const [tab, setTab] = useState("one");
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loadingClassDetails, setLoadingClassDetails] = useState(true);
@@ -33,10 +38,7 @@ const NewClassDetailsPage = () => {
             avatar:
               JSON.parse(localStorage.getItem("userInfo")).avatar === null
                 ? null
-                : `${
-                    process.env.REACT_APP_SERVER_BASE_URL ??
-                    "https://webnc-2023.vercel.app"
-                  }/files/${
+                : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
                     JSON.parse(localStorage.getItem("userInfo")).avatar
                   }?${Date.now()}`,
           })
@@ -50,6 +52,9 @@ const NewClassDetailsPage = () => {
             isOwner: res.data.data.isOwner,
             people: res.data.data.people,
             owner: res.data.data.owner,
+            classroomAvatar: res.data.data.avatar,
+            assignments: res.data.data.assignments,
+            reviews: res.data.data.reviews,
           })
         );
         dispatch(
@@ -84,10 +89,7 @@ const NewClassDetailsPage = () => {
               avatar:
                 JSON.parse(localStorage.getItem("userInfo")).avatar === null
                   ? null
-                  : `${
-                      process.env.REACT_APP_SERVER_BASE_URL ??
-                      "https://webnc-2023.vercel.app"
-                    }/files/${
+                  : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
                       JSON.parse(localStorage.getItem("userInfo")).avatar
                     }?${Date.now()}`,
             })
@@ -100,7 +102,8 @@ const NewClassDetailsPage = () => {
           );
           setLoadingClassDetails(false);
         } else {
-          throw err;
+          toast.error(`${err}`);
+          setLoadingClassDetails(false);
         }
       }
     };
@@ -109,32 +112,52 @@ const NewClassDetailsPage = () => {
   const ClassDetailsSuccess = useSelector(
     (state) => state.classroomDetailsPending.success
   );
+  const Tab = searchParams.get("tab");
+  const [tab, setTab] = useState(() => {
+    if (Number(Tab) === 1) return "one";
+    else if (Number(Tab) === 2) return "two";
+    else if (Number(Tab) === 3) return "three";
+    else return "error";
+  });
   return (
     <>
       <HomePageHeader showSidebar={true} classRoom={true} />
-      <ClassTabs tab={tab} setTab={setTab} />
+      {tab === "error" ? <></> : <ClassTabs tab={tab} setTab={setTab} />}
       {loadingClassDetails && (
         <Box sx={{ width: "100%", paddingTop: "2px" }}>
           <LinearProgress />
         </Box>
       )}
-      {tab === "one" ? (
+      {Number(Tab) === 1 ? (
         <ContentTab1
           loadingClassDetails={loadingClassDetails}
           ClassDetailsSuccess={ClassDetailsSuccess}
         />
-      ) : tab === "two" ? (
+      ) : Number(Tab) === 2 ? (
         <ContentTab2
           loadingClassDetails={loadingClassDetails}
           ClassDetailsSuccess={ClassDetailsSuccess}
         />
-      ) : tab === "three" ? (
+      ) : Number(Tab) === 3 ? (
         <ContentTab3
           loadingClassDetails={loadingClassDetails}
           ClassDetailsSuccess={ClassDetailsSuccess}
         />
       ) : (
-        <></>
+        <div
+          style={{
+            paddingTop: "105px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            rowGap: "20px",
+          }}
+        >
+          <p>Không tìm thấy lớp</p>
+          <Link to="/home-page">
+            <Button variant="contained">Quay lại lớp học</Button>
+          </Link>
+        </div>
       )}
     </>
   );

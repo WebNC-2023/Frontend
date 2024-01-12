@@ -1,109 +1,88 @@
 import { Avatar } from "@mui/material";
 import "./NotificationInClassroom.css";
-import { useState } from "react";
-import TextField from "@mui/material/TextField";
-import { Grid, Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+import { useContext, useState } from "react";
+import { Grid, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/ClassroomPostSlice";
+import TipTap from "../TipTap/TipTap";
+import { DataContext } from "../../contexts/DataContext";
 const NotificationInClassroom = () => {
+  const {language} = useContext(DataContext);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const [showWriteNotification, setShowWriteNotification] = useState(false);
-  const [content, setContent] = useState("");
+  const [contentMsg, setContentMsg] = useState("");
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.classroomPost.posts);
   const handleShowWriteNotification = () => {
     setShowWriteNotification(true);
   };
   const handleClickCancel = () => {
+    setContentMsg("");
     setShowWriteNotification(false);
-  };
-  const [formats, setFormats] = useState(() => []);
-
-  const handleFormat = (event, newFormats) => {
-    setFormats(newFormats);
   };
   const handleClickPostNotification = () => {
     let present = new Date();
+    let gmt7Time = new Date(present.getTime() + 7 * 60 * 60 * 1000);
     dispatch(
       update({
         postId: posts.length,
         username: fullName,
-        dateSubmitted: `${present.getDate()} thg ${
-          present.getMonth() + 1
-        }, ${present.getFullYear()}`,
-        avatar: `${
-          process.env.REACT_APP_SERVER_BASE_URL ??
-          "https://webnc-2023.vercel.app"
-        }/files/${
-          JSON.parse(localStorage.getItem("userInfo")).avatar
-        }?${Date.now()}`,
-        postContent: content,
-        boldStyle: formats.includes("bold"),
-        italicStyle: formats.includes("italic"),
-        underlineStyle: formats.includes("underlined"),
+        dateSubmitted: `${
+          gmt7Time.getUTCHours().toString().length === 1
+            ? "0" + gmt7Time.getUTCHours().toString()
+            : gmt7Time.getUTCHours().toString()
+        }:${
+          gmt7Time.getUTCMinutes().toString().length === 1
+            ? "0" + gmt7Time.getUTCMinutes().toString()
+            : gmt7Time.getUTCMinutes().toString()
+        }:${
+          gmt7Time.getUTCSeconds().toString().length === 1
+            ? "0" + gmt7Time.getUTCSeconds().toString()
+            : gmt7Time.getUTCSeconds().toString()
+        } ${gmt7Time.getUTCDate()} thg ${
+          gmt7Time.getUTCMonth() + 1
+        }, ${gmt7Time.getUTCFullYear()}`,
+        avatar:
+          JSON.parse(localStorage.getItem("userInfo")).avatar === null
+            ? ""
+            : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+                JSON.parse(localStorage.getItem("userInfo")).avatar
+              }?${Date.now()}`,
+        postContent: contentMsg,
       })
     );
+    setContentMsg("");
     setShowWriteNotification(false);
-    setFormats([]);
   };
   return (
     <>
       {showWriteNotification ? (
         <div className="write-notification-for-classroom">
-          <ToggleButtonGroup value={formats} onChange={handleFormat}>
-            <ToggleButton value="bold" aria-label="bold">
-              <FormatBoldIcon />
-            </ToggleButton>
-            <ToggleButton value="italic" aria-label="italic">
-              <FormatItalicIcon />
-            </ToggleButton>
-            <ToggleButton value="underlined" aria-label="underlined">
-              <FormatUnderlinedIcon />
-            </ToggleButton>
-          </ToggleButtonGroup>
-          <TextField
-            id="filled-multiline-static"
-            label="Thông báo nội dung nào đó cho
-            lớp học của bạn"
-            multiline
-            variant="filled"
-            fullWidth
-            autoFocus
-            onChange={(e) => {
-              setContent(e.target.value);
-            }}
-            inputProps={{
-              style: {
-                fontWeight: formats.includes("bold") ? "bold" : "normal",
-                fontStyle: formats.includes("italic") ? "italic" : "normal",
-                textDecoration: formats.includes("underlined")
-                  ? "underline"
-                  : "none",
-              },
-              spellCheck: "false",
-            }}
+          <TipTap
+            setContentMsg={setContentMsg}
+            placeholderTipTap={language === "English" ? "Announce something to your class" : "Thông báo nội dung nào đó cho lớp học của bạn"}
+            content={contentMsg}
           />
           <Grid
             container
             display={"flex"}
             justifyContent={"flex-end"}
-            sx={{ marginTop: "30px" }}
+            sx={{ marginTop: "20px" }}
           >
             <Grid item>
               <Button onClick={handleClickCancel} variant="text">
-                Huỷ
+                {language === "English" ? "Cancel" : "Hủy"}
               </Button>
             </Grid>
             <Grid item>
               <Button
                 variant="contained"
-                disabled={content === "" ? true : false}
+                disabled={
+                  contentMsg === "" || contentMsg === "<p></p>" ? true : false
+                }
                 onClick={handleClickPostNotification}
               >
-                Đăng
+                {language === "English" ? "Post" : "Đăng"}
               </Button>
             </Grid>
           </Grid>
@@ -121,7 +100,7 @@ const NotificationInClassroom = () => {
               userSelect: "none",
             }}
           >
-            Thông báo nội dung nào đó cho lớp học của bạn
+            {language === "English" ? "Announce something to your class" : "Thông báo nội dung nào đó cho lớp học của bạn"} 
           </p>
         </div>
       )}

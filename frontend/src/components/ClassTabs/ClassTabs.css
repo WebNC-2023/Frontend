@@ -2,3 +2,20 @@
     padding-top: 65px;
     border-bottom: 1px solid #dadce0;
 }
+
+.MuiTabs-indicator {
+    background-color: #1967d2 !important;
+    height: 4px !important;
+    border-top-right-radius: 100px !important;
+    border-top-left-radius: 100px !important;
+}
+
+.Mui-selected {
+    color: #1967d2 !important;
+}
+
+@media screen and (max-width: 353px) {
+    .tabs-class-container {
+        padding-top: 100px;
+    }
+}

@@ -1,5 +1,6 @@
 import { Avatar } from "@mui/material";
 import "./ClassroomComment.css";
+import parser from "html-react-parser";
 const ClassroomComment = ({ comment }) => {
   return (
     <div className="classroom-comment-container">
@@ -19,16 +20,9 @@ const ClassroomComment = ({ comment }) => {
         <span className="classroom-comment-info-date">
           {comment.dateSubmitted}
         </span>
-        <p
-          className="classroom-comment-info-content"
-          style={{
-            fontWeight: comment.boldStyle ? "bold" : "normal",
-            fontStyle: comment.italicStyle ? "italic" : "normal",
-            textDecoration: comment.underlineStyle ? "underline" : "none",
-          }}
-        >
-          {comment.commentContent}
-        </p>
+        <div className="classroom-comment-info-content">
+          {parser(comment.commentContent)}
+        </div>
       </div>
     </div>
   );

@@ -21,6 +21,10 @@
   box-shadow: 0 0 0 10px #f5f5f5;
 }
 
+.show-notification-in-mobile-view {
+  display: none;
+}
+
 @media screen and (max-width: 639.98px) {
   .userInfo-default-screen {
     display: none;
@@ -35,6 +39,10 @@
   }
 
   .show-create-application-icon-tab {
+    display: block;
+  }
+
+  .show-notification-in-mobile-view {
     display: block;
   }
 }

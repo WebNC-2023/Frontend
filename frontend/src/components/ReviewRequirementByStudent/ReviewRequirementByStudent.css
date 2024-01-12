@@ -1,0 +1,54 @@
+.review-requirement-by-student {
+    padding: 16px 24px;
+    border-radius: 8px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+}
+
+.review-requirement-by-student-show:hover,
+.review-requirement-by-student:hover {
+    background-color: #e8f0fe;
+}
+
+.review-requirement-by-student-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    user-select: none;
+}
+
+.review-requirement-by-student-score {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    user-select: none;
+}
+
+
+.review-requirement-by-student-show {
+    padding: 16px 24px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 16px;
+    cursor: pointer;
+    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
+}
+
+@media screen and (max-width: 639.98px) {
+    .review-requirement-by-student-details,
+    .review-requirement-by-student-show,
+    .review-requirement-by-student {
+        padding: 8px;
+    }
+}

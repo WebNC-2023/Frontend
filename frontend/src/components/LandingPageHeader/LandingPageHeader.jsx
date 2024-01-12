@@ -45,7 +45,7 @@ const LandingPageHeader = () => {
         <span className="landing-page-logo">Learners</span>
       </Grid>
       <Grid item className="landing-page-grid-menu-items">
-        <ul className="landing-page-menu-items">
+        <ul style={{listStyle: "none"}} className="landing-page-menu-items">
           <li
             className="landing-page-menu-item"
             onClick={(e) => setShowContent("Home")}

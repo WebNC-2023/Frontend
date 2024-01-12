@@ -1,63 +1,113 @@
-import {
-  Avatar,
-  Tooltip,
-  IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
+import { Avatar, Tooltip, IconButton } from "@mui/material";
 import "./ClassroomPost.css";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SendIcon from "@mui/icons-material/Send";
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import { useState } from "react";
-import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import ClassroomComment from "../ClassroomComment/ClassroomComment";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/Reducers/ClassroomCommentSlice";
+import parser from "html-react-parser";
+import TipTap from "../TipTap/TipTap";
+import * as React from "react";
+import { styled, alpha } from "@mui/material/styles";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { DataContext } from "../../contexts/DataContext";
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
+
 const ClassroomPost = ({ post }) => {
-  const [formats, setFormats] = useState(() => []);
-  const [focusForm, setFocusForm] = useState(false);
-  const [content, setContent] = useState("");
+  const { language } = React.useContext(DataContext);
+  const [contentMsg, setContentMsg] = useState("");
+  const [toggleComments, setToggleComments] = useState(false);
   const fullName = useSelector((state) => state.fullNameUser.fullName);
   const comments = useSelector((state) => state.classroomComment.comments);
-  const handleFormat = (event, newFormats) => {
-    setFormats(newFormats);
-  };
-  const handleFocusForm = () => {
-    setFocusForm(true);
-  };
-  const handleBlurForm = () => {
-    setFocusForm(false);
-  };
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
   const dispatch = useDispatch();
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleToggleComments = () => {
+    setToggleComments((prev) => !prev);
+  };
   const handleClickSendComment = () => {
     let present = new Date();
+    let gmt7Time = new Date(present.getTime() + 7 * 60 * 60 * 1000);
     dispatch(
       update({
         postId: post.postId,
         commentId: comments.length,
         username: fullName,
-        dateSubmitted: `${present.getDate()} thg ${
-          present.getMonth() + 1
-        }, ${present.getFullYear()}`,
-        avatar: `${
-          process.env.REACT_APP_SERVER_BASE_URL ??
-          "https://webnc-2023.vercel.app"
-        }/files/${
-          JSON.parse(localStorage.getItem("userInfo")).avatar
-        }?${Date.now()}`,
-        commentContent: content,
-        boldStyle: formats.includes("bold"),
-        italicStyle: formats.includes("italic"),
-        underlineStyle: formats.includes("underlined"),
+        dateSubmitted: `${
+          gmt7Time.getUTCHours().toString().length === 1
+            ? "0" + gmt7Time.getUTCHours().toString()
+            : gmt7Time.getUTCHours().toString()
+        }:${
+          gmt7Time.getUTCMinutes().toString().length === 1
+            ? "0" + gmt7Time.getUTCMinutes().toString()
+            : gmt7Time.getUTCMinutes().toString()
+        }:${
+          gmt7Time.getUTCSeconds().toString().length === 1
+            ? "0" + gmt7Time.getUTCSeconds().toString()
+            : gmt7Time.getUTCSeconds().toString()
+        } ${gmt7Time.getUTCDate()} thg ${
+          gmt7Time.getUTCMonth() + 1
+        }, ${gmt7Time.getUTCFullYear()}`,
+        avatar:
+          JSON.parse(localStorage.getItem("userInfo")).avatar === null
+            ? ""
+            : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+                JSON.parse(localStorage.getItem("userInfo")).avatar
+              }?${Date.now()}`,
+        commentContent: contentMsg,
       })
     );
-    setContent("");
-    setFormats([]);
-    setFocusForm(false);
+    setContentMsg("");
   };
   return (
     <>
@@ -73,18 +123,33 @@ const ClassroomPost = ({ post }) => {
               <div className="classroom-post-date">{post.dateSubmitted}</div>
             </div>
           </div>
-          <MoreVertIcon />
+          <IconButton
+            onClick={handleClick}
+            style={
+              open ? { backgroundColor: "#d7d7d7" } : { cursor: "pointer" }
+            }
+          >
+            <MoreVertIcon />
+          </IconButton>
+          <StyledMenu
+            id="demo-customized-menu"
+            MenuListProps={{
+              "aria-labelledby": "demo-customized-button",
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem
+              sx={{ color: "#222222", fontSize: "0.875rem" }}
+              onClick={handleClose}
+              disableRipple
+            >
+              {language === "English" ? "Delete" : "Xóa"}
+            </MenuItem>
+          </StyledMenu>
         </div>
-        <div
-          className="classroom-post-content"
-          style={{
-            fontWeight: post.boldStyle ? "bold" : "normal",
-            fontStyle: post.italicStyle ? "italic" : "normal",
-            textDecoration: post.underlineStyle ? "underline" : "none",
-          }}
-        >
-          {post.postContent}
-        </div>
+        <div className="classroom-post-content">{parser(post.postContent)}</div>
       </div>
       <div className="comment-classroom-post-container">
         <div className="numbers-of-comment-classroom">
@@ -92,23 +157,29 @@ const ClassroomPost = ({ post }) => {
             .length === 0 ? (
             <></>
           ) : (
-            <>
+            <div className="total-comments-btn" onClick={handleToggleComments}>
               <GroupOutlinedIcon />
               <p>
                 {
                   comments.filter((comment) => comment.postId === post.postId)
                     .length
                 }{" "}
-                nhận xét về lớp học
+                {language === "English"
+                  ? "comments about the class"
+                  : "nhận xét về lớp học"}
               </p>
-            </>
+            </div>
           )}
         </div>
-        {comments
-          .filter((comment) => comment.postId === post.postId)
-          .map((comment, index) => (
-            <ClassroomComment key={index} comment={comment} />
-          ))}
+        {toggleComments ? (
+          comments
+            .filter((comment) => comment.postId === post.postId)
+            .map((comment, index) => (
+              <ClassroomComment key={index} comment={comment} />
+            ))
+        ) : (
+          <></>
+        )}
         <div className="comment-classroom-post">
           <Avatar
             sx={{
@@ -119,50 +190,23 @@ const ClassroomPost = ({ post }) => {
             }}
           />
           <div className="add-comment-in-post-container">
-            <TextareaAutosize
-              className="add-comment-in-post"
-              placeholder="Thêm nhận xét trong lớp học..."
-              onFocus={handleFocusForm}
-              value={content}
-              onChange={(e) => {
-                setContent(e.target.value);
-                if (e.target.value === "") handleBlurForm();
-                else handleFocusForm();
-              }}
-              spellCheck="false"
-              style={{
-                fontWeight: formats.includes("bold") ? "bold" : "normal",
-                fontStyle: formats.includes("italic") ? "italic" : "normal",
-                textDecoration: formats.includes("underlined")
-                  ? "underline"
-                  : "none",
-              }}
+            <TipTap
+              setContentMsg={setContentMsg}
+              placeholderTipTap="Add comments in class..."
+              content={contentMsg}
             />
-            {focusForm ? (
-              <ToggleButtonGroup
-                sx={{ paddingTop: "10px" }}
-                value={formats}
-                onChange={handleFormat}
-              >
-                <ToggleButton value="bold" aria-label="bold">
-                  <FormatBoldIcon />
-                </ToggleButton>
-                <ToggleButton value="italic" aria-label="italic">
-                  <FormatItalicIcon />
-                </ToggleButton>
-                <ToggleButton value="underlined" aria-label="underlined">
-                  <FormatUnderlinedIcon />
-                </ToggleButton>
-              </ToggleButtonGroup>
-            ) : (
-              <></>
-            )}
           </div>
-          <Tooltip title="Đăng">
-            <div>
+          <Tooltip title={language === "English" ? "Post" : "Đăng"}>
+            <div style={{ cursor: "pointer" }} className="send-comment-btn">
               <IconButton
-                style={content === "" ? {} : { color: "#1967d2" }}
-                disabled={content === "" ? true : false}
+                style={
+                  contentMsg === "" || contentMsg === "<p></p>"
+                    ? {}
+                    : { color: "#1967d2" }
+                }
+                disabled={
+                  contentMsg === "" || contentMsg === "<p></p>" ? true : false
+                }
                 onClick={handleClickSendComment}
               >
                 <SendIcon />

@@ -20,7 +20,7 @@ const ProtectedClassDetails = () => {
       setIsAuth(false);
       try {
         const res = await Axios.get(`/classes/${classId}`);
-        console.log(res.data);
+        console.log('class-details',res.data);
         dispatch(
           updateClassroomDetailsInfo({
             id: res.data.data.id,
@@ -30,6 +30,9 @@ const ProtectedClassDetails = () => {
             isOwner: res.data.data.isOwner,
             people: res.data.data.people,
             owner: res.data.data.owner,
+            classroomAvatar: res.data.data.avatar,
+            assignments: res.data.data.assignments,
+            reviews: res.data.data.reviews,
           })
         );
         dispatch(
@@ -70,7 +73,7 @@ const ProtectedClassDetails = () => {
           );
           dispatch(
             updateClassroomDetailsPendingUrl({
-              pendingUrl: `/class-details/${classId}`,
+              pendingUrl: `/class-details/${classId}?tab=1`,
               success: false,
             })
           );

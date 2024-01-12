@@ -1,0 +1,25 @@
+.review-details-page {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 89px 24px 24px 24px;
+}
+
+.review-details-page-flex {
+    display: flex;
+    column-gap: 16px;
+    align-items: flex-start;
+}
+
+.review-details-page-content {
+    flex: 1;
+}
+
+@media screen and (max-width: 639.98px) {
+    .review-details-page-icon {
+        display: none;
+    }
+    .review-details-page {
+        padding: 89px 8px 8px 8px;
+    }
+}

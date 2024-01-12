@@ -1,13 +1,12 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { Outlet, Navigate, useNavigate } from "react-router-dom";
-import { DataContext } from "../../contexts/DataContext";
 import Axios from "../../redux/APIs/Axios";
 import { toast } from "react-toastify";
 import { updateClassroomDetailsPendingUrl } from "../../redux/Reducers/classroomDetailsPendingSlice";
-const ProtectedEditProfile = () => {
-  const { setShowSidebar } = useContext(DataContext);
+import { updateClassrooms, updateData } from "../../redux/Reducers/AdminSlice";
+const ProtectedAdmin = () => {
   const dispatch = useDispatch();
   const [loadingHomePage, setLoadingHomePage] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
@@ -24,30 +23,35 @@ const ProtectedEditProfile = () => {
       );
       try {
         const res = await Axios.get("/auth/me");
-        console.log(res.data);
-
-        localStorage.setItem("userInfo", JSON.stringify(res.data.data));
-
-        dispatch(
-          update({
-            fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-            avatar: `${
-              process.env.REACT_APP_SERVER_BASE_URL ??
-              "https://webnc-2023.vercel.app"
-            }/files/${res.data.data.avatar}?${Date.now()}`,
-          })
-        );
-        dispatch(
-          updateClassroomDetailsPendingUrl({
-            pendingUrl: null,
-            success: true,
-          })
-        );
-        setLoadingHomePage(false);
-        setIsAuth(true);
-        setShowSidebar(false);
+        if (res.data.data.email !== "learners.admin@gmail.com") {
+          navigate("/home-page");
+        } else {
+          const res1 = await Axios.get("/users");
+          const res2 = await Axios.get("/classes");
+          dispatch(updateData(res1.data.data));
+          dispatch(updateClassrooms(res2.data.data));
+          localStorage.setItem("userInfo", JSON.stringify(res.data.data));
+          dispatch(
+            update({
+              fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
+              avatar:
+                res.data.data.avatar === null
+                  ? null
+                  : `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+                      res.data.data.avatar
+                    }?${Date.now()}`,
+            })
+          );
+          dispatch(
+            updateClassroomDetailsPendingUrl({
+              pendingUrl: null,
+              success: true,
+            })
+          );
+          setLoadingHomePage(false);
+          setIsAuth(true);
+        }
       } catch (err) {
-        console.error(err.response);
         if (err?.response?.data === "Unauthorized") {
           localStorage.removeItem("userInfo");
           dispatch(
@@ -58,7 +62,7 @@ const ProtectedEditProfile = () => {
           );
           dispatch(
             updateClassroomDetailsPendingUrl({
-              pendingUrl: "/edit-profile",
+              pendingUrl: null,
               success: true,
             })
           );
@@ -72,7 +76,7 @@ const ProtectedEditProfile = () => {
     };
 
     checkLoggedIn();
-  }, [dispatch, setShowSidebar, navigate]);
+  }, [dispatch, navigate]);
 
   if (loadingHomePage) {
     return (
@@ -92,4 +96,4 @@ const ProtectedEditProfile = () => {
   );
 };
 
-export default ProtectedEditProfile;
+export default ProtectedAdmin;

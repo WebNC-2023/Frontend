@@ -52,7 +52,7 @@ const AcceptInvitePage = () => {
           autoClose: 3000,
         });
         setTimeout(() => {
-          navigate(`/class-details/${classId}`);
+          navigate(`/class-details/${classId}?tab=3`);
         }, 4000);
       } catch (error) {
         if (error?.response?.data === "Unauthorized") {

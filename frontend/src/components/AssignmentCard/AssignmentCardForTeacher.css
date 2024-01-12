@@ -1,0 +1,80 @@
+.assignment-card-for-teacher-default {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    cursor: pointer;
+}
+
+.assignment-card-for-teacher {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    cursor: pointer;
+    background-color: #ffffff;
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .3), 0 2px 6px 2px rgba(60, 64, 67, .15);
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    clip-path: inset(-10px -10px 0px -10px);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.assignment-card-for-teacher:hover {
+    background-color: #e8f0fe;
+}
+
+.assignment-card-for-teacher-default:hover {
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .3), 0 2px 6px 2px rgba(60, 64, 67, .15);
+    border-radius: 10px;
+    border-bottom: none;
+}
+
+.assignment-card-for-teacher-details {
+    padding: 16px 24px;
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .3), 0 2px 6px 2px rgba(60, 64, 67, .15);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    clip-path: inset(0px -10px -10px -10px);
+}
+
+.assignment-card-for-teacher-instruction ul {
+    list-style-type: disc;
+    padding-left: 24px;
+}
+
+.assignment-card-for-student-details {
+    padding: 16px 24px;
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .3), 0 2px 6px 2px rgba(60, 64, 67, .15);
+    border-bottom: 1px solid #e0e0e0;
+    clip-path: inset(0px -10px 0px -10px);
+}
+
+.teacher-view-instruction {
+    font-size: 0.875rem;
+    font-weight: 500; 
+    line-height: 1.25rem;
+    color: #1967d2;
+    user-select: none;
+    cursor: pointer;
+    padding: 8px 8px;
+}
+
+.teacher-view-instruction:hover {
+    background-color: #f6f9fe;
+}
+
+@media screen and (max-width: 639.98px) {
+
+    .assignment-card-for-teacher,
+    .assignment-card-for-teacher-details,
+    .assignment-card-for-student-details,
+    .assignment-card-for-teacher-default {
+        padding: 8px;
+    }
+}

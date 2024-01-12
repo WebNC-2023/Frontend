@@ -14,6 +14,7 @@ import {
 } from "../../redux/Actions/classAction";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { DataContext } from "../../contexts/DataContext";
 
 export default function FormDialogCreateClass({
   open,
@@ -21,6 +22,7 @@ export default function FormDialogCreateClass({
   edit,
   classData,
 }) {
+  const { language } = React.useContext(DataContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading, isError, isSuccess, classInfo } = useSelector(
@@ -106,7 +108,7 @@ export default function FormDialogCreateClass({
     if (isSuccess) {
       dispatch({ type: "CREATE_CLASS_RESET" });
 
-      navigate(`/class-details/${classInfo?.id}`);
+      navigate(`/class-details/${classInfo?.id}?tab=1`);
     }
   }, [classInfo?.id, dispatch, isError, isSuccess, navigate, isErrorEdit]);
 
@@ -121,14 +123,24 @@ export default function FormDialogCreateClass({
       keepMounted
     >
       <DialogTitle sx={{ fontSize: "24px" }}>
-        {edit ? "Edit classes" : "Create classes"}{" "}
+        {edit
+          ? language === "English"
+            ? "Edit classes"
+            : "Chỉnh sửa lớp học"
+          : language === "English"
+          ? "Create classes"
+          : "Tạo lớp học"}{" "}
       </DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
           margin="dense"
           id="name"
-          label="Class name (Required)"
+          label={
+            language === "English"
+              ? "Class name (Required)"
+              : "Tên lớp học (Bắt buộc)"
+          }
           type="text"
           fullWidth
           variant="standard"
@@ -141,7 +153,7 @@ export default function FormDialogCreateClass({
         <TextField
           margin="dense"
           id="part"
-          label="Part"
+          label={language === "English" ? "Part" : "Phần"}
           type="text"
           fullWidth
           variant="standard"
@@ -154,7 +166,7 @@ export default function FormDialogCreateClass({
         <TextField
           margin="dense"
           id="topic"
-          label="Topic"
+          label={language === "English" ? "Topic" : "Chủ đề"}
           type="text"
           fullWidth
           variant="standard"
@@ -167,7 +179,7 @@ export default function FormDialogCreateClass({
         <TextField
           margin="dense"
           id="room"
-          label="Room"
+          label={language === "English" ? "Room" : "Phòng"}
           type="text"
           fullWidth
           variant="standard"
@@ -181,7 +193,7 @@ export default function FormDialogCreateClass({
             autoFocus
             margin="dense"
             id="image"
-            label="Avatar"
+            label={language === "English" ? "Avatar" : "Ảnh đại diện"}
             type="file"
             fullWidth
             variant="standard"
@@ -193,7 +205,7 @@ export default function FormDialogCreateClass({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleDialogClose} sx={{ color: "#868e96" }}>
-          Cancel
+          {language === "English" ? "Cancel" : "Hủy"}
         </Button>
         <Button
           onClick={handleSubmit}
@@ -201,12 +213,20 @@ export default function FormDialogCreateClass({
           disabled={isCreateButtonDisabled || isLoading || isLoadingEdit}
         >
           {isLoading
-            ? "Creating..."
+            ? language === "English"
+              ? "Creating..."
+              : "Đang tạo..."
             : isLoadingEdit
-            ? "Saving..."
+            ? language === "English"
+              ? "Saving..."
+              : "Đang lưu..."
             : edit
-            ? "Save"
-            : "Create"}
+            ? language === "English"
+              ? "Save"
+              : "Lưu"
+            : language === "English"
+            ? "Create"
+            : "Tạo"}
         </Button>
       </DialogActions>
     </Dialog>

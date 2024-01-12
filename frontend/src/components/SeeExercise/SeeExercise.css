@@ -1,0 +1,22 @@
+.seeExercise-container {
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.seeExercise-flex {
+    display: flex;
+}
+
+.seeExercise-flex-direction-col {
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+@media screen and (max-width: 639.98px) {
+    .seeExercise-container {
+        padding: 8px;
+    }
+}

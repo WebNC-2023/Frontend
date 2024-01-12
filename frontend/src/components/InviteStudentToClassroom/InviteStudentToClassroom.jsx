@@ -12,13 +12,23 @@ import Axios from "../../redux/APIs/Axios";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateClassroomDetailsInfo } from "../../redux/Reducers/ClassroomDetailsInfoSlice";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import { Box } from "@mui/material";
+
+import { exportStudentListToExcel } from "../../utils/exportToExcel";
+import { DataContext } from "../../contexts/DataContext";
+
 const InviteStudentToClassroom = () => {
+  const { language } = React.useContext(DataContext);
   const [open, setOpen] = React.useState(false);
   const [content, setContent] = React.useState("");
   const [sending, setSending] = React.useState(false);
   const { classId } = useParams();
   const dispatch = useDispatch();
-  const people = useSelector((state) => state.classroomDetailsInfo.people);
+  const { people, name: nameOfClass } = useSelector(
+    (state) => state.classroomDetailsInfo
+  );
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -44,6 +54,9 @@ const InviteStudentToClassroom = () => {
             isOwner: res.data.data.isOwner,
             people: res.data.data.people,
             owner: res.data.data.owner,
+            classroomAvatar: res.data.data.avatar,
+            assignments: res.data.data.assignments,
+            reviews: res.data.data.reviews,
           })
         );
         setSending(false);
@@ -57,20 +70,92 @@ const InviteStudentToClassroom = () => {
   };
   return (
     <>
-      <Tooltip title="Mời học sinh">
-        <IconButton color="primary" size="large" onClick={handleClickOpen}>
-          <PersonAddAltOutlinedIcon sx={{ color: "#1967d2" }} />
-        </IconButton>
-      </Tooltip>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <Box>
+          <Tooltip
+            title={language === "English" ? "Invite a student" : "Mời học sinh"}
+          >
+            <IconButton color="primary" size="large" onClick={handleClickOpen}>
+              <PersonAddAltOutlinedIcon sx={{ color: "#1967d2" }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            gap: "16px",
+            flexWrap: "wrap",
+          }}
+        >
+          <Button
+            style={{
+              color: "#fff",
+              backgroundColor: "#5175e0",
+            }}
+            variant="contained"
+            sx={{
+              fontSize: "0.7rem",
+              minWidth: "70px",
+              minHeight: "28px",
+            }}
+            onClick={() => exportStudentListToExcel(people, nameOfClass)}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              {language === "English" ? "Download" : "Tải xuống"}
+              <FileDownloadIcon
+                fontSize="small"
+                sx={{
+                  marginLeft: 1,
+                  color: "#fff",
+                  backgroundColor: "#5175e0",
+                }}
+              />
+            </Box>
+          </Button>
+
+          <Button
+            style={{
+              color: "#fff",
+              backgroundColor: "#5175e0",
+            }}
+            variant="contained"
+            sx={{
+              fontSize: "0.7rem",
+              minWidth: "70px",
+              minHeight: "28px",
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              {language === "English" ? "Upload" : "Tải lên"}
+              <FileUploadIcon
+                fontSize="small"
+                sx={{
+                  marginLeft: 1,
+                  color: "#fff",
+                  backgroundColor: "#5175e0",
+                }}
+              />
+            </Box>
+          </Button>
+        </Box>
+      </Box>
       <Dialog open={open} fullWidth>
-        <DialogTitle>Mời học sinh</DialogTitle>
+        <DialogTitle>
+          {language === "English" ? "Invite a student" : "Mời học sinh"}
+        </DialogTitle>
         <DialogContent>
           <TextField
             disabled={sending ? true : false}
             autoFocus
             margin="dense"
             id="name"
-            label="Nhập email"
+            label={language === "English" ? "Enter the email" : "Nhập email"}
             type="email"
             fullWidth
             variant="standard"
@@ -80,7 +165,7 @@ const InviteStudentToClassroom = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} disabled={sending ? true : false}>
-            Huỷ
+            {language === "English" ? "Cancel" : "Hủy"}
           </Button>
           <Button
             onClick={handleSendInviteStudent}
@@ -95,7 +180,13 @@ const InviteStudentToClassroom = () => {
                 : false
             }
           >
-            {sending ? "Đang mời" : "Mời"}
+            {sending
+              ? language === "English"
+                ? "Inviting..."
+                : "Đang mời..."
+              : language === "English"
+              ? "Invite"
+              : "Mời"}
           </Button>
         </DialogActions>
       </Dialog>

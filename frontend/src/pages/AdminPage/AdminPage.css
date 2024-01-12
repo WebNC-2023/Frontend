@@ -1,0 +1,15 @@
+.admin-page {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 8px;
+    overflow-y: auto;
+}
+
+.admin-page-flex {
+    display: flex;
+}
+
+.admin-page-container {
+    flex: 1;
+}

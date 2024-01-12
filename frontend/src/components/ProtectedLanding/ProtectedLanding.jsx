@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { update } from "../../redux/Reducers/fullNameUserSlice";
 import { Outlet } from "react-router-dom";
 import Axios from "../../redux/APIs/Axios";
+import { toast } from "react-toastify";
 const ProtectedLanding = () => {
   const dispatch = useDispatch();
   const [loadingLandingPage, setLoadingLandingPage] = useState(true);
@@ -18,18 +19,22 @@ const ProtectedLanding = () => {
     }
     checkLoggedIn()
       .then((res) => {
-        console.log(res.data);
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
         dispatch(
           update({
             fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-            avatar: `${process.env.REACT_APP_SERVER_BASE_URL ?? "https://webnc-2023.vercel.app"}/files/${res.data.data.avatar}?${Date.now()}`,
+            avatar: `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+              res.data.data.avatar
+            }?${Date.now()}`,
           })
         );
         setLoadingLandingPage(false);
       })
       .catch((err) => {
-        if (err?.response?.data === "Unauthorized") {
+        if (
+          err?.response?.data === "Unauthorized" ||
+          err.response.status === 401
+        ) {
           localStorage.removeItem("userInfo");
           dispatch(
             update({
@@ -39,7 +44,7 @@ const ProtectedLanding = () => {
           );
           setLoadingLandingPage(false);
         } else {
-          throw err;
+          toast.error(`${err}`, { autoClose: 3000 });
         }
       });
   }, [dispatch]);

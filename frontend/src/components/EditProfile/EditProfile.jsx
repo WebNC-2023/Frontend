@@ -9,14 +9,16 @@ import {
 import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import AlarmIcon from "@mui/icons-material/Alarm";
-import { useState } from "react";
+import { useContext, useState } from "react";
 //import axios from "axios";
 import { useDispatch } from "react-redux";
 import { update, updateStart } from "../../redux/Reducers/fullNameUserSlice";
 import { toast } from "react-toastify";
 import Axios from "../../redux/APIs/Axios";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "../../contexts/DataContext";
 const EditProfile = () => {
+  const {language} = useContext(DataContext);
   const navigate = useNavigate();
   const [firstNameErrorState, setFirstNameErrorState] = useState(false);
   const [firstNameErrorMsg, setFirstNameErrorMsg] = useState("");
@@ -33,11 +35,11 @@ const EditProfile = () => {
   const handleClickSaveChangeEditProfile = () => {
     if (firstName === "" && lastName === "" && avatarUrl === "") {
       setFirstNameErrorState(true);
-      setFirstNameErrorMsg("Requires at least one field to have data.");
+      setFirstNameErrorMsg(language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu");
       setLastNameErrorState(true);
-      setLastNameErrorMsg("Requires at least one field to have data.");
+      setLastNameErrorMsg(language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu");
       setAvatarUrlErrorState(true);
-      setAvatarUrlErrorMsg("Requires at least one field to have data.");
+      setAvatarUrlErrorMsg(language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu");
     } else {
       let dataEdit = {
         id: JSON.parse(localStorage.getItem("userInfo"))["id"],
@@ -71,13 +73,12 @@ const EditProfile = () => {
           dispatch(
             update({
               fullName: `${res.data.data.firstName} ${res.data.data.lastName}`,
-              avatar: `${
-                process.env.REACT_APP_SERVER_BASE_URL ??
-                "https://webnc-2023.vercel.app"
-              }/files/${res.data.data.avatar}?${Date.now()}`,
+              avatar: `${process.env.REACT_APP_SERVER_BASE_URL}/files/${
+                res.data.data.avatar
+              }?${Date.now()}`,
             })
           );
-          toast.success("Your profile has been changed successful");
+          toast.success(language==="English"?"Your profile has been changed successful":"Cập nhật hồ sơ thành công");
         })
         .catch((err) => {
           setShowLoadingEditBtn(false);
@@ -90,7 +91,7 @@ const EditProfile = () => {
               navigate("/");
             }, 4000);
           } else {
-            toast.error("Your profile has been changed fail");
+            toast.error(language==="English"?"Your profile has been changed fail":"Cập nhật hồ sơ thất baijF");
           }
         });
     }
@@ -113,7 +114,7 @@ const EditProfile = () => {
             <Avatar style={{ backgroundColor: "#1bbd7e" }}>
               <AppRegistrationOutlinedIcon />
             </Avatar>
-            <h2 className="editProfile-title">Edit profile</h2>
+            <h2 className="editProfile-title">{language==="English"?"Edit profile":"Chỉnh sửa hồ sơ"}</h2>
           </Grid>
           <TextField
             disabled={showLoadingEditBtn}
@@ -124,10 +125,10 @@ const EditProfile = () => {
                 ? { marginTop: "16px", pointerEvents: "none" }
                 : { marginTop: "16px" }
             }
-            label="First name"
+            label={language==="English"?"First name":"Tên"}
             variant="standard"
             fullWidth
-            placeholder="Enter first name"
+            placeholder={language==="English"?"Enter first name":"Nhập tên"}
             spellCheck="false"
             autoComplete="none"
             value={firstName}
@@ -137,15 +138,15 @@ const EditProfile = () => {
                 if (lastName === "" && avatarUrl === "") {
                   setFirstNameErrorState(true);
                   setFirstNameErrorMsg(
-                    "Requires at least one field to have data."
+                    language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu"
                   );
                   setLastNameErrorState(true);
                   setLastNameErrorMsg(
-                    "Requires at least one field to have data."
+                    language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu"
                   );
                   setAvatarUrlErrorState(true);
                   setAvatarUrlErrorMsg(
-                    "Requires at least one field to have data."
+                    language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu"
                   );
                 } else {
                   setFirstNameErrorState(false);
@@ -174,10 +175,10 @@ const EditProfile = () => {
                 ? { margin: "16px 0", pointerEvents: "none" }
                 : { margin: "16px 0" }
             }
-            label="Last name"
+            label={language==="English"?"Last name":"Họ"}
             variant="standard"
             fullWidth
-            placeholder="Enter last name"
+            placeholder={language==="English"?"Enter last name":"Nhập họ"}
             spellCheck="false"
             autoComplete="none"
             value={lastName}
@@ -187,15 +188,15 @@ const EditProfile = () => {
                 if (firstName === "" && avatarUrl === "") {
                   setFirstNameErrorState(true);
                   setFirstNameErrorMsg(
-                    "Requires at least one field to have data."
+                    language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu"
                   );
                   setLastNameErrorState(true);
                   setLastNameErrorMsg(
-                    "Requires at least one field to have data."
+                    language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu"
                   );
                   setAvatarUrlErrorState(true);
                   setAvatarUrlErrorMsg(
-                    "Requires at least one field to have data."
+                    language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu"
                   );
                 } else {
                   setFirstNameErrorState(false);
@@ -215,7 +216,7 @@ const EditProfile = () => {
               }
             }}
           />
-          <FormLabel style={{ userSelect: "none" }}>Avatar</FormLabel>
+          <FormLabel style={{ userSelect: "none" }}>{language==="English"?"Avatar":"Ảnh đại diện"}</FormLabel>
           <TextField
             disabled={showLoadingEditBtn}
             error={avatarUrlErrorState}
@@ -246,15 +247,15 @@ const EditProfile = () => {
                 if (firstName === "" && lastName === "") {
                   setFirstNameErrorState(true);
                   setFirstNameErrorMsg(
-                    "Requires at least one field to have data."
+                    language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu"
                   );
                   setLastNameErrorState(true);
                   setLastNameErrorMsg(
-                    "Requires at least one field to have data."
+                    language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu"
                   );
                   setAvatarUrlErrorState(true);
                   setAvatarUrlErrorMsg(
-                    "Requires at least one field to have data."
+                    language==="English"?"Requires at least one field to have data.":"Yêu cầu ít nhất 1 trường có dữ liệu"
                   );
                 } else {
                   setFirstNameErrorState(false);
@@ -277,7 +278,7 @@ const EditProfile = () => {
                 fullWidth
                 onClick={handleClickSaveChangeEditProfile}
               >
-                Save Changes
+                {language==="English"?"Save Changes":"Lưu những thay đổi"}
               </Button>
               <Button
                 color="success"
@@ -285,7 +286,7 @@ const EditProfile = () => {
                 fullWidth
                 onClick={handleClickCancelEdit}
               >
-                Cancel
+                {language==="English"?"Cancel":"Hủy"}
               </Button>
             </>
           ) : (
@@ -298,7 +299,7 @@ const EditProfile = () => {
                 disabled
                 fullWidth
               >
-                In processing...
+                {language==="English"?"Saving...":"Đang lưu..."}
               </Button>
               <Button
                 color="success"
@@ -307,7 +308,7 @@ const EditProfile = () => {
                 fullWidth
                 onClick={handleClickCancelEdit}
               >
-                Cancel
+                {language==="English"?"Cancel":"Hủy"}
               </Button>
             </>
           )}
