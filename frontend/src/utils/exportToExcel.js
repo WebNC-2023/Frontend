@@ -82,9 +82,9 @@ export const transformData = (data) => {
   const result = {};
 
   // Duyệt qua mảng dữ liệu gốc
-  data.forEach((test) => {
+  data?.forEach((test) => {
     // Duyệt qua mảng điểm của từng bài kiểm tra
-    test.scores.forEach((score) => {
+    test.scores?.forEach((score) => {
       // Nếu chưa có thông tin về sinh viên trong đối tượng kết quả, tạo mới
       if (!result[score.studentId]) {
         result[score.studentId] = {
@@ -115,7 +115,7 @@ export const exportGradesToExcel = (assignments) => {
 
   // Tạo dòng tiêu đề
   const headerRow = ["User", "StudentId"];
-  const assignmentColumns = newArray[0].scores.map((score) => score.title);
+  const assignmentColumns = newArray[0]?.scores?.map((score) => score.title);
   headerRow.push(...assignmentColumns);
   const sheetData = [headerRow];
 
