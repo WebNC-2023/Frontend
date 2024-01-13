@@ -36,9 +36,10 @@ const HomePage = () => {
         <Loader />
       ) : classes?.length > 0 ? (
         <ol className="joined" style={{ paddingTop: "105px" }}>
-          {classes?.map((item) => (
-            <JoinedClasses classData={item} key={item.id} />
-          ))}
+          {classes?.map(
+            (item) =>
+              item.isActive && <JoinedClasses classData={item} key={item.id} />
+          )}
         </ol>
       ) : (
         <StartClasses />
