@@ -33,6 +33,7 @@ const CreateExercise = () => {
   const [scroll, setScroll] = React.useState("paper");
   const [contentMsg, setContentMsg] = React.useState("");
   const [titleContent, setTitleContent] = React.useState("");
+  const [isDisable, setIsDisable] = React.useState(false);
   const dispatch = useDispatch();
   const assignments = useSelector(
     (state) => state.classroomDetailsInfo.assignments
@@ -49,6 +50,7 @@ const CreateExercise = () => {
   };
   const handleGiveAssignment = () => {
     async function CreateAssignment() {
+      setIsDisable(true);
       try {
         let present = new Date();
         const res = await Axios({
@@ -128,6 +130,7 @@ const CreateExercise = () => {
           toast.error(`${error.response.message}`, { autoClose: 3000 });
         else toast.error(`${error}`, { autoClose: 3000 });
       }
+      setIsDisable(false);
     }
     CreateAssignment();
   };
@@ -182,11 +185,12 @@ const CreateExercise = () => {
                   color="inherit"
                   onClick={handleGiveAssignment}
                   disabled={
-                    titleContent === ""
+                    isDisable ||
+                    (titleContent === ""
                       ? true
                       : titleContent.length > 255 || contentMsg.length > 255
                       ? true
-                      : false
+                      : false)
                   }
                 >
                   {language === "English" ? "Give an assignment" : "Giao bài"}

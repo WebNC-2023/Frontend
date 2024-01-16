@@ -36,7 +36,9 @@ function App() {
   const [showContent, setShowContent] = useState("Home");
   const [showSidebar, setShowSidebar] = useState(true);
   const [contentClassTab, setContentClassTab] = useState();
-  const [language, setLanguage] = useState("Tiếng Việt");
+  const [language, setLanguage] = useState(
+    localStorage.getItem("language") || "Tiếng Việt"
+  );
   return (
     <DataContext.Provider
       value={{
