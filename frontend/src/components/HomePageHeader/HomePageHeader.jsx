@@ -92,11 +92,13 @@ const HomePageHeader = ({ showSidebar, classRoom }) => {
 
   const handleChangeVietnamese = () => {
     setLanguage("Tiếng Việt");
+    localStorage.setItem("language", "Tiếng Việt");
     setLanguagesAnchorEl(null);
   };
 
   const handleChangeEnglish = () => {
     setLanguage("English");
+    localStorage.setItem("language", "English");
     setLanguagesAnchorEl(null);
   };
 
